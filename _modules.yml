@@ -1,0 +1,12 @@
+config:
+    renderer: markdown
+
+modules:
+  advanced-cloud-native-services:
+    name: Advanced Cloud-Native Services
+  implementing-cd:
+    name: Implementing Continuous Delivery
+  debugging-apps:
+    name: Debugging Applications
+  apps-monitoring:
+    name: Application Performance Monitoring
