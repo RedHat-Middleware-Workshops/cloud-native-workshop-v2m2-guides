@@ -172,7 +172,7 @@ You can see the components being deployed on the
 Project Overview, but notice the **No deployments for Coolstore**. You have not yet deployed
 the container image built in previous steps, but you'll do that next.
 
-**17. Deploy application using Binary build**
+**4. Deploy application using Binary build**
 
 In this development project we have selected to use a process called binary builds, which
 means that instead of pointing to a public Git Repository and have the S2I (Source-to-Image) build process
@@ -234,7 +234,7 @@ which will open the monolith Coolstore in your browser, this time running on Ope
 There are several concepts in OpenShift useful for developers, and in this workshop
 you should be familiar with them.
 
-###### Projects
+**Projects**
 
 [Projects](https://docs.openshift.com/container-platform/latest/architecture/core_concepts/projects_and_users.html#projects)
 are a top level concept to help you organize your deployments. An
@@ -244,7 +244,8 @@ resources, policies (who can or cannot perform actions), and constraints (quotas
 and limits on resources, etc). Projects act as a wrapper around all the
 application services and endpoints you (or your teams) are using for your work.
 
-###### Containers
+**Containers**
+
 The basic units of OpenShift applications are called containers (sometimes called Linux Containers).
 [Linux container technologies](https://access.redhat.com/articles/1353593) are lightweight mechanisms for isolating running processes
 so that they are limited to interacting with only their designated resources.
@@ -253,7 +254,8 @@ Though you do not directly interact with the Docker CLI or service when using Op
 Platform, understanding their capabilities and terminology is important for understanding their
 role in OpenShift Container Platform and how your applications function inside of containers.
 
-###### Pods
+**Pods**
+
 OpenShift Container Platform leverages the Kubernetes concept of a pod, which is one or more
 containers deployed together on one host, and the smallest compute unit that can be defined,
 deployed, and managed.
@@ -262,8 +264,8 @@ Pods are the rough equivalent of a machine instance (physical or virtual) to a c
 Each pod is allocated its own internal IP address, therefore owning its entire port space,
 and containers within pods can share their local storage and networking.
 
+**Images**
 
-###### Images
 Containers in OpenShift are based on Docker-formatted container images.
 An image is a binary that includes all of the requirements for running a single container,
 as well as metadata describing its needs and capabilities.
@@ -274,20 +276,23 @@ By deploying the same image in multiple containers across multiple hosts and loa
 between them, OpenShift Container Platform can provide redundancy and horizontal scaling
 for a service packaged into an image.
 
-###### Image Streams
+**Image Streams**
+
 An image stream and its associated tags provide an abstraction for referencing
 Images from within OpenShift. The image stream and its tags allow you
 to see what images are available and ensure that you are using the specific image you need
 even if the image in the repository changes.
 
-###### Builds
+**Builds**
+
 A build is the process of transforming input parameters into a resulting object. Most often,
 the process is used to transform input parameters or source code into a runnable image. A
 _BuildConfig_ object is the definition of the entire build process. It can build from different
 sources, including a Dockerfile, a source code repository like Git, or a Jenkins Pipeline
 definition.
 
-###### Pipelines
+**Pipelines**
+
 Pipelines allow developers to define a _Jenkins_ pipeline for execution by the Jenkins
 pipeline plugin. The build can be started, monitored, and managed by OpenShift Container
 Platform in the same way as any other build type.
@@ -295,20 +300,22 @@ Platform in the same way as any other build type.
 Pipeline workflows are defined in a Jenkinsfile, either embedded directly in the
 build configuration, or supplied in a Git repository and referenced by the build configuration.
 
+**Deployments**
 
-###### Deployments
 An OpenShift Deployment describes how images are deployed to pods, and how the pods are deployed
 to the underlying container runtime platform. OpenShift deployments also provide the ability to transition from
 an existing deployment of an image to a new one and also define hooks to be run before or after
 creating the replication controller.
 
-###### Services
+**Services**
+
 A Kubernetes service serves as an internal load balancer. It identifies a set of replicated
 pods in order to proxy the connections it receives to them. Backing pods can be added to or
 removed from a service arbitrarily while the service remains consistently available, enabling
 anything that depends on the service to refer to it at a consistent address.
 
-####### Routes
+**Routes**
+
 _Services_ provide internal abstraction and load balancing within an
 OpenShift environment, sometimes clients (users, systems, devices, etc.)
 **outside** of OpenShift need to access an application. The way that external
@@ -321,7 +328,7 @@ security, such as TLS, for the _Route_. If you want your _Services_, and, by
 extension, your _Pods_,  to be accessible to the outside world, you need to
 create a _Route_.
 
-###### Templates
+**Templates**
 
 Templates contain a collection of object definitions (BuildConfigs, DeploymentConfigs,
 Services, Routes, etc) that compose an entire working project. They are useful for packaging
@@ -341,7 +348,7 @@ Consult the [OpenShift documentation](https://docs.openshift.com) for more detai
 In the previous step or module 1 workshop, you created a new OpenShift project called `coolstore-dev` which represents
 your developer personal project in which you deployed the CoolStore monolith.
 
-**Verify Application**
+**1. Verify Application**
 
 Let's take a moment and review the OpenShift resources that are created for the Monolith:
 
@@ -401,7 +408,7 @@ coolstore-2-bpkkc              1/1       Running   0          4m
 coolstore-postgresql-1-jpcb8   1/1       Running   0          9m
 ```
 
-**Verify Database**
+**2. Verify Database**
 
 You can log into the running Postgres container using the following via Eclipse Che **Terminal** window:
 
@@ -413,7 +420,7 @@ Once logged in, use the following command to execute an SQL statement to show so
 
 You should see the following:
 
-```
+~~~
           name
 ------------------------
  Red Fedora
@@ -426,7 +433,7 @@ You should see the following:
  Oculus Rift
  Lytro Camera
 (9 rows)
-```
+~~~
 
 Don't forget to exit the pod's shell with `exit`
 
