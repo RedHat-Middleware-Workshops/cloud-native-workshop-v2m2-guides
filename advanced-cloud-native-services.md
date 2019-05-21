@@ -1,6 +1,6 @@
 ## Advanced Cloud-Native Services
 
-In the module 1, you learned how to take an existing application to the cloud with JBoss EAP and OpenShift,
+If you complete the `Cloud Native Workshop - Module 1`, you learned how to take an existing application to the cloud with JBoss EAP and OpenShift,
 and you got a glimpse into the power of OpenShift for existing applications.
 
 In this lab, you will go deeper into how to use the OpenShift Container Platform as a developer to build
@@ -40,7 +40,7 @@ will need to understand as you are building your applications!
 
 #### Setup for Lab Environment
 
-> **NOTE**: `Skip` this setup guide if you already completed the `Module 1`.
+> **NOTE**: `SKIP` this setup guide if you already completed the `Cloud Native Workshop - Module 1`.
 
 **1. Open the file using Eclipse Che**
 
@@ -109,7 +109,7 @@ a command in a terminal, you can use the Eclipse Che **Terminal** window.
 
 ![bootstrap-che-terminal]({% image_path bootstrap-che-terminal.png %})
 
-**15. Create the OpenShift project**
+**2. Create the OpenShift project**
 
 First, open a new brower with the [OpenShift Console URL]({{ OPENSHIFT_CONSOLE_URL }})
 
@@ -141,7 +141,7 @@ Click on the name of the newly-created project:
 
 This will take you to the project overview. There's nothing there yet, but that's about to change.
 
-**16. Deploy the monolith**
+**3. Deploy the monolith**
 
 We'll use the CLI to deploy the components for our monolith. To deploy the monolith template using the CLI, execute the following commands via Eclipse Che **Terminal** window:
 
