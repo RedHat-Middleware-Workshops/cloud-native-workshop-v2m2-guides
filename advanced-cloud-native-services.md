@@ -164,7 +164,7 @@ This will deploy both a PostgreSQL database and JBoss EAP, but it will not start
 
 Then open up the Monolith Overview page at 
 
-`https://$OPENSHIFT_MASTER/console/project/coolstore-dev/`
+`https://{{ OPENSHIFT_CONSOLE_URL }}/console/project/coolstore-dev/`
 and verify the monolith template items are created:
 
 ![no_deployments]({% image_path no_deployments.png %}){:width="800px"}
@@ -220,7 +220,7 @@ database and the monolith:
 
 Test the application by clicking on the Route link at 
 
-`http://www-coolstore-dev.$ROUTE_SUFFIX`,
+`http://www-coolstore-dev.{{ ROUTE_SUFFIX }}`,
 which will open the monolith Coolstore in your browser, this time running on OpenShift:
 
 ![route_link]({% image_path route_link.png %}){:width="800px"}
@@ -395,7 +395,7 @@ Run these commands to inspect the elements via Eclipse Che **Terminal** window:
 Verify that you can access the monolith by clicking on the
 exposed OpenShift route at 
 
-`http://www-coolstore-dev.$ROUTE_SUFFIX`
+`http://www-coolstore-dev.{{ ROUTE_SUFFIX }}`
 to open up the sample application in a separate browser tab.
 
 You should also be able to see both the CoolStore monolith and its database

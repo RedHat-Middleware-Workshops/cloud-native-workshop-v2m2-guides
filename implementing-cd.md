@@ -1,18 +1,16 @@
 ##  Automating Deployments Using Pipelines
 
-#### Deploying the Production Environment
-
 In the previous scenarios, you deployed the Coolstore monolith using an
 OpenShift Template into the `coolstore-dev` Project. The template
 created the necessary objects (BuildConfig, DeploymentConfig, ImageStreams, Services, and Routes)
 and gave you as a Developer a "playground" in which to run the app, make
 changes and debug.
 
-In this step we are now going to setup a separate production environment and explore some
+In this step, we are now going to setup a separate production environment and explore some
 best practices and techniques for developers and DevOps teams for getting code from
 the developer (that's YOU!) to production with less downtime and greater consistency.
 
-## Prod vs. Dev
+#### Production vs. Development
 
 The existing `coolstore-dev` project is used as a developer environment for building new
 versions of the app after code changes and deploying them to the development environment.
@@ -23,22 +21,31 @@ OpenShift projects and perhaps even different OpenShift clusters.
 For simplicity in this scenario we will only use a _dev_ and _prod_ environment, and no test/QA
 environment.
 
-## Create the production environment
+**1. Create the production environment**
 
 We will create and initialize the new production environment using another template
 in a separate OpenShift project.
 
-**1. Initialize production project environment**
+In OpenShift web console, click **Create Project**, fill in the fields, and click **Create**:
 
-Execute the following `oc` command to create a new project:
+* Name: `coolstore-prod`
+* Display Name: `Coolstore Monolith - Production`
+* Description: _leave this field empty_
 
-`oc new-project coolstore-prod --display-name='Coolstore Monolith - Production'`
+> **NOTE**: YOU **MUST** USE `coolstore-prod` AS THE PROJECT NAME, as this name is referenced later
+on and you will experience failures if you do not name it `coolstore-prod`!
 
 This will create a new OpenShift project called `coolstore-prod` from which our production application will run.
 
+![create_dialog]({% image_path create_prod_dialog.png %}){:width="500"}
+
 **2. Add the production elements**
 
-In this case we'll use the production template to create the objects. Execute:
+In this case we'll use the production template to create the objects. Execute via Eclipse Che **Terminal** window:
+
+`oc project coolstore-prod`
+
+And finally deploy template:
 
 `oc new-app --template=coolstore-monolith-pipeline-build`
 
@@ -49,7 +56,7 @@ Navigate to the Web Console to see your new app and the components using this li
 
 * Coolstore Prod Project Overview at 
 
-`https://$OPENSHIFT_MASTER/console/project/coolstore-prod/overview`
+`https://{{ OPENSHIFT_CONSOLE_URL }}/console/project/coolstore-prod/overview`
 
 ![Prod](../../../assets/developer-intro/coolstore-prod-overview.png)
 
@@ -61,9 +68,9 @@ build to run the app previously.
 In the next step, we'll _promote_ the app from the _dev_ environment to the _production_
 environment using an OpenShift pipeline build. Let's get going!
 
-## Promoting Apps Across Environments with Pipelines
+#### Promoting Apps Across Environments with Pipelines
 
-#### Continuous Delivery
+##### Continuous Delivery
 So far you have built and deployed the app manually to OpenShift in the _dev_ environment. Although
 it's convenient for local development, it's an error-prone way of delivering software when
 extended to test and production environments.
@@ -79,13 +86,13 @@ the platform and enables defining truly complex workflows directly from within O
 
 The first step for any deployment pipeline is to store all code and configurations in 
 a source code repository. In this workshop, the source code and configurations are stored
-in a GitHub repository we've been using at [https://github.com/RedHat-Middleware-Workshops/modernize-apps-labs].
+in a GitHub repository we've been using at [https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs].
 This repository has been copied locally to your environment and you've been using it ever since!
 
 You can see the changes you've personally made using `git --no-pager status` to show the code changes you've made using the Git command (part of the
 [Git source code management system](https://git-scm.com/)).
 
-## Pipelines
+##### Pipelines
 
 OpenShift has built-in support for CI/CD pipelines by allowing developers to define
 a [Jenkins pipeline](https://jenkins.io/solutions/pipeline/) for execution by a Jenkins
@@ -103,10 +110,10 @@ _dev_ environment, store the resulting image in the local repository, run the im
 tests against it, then wait for human approval to _promote_ the resulting image to other environments
 like test or production.
 
-**1. Inspect the Pipeline Definition**
+**3. Inspect the Pipeline Definition**
 
 Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the
-pipeline using the following command:
+pipeline using the following command via Eclipse Che **Terminal** window:
 
 `oc describe bc/monolith-pipeline`
 
@@ -149,7 +156,7 @@ Web Console. Open the production project in the web console:
 
 * Web Console - Coolstore Monolith Prod at 
 
-`https://$OPENSHIFT_MASTER/console/project/coolstore-prod`
+`https://{{ OPENSHIFT_CONSOLE_URL }}/console/project/coolstore-prod`
 
 Next, navigate to _Builds -> Pipelines_ and click __Start Pipeline__ next to the `coolstore-monolith` pipeline:
 
@@ -162,14 +169,14 @@ take as much time as the Jenkins infrastructure will already be warmed up). You 
 
 Once the pipeline completes, return to the Prod Project Overview at 
 
-`https://$OPENSHIFT_MASTER/console/project/coolstore-prod`
+`https://{{ OPENSHIFT_CONSOLE_URL }}/console/project/coolstore-prod`
 and notice that the application is now deployed and running!
 
 ![Prod](../../../assets/developer-intro/pipe-done.png)
 
 View the production app **with the blue header from before** is running by clicking: CoolStore Production App at 
 
-`http://www-coolstore-prod.$ROUTE_SUFFIX` (it may take
+`http://www-coolstore-prod.{{ ROUTE_SUFFIX }}` (it may take
 a few moments for the container to deploy fully.)
 
 ## Congratulations!
@@ -205,7 +212,7 @@ _Builds -> Pipelines_ but here's a quick link):
 
 * Pipeline Config page at 
 
-`https://$OPENSHIFT_MASTER/console/project/coolstore-prod/browse/pipelines/monolith-pipeline?tab=configuration`
+`https://{{ OPENSHIFT_CONSOLE_URL }}/console/project/coolstore-prod/browse/pipelines/monolith-pipeline?tab=configuration`
 
 On this page you can see the pipeline definition. Click _Actions -> Edit_ to edit the pipeline:
 
@@ -254,7 +261,7 @@ And verify that the original black header is visible in the dev application:
 
 * Coolstore - Dev at 
 
-`http://www-coolstore-dev.$ROUTE_SUFFIX`
+`http://www-coolstore-dev.{{ ROUTE_SUFFIX }}`
 
 ![Prod](../../../assets/developer-intro/pipe-orig.png)
 
@@ -262,7 +269,7 @@ While the production application is still blue:
 
 * Coolstore - Prod at 
 
-`http://www-coolstore-prod.$ROUTE_SUFFIX`
+`http://www-coolstore-prod.{{ ROUTE_SUFFIX }}`
 
 ![Prod](../../../assets/developer-intro/nav-blue.png)
 
@@ -272,7 +279,7 @@ We're happy with this change in dev, so let's promote the new change to prod, us
 
 Invoke the pipeline once more by clicking **Start Pipeline** on the Pipeline Config page at 
 
-`https://$OPENSHIFT_MASTER/console/project/coolstore-prod/browse/pipelines/monolith-pipeline`
+`https://{{ OPENSHIFT_CONSOLE_URL }}/console/project/coolstore-prod/browse/pipelines/monolith-pipeline`
 
 The same pipeline progress will be shown, however before deploying to prod, you will see a prompt in the pipeline:
 
@@ -303,7 +310,7 @@ Once it completes, verify that the production application has the new change (or
 
 * Coolstore - Prod at 
 
-`http://www-coolstore-prod.$ROUTE_SUFFIX`
+`http://www-coolstore-prod.{{ ROUTE_SUFFIX }}`
 
 ![Prod](../../../assets/developer-intro/pipe-orig.png)
 
