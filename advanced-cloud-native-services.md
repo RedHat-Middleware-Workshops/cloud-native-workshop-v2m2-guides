@@ -112,7 +112,7 @@ a command in a terminal, you can use the Eclipse Che **Terminal** window.
 
 **2. Create the OpenShift project**
 
-First, open a new brower with the [OpenShift Console URL]({{ OPENSHIFT_CONSOLE_URL }})
+First, open a new brower with the `OpenShift Web Console`
 
 ![openshift_login]({% image_path openshift_login.png %})
 
@@ -162,10 +162,7 @@ And finally deploy template:
 
 This will deploy both a PostgreSQL database and JBoss EAP, but it will not start a build for our application.
 
-Then open up the Monolith Overview page at 
-
-`https://{{ OPENSHIFT_CONSOLE_URL }}/console/project/coolstore-dev/`
-and verify the monolith template items are created:
+Then open up the Monolith Overview page and verify the monolith template items are created:
 
 ![no_deployments]({% image_path no_deployments.png %}){:width="800px"}
 
@@ -218,9 +215,8 @@ database and the monolith:
 
 ![build_done]({% image_path build_done.png %}){:width="800px"}
 
-Test the application by clicking on the Route link at 
+Test the application by clicking on the Route link at `OpenShift Web Console`
 
-`http://www-coolstore-dev.{{ ROUTE_SUFFIX }}`,
 which will open the monolith Coolstore in your browser, this time running on OpenShift:
 
 ![route_link]({% image_path route_link.png %}){:width="800px"}
@@ -393,10 +389,7 @@ Run these commands to inspect the elements via Eclipse Che **Terminal** window:
 `oc describe route www`
 
 Verify that you can access the monolith by clicking on the
-exposed OpenShift route at 
-
-`http://www-coolstore-dev.{{ ROUTE_SUFFIX }}`
-to open up the sample application in a separate browser tab.
+exposed OpenShift route to open up the sample application in a separate browser tab.
 
 You should also be able to see both the CoolStore monolith and its database
 running in separate pods via Eclipse Che **Terminal** window:

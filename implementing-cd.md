@@ -10,6 +10,7 @@ In this step, we are now going to setup a separate production environment and ex
 best practices and techniques for developers and DevOps teams for getting code from
 the developer (that's YOU!) to production with less downtime and greater consistency.
 
+---
 #### Production vs. Development
 
 The existing `coolstore-dev` project is used as a developer environment for building new
@@ -54,11 +55,9 @@ As you probably guessed it will also include a Jenkins Pipeline to control the p
 
 Navigate to the Web Console to see your new app and the components using this link:
 
-* Coolstore Prod Project Overview at 
+* Coolstore Prod Project Overview at `OpenShift Web Console`:
 
-`https://{{ OPENSHIFT_CONSOLE_URL }}/console/project/coolstore-prod/overview`
-
-![Prod](../../../assets/developer-intro/coolstore-prod-overview.png)
+![Prod]({% image_path coolstore-prod-overview.png %})
 
 You can see the production database, and an application called _Jenkins_ which OpenShift uses
 to manage CI/CD pipeline deployments. There is no running production
@@ -68,9 +67,11 @@ build to run the app previously.
 In the next step, we'll _promote_ the app from the _dev_ environment to the _production_
 environment using an OpenShift pipeline build. Let's get going!
 
+---
 #### Promoting Apps Across Environments with Pipelines
 
 ##### Continuous Delivery
+
 So far you have built and deployed the app manually to OpenShift in the _dev_ environment. Although
 it's convenient for local development, it's an error-prone way of delivering software when
 extended to test and production environments.
@@ -113,13 +114,17 @@ like test or production.
 **3. Inspect the Pipeline Definition**
 
 Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the
-pipeline using the following command via Eclipse Che **Terminal** window:
+pipeline by navigating **Builds > Pipelines > monolith-pipeline > Configuration** in OpenShift Web Console:
+
+![monolith-pipeline]({% image_path coolstore-prod-monolith-pipeline.png %})
+
+You can also inspect this via the following command via Eclipse Che **Terminal** window:
 
 `oc describe bc/monolith-pipeline`
 
 You can see the Jenkinsfile definition of the pipeline in the output:
 
-```
+~~~
 Jenkinsfile contents:
   node ('maven') {
     stage 'Build'
@@ -135,7 +140,7 @@ Jenkinsfile contents:
     stage 'Run Tests in PROD'
     sleep 30
   }
-```
+~~~
 
 Pipeline syntax allows creating complex deployment scenarios with the possibility of defining
 checkpoint for manual interaction and approval process using
@@ -149,58 +154,53 @@ Once the pipeline completes, it deploys the app from the _dev_ environment to ou
 environment using the above `openshiftTag()` method, which simply re-tags the image you already
 created using a tag which will trigger deployment in the production environment.
 
-**2. Promote the dev image to production using the pipeline**
+**4. Promote the dev image to production using the pipeline**
 
 You can use the _oc_ command line to invoke the build pipeline, or the Web Console. Let's use the
 Web Console. Open the production project in the web console:
 
-* Web Console - Coolstore Monolith Prod at 
-
-`https://{{ OPENSHIFT_CONSOLE_URL }}/console/project/coolstore-prod`
+* Web Console - Coolstore Monolith Prod at `OpenShift Web Console`.
 
 Next, navigate to _Builds -> Pipelines_ and click __Start Pipeline__ next to the `coolstore-monolith` pipeline:
 
-![Prod](../../../assets/developer-intro/pipe-start.png)
+![Prod]({% image_path pipe-start.png %})
 
 This will start the pipeline. **It will take a minute or two to start the pipeline** (future runs will not
 take as much time as the Jenkins infrastructure will already be warmed up). You can watch the progress of the pipeline:
 
-![Prod](../../../assets/developer-intro/pipe-prog.png)
+![Prod]({% image_path pipe-prog.png %})
 
-Once the pipeline completes, return to the Prod Project Overview at 
+Once the pipeline completes, return to the Prod Project Overview at `OpenShift Web Console`
 
-`https://{{ OPENSHIFT_CONSOLE_URL }}/console/project/coolstore-prod`
 and notice that the application is now deployed and running!
 
-![Prod](../../../assets/developer-intro/pipe-done.png)
+![Prod]({% image_path pipe-done.png %})
 
-View the production app **with the blue header from before** is running by clicking: CoolStore Production App at 
+View the production app **with the blue header from before** is running by clicking: CoolStore Production App at `OpenShift Web Console`
 
-`http://www-coolstore-prod.{{ ROUTE_SUFFIX }}` (it may take
-a few moments for the container to deploy fully.)
+(it may take a few moments for the container to deploy fully.)
 
-## Congratulations!
-
-You have successfully setup a development and production environment for your project and can
+**Congratulations!** You have successfully setup a development and production environment for your project and can
 use this workflow for future projects as well.
 
-In the final step we'll add a human interaction element to the pipeline, so that you as a project
+In the next step, we'll add a human interaction element to the pipeline, so that you as a project
 lead can be in charge of approving changes.
 
-## More Reading
+##### More Reading
 
 * [OpenShift Pipeline Documentation](https://docs.openshift.com/container-platform/3.7/dev_guide/dev_tutorials/openshift_pipeline.html)
 
 
-## Adding Pipeline Approval Steps
+---
+#### Adding Pipeline Approval Steps
 
-In previous steps you used an OpenShift Pipeline to automate the process of building and
+In previous steps, you used an OpenShift Pipeline to automate the process of building and
 deploying changes from the dev environment to production.
 
 In this step, we'll add a final checkpoint to the pipeline which will require you as the project
 lead to approve the final push to production.
 
-**1. Edit the pipeline**
+**5. Edit the pipeline**
 
 Ordinarily your pipeline definition would be checked into a source code management system like Git,
 and to change the pipeline you'd edit the _Jenkinsfile_ in the source base. For this workshop we'll
@@ -210,119 +210,148 @@ use the Web Console.
 Open the `monolith-pipeline` configuration page in the Web Console (you can navigate to it from
 _Builds -> Pipelines_ but here's a quick link):
 
-* Pipeline Config page at 
-
-`https://{{ OPENSHIFT_CONSOLE_URL }}/console/project/coolstore-prod/browse/pipelines/monolith-pipeline?tab=configuration`
+* Pipeline Config page at `OpenShift Web Console`.
 
 On this page you can see the pipeline definition. Click _Actions -> Edit_ to edit the pipeline:
 
-![Prod](../../../assets/developer-intro/pipe-edit.png)
+![Prod]({% image_path pipe-edit.png %})
 
 In the pipeline definition editor, add a new stage to the pipeline, just before the `Deploy to PROD` step:
 
 > **NOTE**: You will need to copy and paste the below code into the right place as shown in the below image.
 
-```groovy
+~~~groovy
   stage 'Approve Go Live'
   timeout(time:30, unit:'MINUTES') {
     input message:'Go Live in Production (switch to new version)?'
   }
-```
+~~~
 
 Your final pipeline should look like:
 
-![Prod](../../../assets/developer-intro/pipe-edit2.png)
+![Prod]({% image_path pipe-edit2.png %})
 
 Click **Save**.
 
-**2. Make a simple change to the app**
+**6. Make a simple change to the app**
 
 With the approval step in place, let's simulate a new change from a developer who wants to change
 the color of the header in the coolstore back to the original (black) color.
 
-As a developer you can easily un-do edits you made earlier to the CSS file using the source control
-management system (Git). To revert your changes, execute:
+First, open `src/main/webapp/app/css/coolstore.css` via Eclipse Che, which contains the CSS stylesheet for the
+CoolStore app.
 
-`git checkout src/main/webapp/app/css/coolstore.css`
+Add the following CSS to turn the header bar background to Red Hat red (**Copy** to add it at the bottom):
 
-Next, re-build the app once more:
+~~~java
+
+.navbar-header {
+    background: blue
+}
+
+~~~
+
+Next, re-build the app once more via Eclipse Che **Terminal**:
 
 `mvn clean package -Popenshift`
 
-And re-deploy it to the dev environment using a binary build just as we did before:
+And re-deploy it to the dev environment using a binary build just as we did before via Eclipse Che **Terminal**:
 
 `oc start-build -n coolstore-dev coolstore --from-file=deployments/ROOT.war`
 
-Now wait for it to complete the deployment:
+Now wait for it to complete the deployment via Eclipse Che **Terminal**:
 
 `oc -n coolstore-dev rollout status -w dc/coolstore`
 
-And verify that the original black header is visible in the dev application:
+And verify that the blue header is visible in the dev application:
 
 * Coolstore - Dev at 
 
-`http://www-coolstore-dev.{{ ROUTE_SUFFIX }}`
+![Prod]({% image_path nav-blue.png %})
 
-![Prod](../../../assets/developer-intro/pipe-orig.png)
-
-While the production application is still blue:
+While the production application is still black:
 
 * Coolstore - Prod at 
 
-`http://www-coolstore-prod.{{ ROUTE_SUFFIX }}`
-
-![Prod](../../../assets/developer-intro/nav-blue.png)
+![Prod]({% image_path pipe-orig.png %})
 
 We're happy with this change in dev, so let's promote the new change to prod, using the new approval step!
 
-**3. Run the pipeline again**
+**7. Run the pipeline again**
 
-Invoke the pipeline once more by clicking **Start Pipeline** on the Pipeline Config page at 
-
-`https://{{ OPENSHIFT_CONSOLE_URL }}/console/project/coolstore-prod/browse/pipelines/monolith-pipeline`
+Invoke the pipeline once more by clicking **Start Pipeline** on the Pipeline Config page at `OpenShift Web Console`.
 
 The same pipeline progress will be shown, however before deploying to prod, you will see a prompt in the pipeline:
 
-![Prod](../../../assets/developer-intro/pipe-prompt.png)
+![Prod]({% image_path pipe-prompt.png %})
 
 Click on the link for `Input Required`. This will open a new tab and direct you to Jenkins itself, where you can login with
 the same credentials as OpenShift:
 
-* Username: `developer`
-* Password: `developer`
+* Username: `userXX`
+* Password: `openshift`
 
 Accept the browser certificate warning and the Jenkins/OpenShift permissions, and then you'll find yourself at the approval prompt:
 
-![Prod](../../../assets/developer-intro/pipe-jenkins-prompt.png)
+![Prod]({% image_path pipe-jenkins-prompt.png %})
 
-**3. Approve the change to go live**
+**8. Approve the change to go live**
 
 Click **Proceed**, which will approve the change to be pushed to production. You could also have
 clicked **Abort** which would stop the pipeline immediately in case the change was unwanted or unapproved.
 
 Once you click **Proceed**, you will see the log file from Jenkins showing the final progress and deployment.
 
-Wait for the production deployment to complete:
+Wait for the production deployment to complete via Eclipse Che **Terminal**:
 
 `oc rollout -n coolstore-prod status dc/coolstore-prod`
 
-Once it completes, verify that the production application has the new change (original black header):
+Once it completes, verify that the production application has the new change (blue header):
 
 * Coolstore - Prod at 
 
-`http://www-coolstore-prod.{{ ROUTE_SUFFIX }}`
+![Prod]({% image_path nav-blue.png %})
 
-![Prod](../../../assets/developer-intro/pipe-orig.png)
+**9. Run the Pipeline on Every Code Change**
 
-## Congratulations!
+Manually triggering the deployment pipeline to run is useful but the real goes is to be able 
+to build and deploy every change in code or configuration at least to lower environments 
+(e.g. dev and test) and ideally all the way to production with some manual approvals in-place.
 
-You have added a human approval step for all future developer changes. You now have two projects that can be visualized as:
+In order to automate triggering the pipeline, you can define a webhook on your Git repository 
+to notify OpenShift on every commit that is made to the Git repository and trigger a pipeline 
+execution.
 
-![Prod](../../../assets/developer-intro/goal.png)
+You can get see the webhook links in the OpenShift Web Console by going to **Build >> Pipelines**, clicking 
+on the pipeline and going to the **Configurations** tab.
 
+Copy the Generic webhook url which you will need in the next steps.
 
+Go to your [Git repository]({{GIT_URL}}/userXX/cloud-native-workshop-v2m1-labs.git), then click on **Settings**.
 
-## Summary
+![Repository Settings]({% image_path cd-gogs-settings-link.png %}){:width="900px"}
+
+On the left menu, click on **Webhooks** and then on **Add Webhook** button and then **Gogs**. 
+
+Create a webhook with the following details:
+
+* **Payload URL**: paste the Generic webhook url you copied from the `monolith-pipeline`
+* **Content type**: `application/json`
+
+Click on **Add Webhook**. 
+
+![Repository Webhook]({% image_path cd-gogs-webhook-add.png %}){:width="660px"}
+
+All done. You can click on the newly defined webhook to see the list of *Recent Delivery*. 
+Clicking on the **Test Delivery** button allows you to manually trigger the webhook for 
+testing purposes. Click on it and verify that the `monolith-pipeline` start running 
+immediately.
+
+**Congratulations!** You have added a human approval step for all future developer changes. You now have two projects that can be visualized as:
+
+![Prod]({% image_path goal.png %})
+
+#### Summary
 
 In this scenario you learned how to use the OpenShift Container Platform as a developer to build,
 and deploy applications. You also learned how OpenShift makes your life easier as a developer,
