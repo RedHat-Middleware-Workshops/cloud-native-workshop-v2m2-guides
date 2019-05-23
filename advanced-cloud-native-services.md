@@ -39,6 +39,7 @@ Now that you know how to interact with OpenShift, let's focus on some core conce
 will need to understand as you are building your applications!
 
 ---
+
 #### Setup for Lab Environment
 
 > **NOTE**: `SKIP` this setup guide if you already completed the `Cloud Native Workshop - Module 1`.
@@ -227,6 +228,7 @@ which will open the monolith Coolstore in your browser, this time running on Ope
 
 
 ---
+
 #### Developer Concepts
 
 There are several concepts in OpenShift useful for developers, and in this workshop
@@ -342,6 +344,7 @@ Consult the [OpenShift documentation](https://docs.openshift.com) for more detai
 
 
 ---
+
 #### Verifying the Dev Environment
 
 In the previous step or module 1 workshop, you created a new OpenShift project called `coolstore-dev` which represents

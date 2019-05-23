@@ -1,4 +1,4 @@
-##  Automating Deployments Using Pipelines
+## Lab1 - Automating Deployments Using Pipelines
 
 In the previous scenarios, you deployed the Coolstore monolith using an
 OpenShift Template into the `coolstore-dev` Project. The template
@@ -11,6 +11,7 @@ best practices and techniques for developers and DevOps teams for getting code f
 the developer (that's YOU!) to production with less downtime and greater consistency.
 
 ---
+
 #### Production vs. Development
 
 The existing `coolstore-dev` project is used as a developer environment for building new
@@ -68,6 +69,7 @@ In the next step, we'll _promote_ the app from the _dev_ environment to the _pro
 environment using an OpenShift pipeline build. Let's get going!
 
 ---
+
 #### Promoting Apps Across Environments with Pipelines
 
 ##### Continuous Delivery
@@ -163,18 +165,18 @@ Web Console. Open the production project in the web console:
 
 Next, navigate to _Builds -> Pipelines_ and click __Start Pipeline__ next to the `coolstore-monolith` pipeline:
 
-![Prod]({% image_path pipe-start.png %})
+![Prod]({% image_path pipe-start.png %}){:width="800px"}
 
 This will start the pipeline. **It will take a minute or two to start the pipeline** (future runs will not
 take as much time as the Jenkins infrastructure will already be warmed up). You can watch the progress of the pipeline:
 
-![Prod]({% image_path pipe-prog.png %})
+![Prod]({% image_path pipe-prog.png %}){:width="800px"}
 
 Once the pipeline completes, return to the Prod Project Overview at `OpenShift Web Console`
 
 and notice that the application is now deployed and running!
 
-![Prod]({% image_path pipe-done.png %})
+![Prod]({% image_path pipe-done.png %}){:width="800px"}
 
 View the production app **with the blue header from before** is running by clicking: CoolStore Production App at `OpenShift Web Console`
 
@@ -192,6 +194,7 @@ lead can be in charge of approving changes.
 
 
 ---
+
 #### Adding Pipeline Approval Steps
 
 In previous steps, you used an OpenShift Pipeline to automate the process of building and
@@ -214,7 +217,7 @@ _Builds -> Pipelines_ but here's a quick link):
 
 On this page you can see the pipeline definition. Click _Actions -> Edit_ to edit the pipeline:
 
-![Prod]({% image_path pipe-edit.png %})
+![Prod]({% image_path pipe-edit.png %}){:width="800px"}
 
 In the pipeline definition editor, add a new stage to the pipeline, just before the `Deploy to PROD` step:
 
@@ -229,7 +232,7 @@ In the pipeline definition editor, add a new stage to the pipeline, just before 
 
 Your final pipeline should look like:
 
-![Prod]({% image_path pipe-edit2.png %})
+![Prod]({% image_path pipe-edit2.png %}){:width="800px"}
 
 Click **Save**.
 
@@ -267,13 +270,13 @@ And verify that the blue header is visible in the dev application:
 
 * Coolstore - Dev at 
 
-![Prod]({% image_path nav-blue.png %})
+![Prod]({% image_path nav-blue.png %}){:width="800px"}
 
 While the production application is still black:
 
 * Coolstore - Prod at 
 
-![Prod]({% image_path pipe-orig.png %})
+![Prod]({% image_path pipe-orig.png %}){:width="800px"}
 
 We're happy with this change in dev, so let's promote the new change to prod, using the new approval step!
 
@@ -293,7 +296,7 @@ the same credentials as OpenShift:
 
 Accept the browser certificate warning and the Jenkins/OpenShift permissions, and then you'll find yourself at the approval prompt:
 
-![Prod]({% image_path pipe-jenkins-prompt.png %})
+![Prod]({% image_path pipe-jenkins-prompt.png %}){:width="800px"}
 
 **8. Approve the change to go live**
 
@@ -310,7 +313,7 @@ Once it completes, verify that the production application has the new change (bl
 
 * Coolstore - Prod at 
 
-![Prod]({% image_path nav-blue.png %})
+![Prod]({% image_path nav-blue.png %}){:width="800px"}
 
 **9. Run the Pipeline on Every Code Change**
 
@@ -349,11 +352,11 @@ immediately.
 
 **Congratulations!** You have added a human approval step for all future developer changes. You now have two projects that can be visualized as:
 
-![Prod]({% image_path goal.png %})
+![Prod]({% image_path goal.png %}){:width="700px"}
 
 #### Summary
 
-In this scenario you learned how to use the OpenShift Container Platform as a developer to build,
+In this lab, you learned how to use the OpenShift Container Platform as a developer to build,
 and deploy applications. You also learned how OpenShift makes your life easier as a developer,
 architect, and DevOps engineer.
 
@@ -362,6 +365,3 @@ a lot of functionality without major re-writes.
 
 The monolithic application we've been using so far works great, but is starting to show its age.
 Even small changes to one part of the app require many teams to be involved in the push to production.
-
-In the next few scenarios we'll start to modernize our application and begin to move away from
-monolithic architectures and toward microservice-style architectures using Red Hat technology. Let's go!
