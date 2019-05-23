@@ -286,7 +286,7 @@ Invoke the pipeline once more by clicking **Start Pipeline** on the Pipeline Con
 
 The same pipeline progress will be shown, however before deploying to prod, you will see a prompt in the pipeline:
 
-![Prod]({% image_path pipe-prompt.png %})
+![Prod]({% image_path pipe-prompt.png %}){:width="800px"}
 
 Click on the link for `Input Required`. This will open a new tab and direct you to Jenkins itself, where you can login with
 the same credentials as OpenShift:
@@ -352,7 +352,7 @@ immediately.
 
 **Congratulations!** You have added a human approval step for all future developer changes. You now have two projects that can be visualized as:
 
-![Prod]({% image_path goal.png %}){:width="700px"}
+![Prod]({% image_path goal.png %}){:width="800px"}
 
 #### Summary
 
