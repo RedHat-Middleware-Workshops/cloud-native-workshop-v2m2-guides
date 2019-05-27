@@ -1,6 +1,6 @@
 ## Lab2 - Debugging Applications
 
-In this lab you will debug the coolstore application using Java remote debugging and 
+In this lab, you will debug the coolstore application using Java remote debugging and 
 look into line-by-line code execution as the code runs inside a container on OpenShift.
 
 #### Investigate The Bug
