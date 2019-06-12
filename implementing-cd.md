@@ -8,7 +8,7 @@ changes and debug.
 
 In this step, we are now going to setup a separate production environment and explore some
 best practices and techniques for developers and DevOps teams for getting code from
-the developer (that's YOU!) to production with less downtime and greater consistency.
+the developer **(that's YOU!)** to production with less downtime and greater consistency.
 
 ---
 
@@ -68,9 +68,9 @@ build to run the app previously.
 In the next step, we'll _promote_ the app from the _dev_ environment to the _production_
 environment using an OpenShift pipeline build. Let's get going!
 
----
-
 #### Promoting Apps Across Environments with Pipelines
+
+---
 
 ##### Continuous Delivery
 

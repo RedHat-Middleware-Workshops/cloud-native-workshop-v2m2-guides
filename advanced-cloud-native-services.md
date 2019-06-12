@@ -7,6 +7,8 @@ In this lab, you will go deeper into how to use the OpenShift Container Platform
 and deploy applications. We'll focus on the core features of OpenShift as it relates to developers, and
 you'll learn typical workflows for a developer (develop, build, test, deploy, and repeat).
 
+---
+
 #### Let's get started
 
 If you are not familiar with the OpenShift Container Platform, it's worth taking a few minutes to understand
@@ -38,49 +40,49 @@ For example, to use OpenShift from the Eclipse IDE, you would want to use the of
 Now that you know how to interact with OpenShift, let's focus on some core concepts that you as a developer
 will need to understand as you are building your applications!
 
+
 ---
 
 #### Setup for Lab Environment
 
-> **NOTE**: `SKIP` this setup guide if you already completed the `Cloud Native Workshop - Module 1`.
+`SKIP this setup guide if you already completed the Cloud Native Workshop - Module 1`
 
-**1. Open the file using Eclipse Che**
+**1. Open the file using CodeReady Workspaces**
 
-Follow these instructions to setup the development environment on Eclipse Che. 
+Follow these instructions to setup the development environment on CodeReady Workspaces. 
 
 You might be familiar with the Eclipse IDE which is one of the most popular IDEs for Java and other
-programming languages. [Eclipse Che](https://www.eclipse.org/che/) is the next-generation Eclipse IDE which is web-based
-and gives you a full-featured IDE running in the cloud. You have an Eclipse Che instance deployed on your OpenShift cluster
+programming languages. [CodeReady Workspaces](https://access.redhat.com/documentation/en-us/red_hat_codeready_workspaces) is the next-generation Eclipse IDE which is web-based and gives you a full-featured IDE running in the cloud. You have an CodeReady Workspaces instance deployed on your OpenShift cluster
 which you will use during these labs.
 
-Go to the [Eclipse Che URL]({{ ECLIPSE_CHE_URL }}) in order to configure your development workspace.
+Go to the [CodeReady Workspaces URL]({{ ECLIPSE_CHE_URL }}) in order to configure your development workspace.
 
 First, you need to register as a user. Register and choose the same username and password as 
 your OpenShift credentials.
 
-![bootstrap-che-register]({% image_path bootstrap-che-register.png %}){:width="700px"}
+![codeready-workspace-register]({% image_path codeready-workspace-register.png %}){:width="700px"}
 
-Log into Eclipse Che with your user. You can now create your workspace based on a stack. A 
+Log into CodeReady Workspaces with your user. You can now create your workspace based on a stack. A 
 stack is a template of workspace configuration. For example, it includes the programming language and tools needed
 in your workspace. Stacks make it possible to recreate identical workspaces with all the tools and needed configuration
 on-demand. 
 
 For this lab, click on the **Java Cloud-Native** stack and then on the **Create** button. 
 
-![bootstrap-che-create-workspace]({% image_path bootstrap-che-create-workspace.png %})
+![codeready-workspace-create-workspace]({% image_path codeready-workspace-create-workspace.png %})
 
 Click on **Open** to open the workspace and then on the **Start** button to start the workspace for use, if it hasn't started automatically.
 
-![bootstrap-che-start-workspace]({% image_path bootstrap-che-start-workspace.png %})
+![codeready-workspace-start-workspace]({% image_path codeready-workspace-start-workspace.png %})
 
 You can click on the left arrow icon to switch to the wide view:
 
-![bootstrap-che-wide]({% image_path bootstrap-che-wide.png %}){:width="600px"}
+![codeready-workspace-wide]({% image_path codeready-workspace-wide.png %}){:width="600px"}
 
 It takes a little while for the workspace to be ready. When it's ready, you will see a fully functional 
-Eclipse Che IDE running in your browser.
+CodeReady Workspaces IDE running in your browser.
 
-![bootstrap-che-workspace]({% image_path bootstrap-che-workspace.png %})
+![codeready-workspace-workspace]({% image_path codeready-workspace-workspace.png %})
 
 Now you can import the project skeletons into your workspace.
 
@@ -89,27 +91,27 @@ In the project explorer pane, click on the **Import Projects...** and enter the 
   * Version Control System: `GIT`
   * URL: `{{GIT_URL}}/userXX/cloud-native-workshop-v2m2-labs.git`
   * Check **Import recursively (for multi-module projects)**
-  * Name: `cloud-native-workshop-module2`
+  * Name: `cloud-native-workshop-v2m2-labs`
 
-![bootstrap-che-import]({% image_path bootstrap-che-import.png %}){:width="700px"}
+![codeready-workspace-import]({% image_path codeready-workspace-import.png %}){:width="700px"}
 
 The projects are imported now into your workspace and is visible in the project explorer.
 
-Eclipse Che is a full featured IDE and provides language specific capabilities for various project types. In order to 
+CodeReady Workspaces is a full featured IDE and provides language specific capabilities for various project types. In order to 
 enable these capabilities, let's convert the imported project skeletons to a Maven projects. In the project explorer, right-click on **monolith** and then click on **Convert to Project**.
 
-![bootstrap-che-convert]({% image_path bootstrap-che-convert.png %}){:width="500px"}
+![codeready-workspace-convert]({% image_path codeready-workspace-convert.png %}){:width="500px"}
 
 Choose **Maven** from the project configurations and then click on **Save**.
 
-![bootstrap-che-maven]({% image_path bootstrap-che-maven.png %}){:width="700px"}
+![codeready-workspace-maven]({% image_path codeready-workspace-maven.png %}){:width="700px"}
 
 Repeat the above for inventory and catalog projects.
 
-> **NOTE**: the **Terminal** window in Eclipse Che. For the rest of these labs, anytime you need to run 
-a command in a terminal, you can use the Eclipse Che **Terminal** window.
+> **NOTE**: the **Terminal** window in CodeReady Workspaces. For the rest of these labs, anytime you need to run 
+a command in a terminal, you can use the CodeReady Workspaces **Terminal** window.
 
-![bootstrap-che-terminal]({% image_path bootstrap-che-terminal.png %})
+![codeready-workspace-terminal]({% image_path codeready-workspace-terminal.png %})
 
 **2. Create the OpenShift project**
 
@@ -145,15 +147,15 @@ This will take you to the project overview. There's nothing there yet, but that'
 
 **3. Deploy the monolith**
 
-We'll use the CLI to deploy the components for our monolith. To deploy the monolith template using the CLI, execute the following commands via Eclipse Che **Terminal** window:
+We'll use the CLI to deploy the components for our monolith. To deploy the monolith template using the CLI, execute the following commands via CodeReady Workspaces **Terminal** window:
 
 Copy login command and Login OpenShift cluster:
 
-![bootstrap-che-copy-login-cmd]({% image_path bootstrap-che-oc-login-copy.png %}){:width="700px"}
+![codeready-workspace-copy-login-cmd]({% image_path codeready-workspace-oc-login-copy.png %}){:width="700px"}
 
-Paste it on Eclipse Che **Terminal** window.
+Paste it on CodeReady Workspaces **Terminal** window.
 
-Switch to the developer project you created earlier via Eclipse Che **Terminal** window:
+Switch to the developer project you created earlier via CodeReady Workspaces **Terminal** window:
 
 `oc project coolstore-dev`
 
@@ -183,7 +185,7 @@ First, build the project once more using the `openshift` Maven profile, which wi
 suitable binary for use with OpenShift (this is not a container image yet, but just the `.war`
 file). We will do this with the `oc` command line.
 
-Build the project via Eclipse Che **Terminal** window:
+Build the project via CodeReady Workspaces **Terminal** window:
 
 ``mvn clean package -Popenshift``
 
@@ -193,7 +195,7 @@ Wait for the build to finish and the `BUILD SUCCESS` message!
 
 And finally, start the build process that will take the `.war` file and combine it with JBoss
 EAP and produce a Linux container image which will be automatically deployed into the project,
-thanks to the *DeploymentConfig* object created from the template via Eclipse Che **Terminal** window:
+thanks to the *DeploymentConfig* object created from the template via CodeReady Workspaces **Terminal** window:
 
 ``oc start-build coolstore --from-file=deployments/ROOT.war``
 
@@ -201,7 +203,7 @@ Check the OpenShift web console and you'll see the application being built:
 
 ![building]({% image_path building.png %}){:width="800px"}
 
-Wait for the build and deploy to complete via Eclipse Che **Terminal** window:
+Wait for the build and deploy to complete via CodeReady Workspaces **Terminal** window:
 
 ``oc rollout status -w dc/coolstore``
 
@@ -379,7 +381,7 @@ etc.
 > **NOTE**: Don't worry about reading and understanding the output of `oc describe`. Just make sure
 the command doesn't report errors!
 
-Run these commands to inspect the elements via Eclipse Che **Terminal** window:
+Run these commands to inspect the elements via CodeReady Workspaces **Terminal** window:
 
 `oc get bc coolstore`
 
@@ -395,7 +397,7 @@ Verify that you can access the monolith by clicking on the
 exposed OpenShift route to open up the sample application in a separate browser tab.
 
 You should also be able to see both the CoolStore monolith and its database
-running in separate pods via Eclipse Che **Terminal** window:
+running in separate pods via CodeReady Workspaces **Terminal** window:
 
 `oc get pods -l application=coolstore`
 
@@ -409,7 +411,7 @@ coolstore-postgresql-1-jpcb8   1/1       Running   0          9m
 
 ##### Verify Database
 
-You can log into the running Postgres container using the following via Eclipse Che **Terminal** window:
+You can log into the running Postgres container using the following via CodeReady Workspaces **Terminal** window:
 
 `oc  rsh dc/coolstore-postgresql`
 
