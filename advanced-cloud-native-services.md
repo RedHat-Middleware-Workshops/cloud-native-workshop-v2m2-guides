@@ -7,9 +7,9 @@ In this lab, you will go deeper into how to use the OpenShift Container Platform
 and deploy applications. We'll focus on the core features of OpenShift as it relates to developers, and
 you'll learn typical workflows for a developer (develop, build, test, deploy, and repeat).
 
----
-
 #### Let's get started
+
+---
 
 If you are not familiar with the OpenShift Container Platform, it's worth taking a few minutes to understand
 the basics of the platform as well as the environment that you will be using for this workshop.
@@ -41,9 +41,9 @@ Now that you know how to interact with OpenShift, let's focus on some core conce
 will need to understand as you are building your applications!
 
 
----
-
 #### Setup for Lab Environment
+
+---
 
 `SKIP this setup guide if you already completed the Cloud Native Workshop - Module 1`
 
@@ -60,7 +60,7 @@ Go to the [CodeReady Workspaces URL]({{ ECLIPSE_CHE_URL }}) in order to configur
 First, you need to register as a user. Register and choose the same username and password as 
 your OpenShift credentials.
 
-![codeready-workspace-register]({% image_path codeready-workspace-register.png %}){:width="700px"}
+![codeready-workspace-register]({% image_path codeready-workspace-register.png %})
 
 Log into CodeReady Workspaces with your user. You can now create your workspace based on a stack. A 
 stack is a template of workspace configuration. For example, it includes the programming language and tools needed
@@ -77,12 +77,12 @@ Click on **Open** to open the workspace and then on the **Start** button to star
 
 You can click on the left arrow icon to switch to the wide view:
 
-![codeready-workspace-wide]({% image_path codeready-workspace-wide.png %}){:width="600px"}
+![codeready-workspace-wide]({% image_path codeready-workspace-wide.png %})
 
 It takes a little while for the workspace to be ready. When it's ready, you will see a fully functional 
 CodeReady Workspaces IDE running in your browser.
 
-![codeready-workspace-workspace]({% image_path codeready-workspace-workspace.png %})
+![codeready-workspace-workspace]({% image_path codeready-workspace.png %})
 
 Now you can import the project skeletons into your workspace.
 
