@@ -3,8 +3,9 @@
 In this lab, you will debug the coolstore application using Java remote debugging and 
 look into line-by-line code execution as the code runs on Quarkus.
 
+####1. Enable Remote Debugging
 
-**1. Enable Remote Debugging**
+---
 
 Remote debugging is a useful debugging technique for application development which allows 
 looking into the code that is being executed somewhere else on a different machine and 
@@ -36,7 +37,9 @@ port open so that you can start debugging remotely.
 
 ![Fabric8 Debug]({% image_path debug-che-quarkus.png %}){:width="900px"}
 
-**2. Remote Debug with CodeReady Workspace**
+####2. Remote Debug with CodeReady Workspace
+
+---
 
 CodeReady Workspace provides a convenience way to remotely connect to Java applications running 
 inside containers and debug while following the code execution in the IDE.
@@ -106,7 +109,7 @@ The product id(**165613**) is a unique value to retrieve certain data from the I
 If you might have unexpected result or errors in development, this debugging feature will help you find 
 the root cause quickly then you will eventually fix the issue.
 
-**3. Resume Debug and Confirm the Result**
+####3. Resume Debug and Confirm the Result
 
 Click on the _Resume_ icon to continue the code execution and then on the stop icon to 
 end the debug session. When you swich to **Terminal-2** window, you will see the result of `curl` command.
@@ -119,4 +122,4 @@ end the debug session. When you swich to **Terminal-2** window, you will see the
 
 > **NOTE**: Make sure to stop Quarkus development mode via `Close` the terminal.
 
-**Congratulations!** for completing this lab.
+#####Congratulations!

@@ -10,8 +10,6 @@ In this step, we are now going to setup a separate production environment and ex
 best practices and techniques for developers and DevOps teams for getting code from
 the developer **(that's YOU!)** to production with less downtime and greater consistency.
 
-
-
 #### Production vs. Development
 
 ---
@@ -45,7 +43,6 @@ This will create a new OpenShift project called `coolstore-prod` from which our 
 
 ![create_dialog]({% image_path create_prod_dialog.png %}){:width="500"}
 
-
 ####2. Add the production elements
 
 ---
@@ -74,9 +71,6 @@ build to run the app previously.
 
 In the next step, we'll _promote_ the app from the _dev_ environment to the _production_
 environment using an OpenShift pipeline build. Let's get going!
-
-
-
 
 #### Promoting Apps Across Environments with Pipelines
 
@@ -123,7 +117,9 @@ _dev_ environment, store the resulting image in the local repository, run the im
 tests against it, then wait for human approval to _promote_ the resulting image to other environments
 like test or production.
 
-**3. Inspect the Pipeline Definition**
+####3. Inspect the Pipeline Definition
+
+---
 
 Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the
 pipeline by navigating **Builds > Pipelines > monolith-pipeline > Configuration** in OpenShift Web Console:
@@ -166,7 +162,9 @@ Once the pipeline completes, it deploys the app from the _dev_ environment to ou
 environment using the above `openshiftTag()` method, which simply re-tags the image you already
 created using a tag which will trigger deployment in the production environment.
 
-**4. Promote the dev image to production using the pipeline**
+####4. Promote the dev image to production using the pipeline
+
+---
 
 You can use the _oc_ command line to invoke the build pipeline, or the Web Console. Let's use the
 Web Console. Open the production project in the web console:
@@ -192,8 +190,8 @@ View the production app **with the blue header from before** is running by click
 
 (it may take a few moments for the container to deploy fully.)
 
-**Congratulations!** You have successfully setup a development and production environment for your project and can
-use this workflow for future projects as well.
+#####Congratulations!
+You have successfully setup a development and production environment for your project and can use this workflow for future projects as well.
 
 In the next step, we'll add a human interaction element to the pipeline, so that you as a project
 lead can be in charge of approving changes.
@@ -203,9 +201,9 @@ lead can be in charge of approving changes.
 * [OpenShift Pipeline Documentation](https://docs.openshift.com/container-platform/3.7/dev_guide/dev_tutorials/openshift_pipeline.html)
 
 
----
-
 #### Adding Pipeline Approval Steps
+
+---
 
 In previous steps, you used an OpenShift Pipeline to automate the process of building and
 deploying changes from the dev environment to production.
@@ -213,7 +211,9 @@ deploying changes from the dev environment to production.
 In this step, we'll add a final checkpoint to the pipeline which will require you as the project
 lead to approve the final push to production.
 
-**5. Edit the pipeline**
+####5. Edit the pipeline
+
+---
 
 Ordinarily your pipeline definition would be checked into a source code management system like Git,
 and to change the pipeline you'd edit the _Jenkinsfile_ in the source base. For this workshop we'll
@@ -246,7 +246,9 @@ Your final pipeline should look like:
 
 Click **Save**.
 
-**6. Make a simple change to the app**
+####6. Make a simple change to the app
+
+---
 
 With the approval step in place, let's simulate a new change from a developer who wants to change
 the color of the header in the coolstore back to the original (black) color.
@@ -290,7 +292,9 @@ While the production application is still black:
 
 We're happy with this change in dev, so let's promote the new change to prod, using the new approval step!
 
-**7. Run the pipeline again**
+####7. Run the pipeline again
+
+---
 
 Invoke the pipeline once more by clicking **Start Pipeline** on the Pipeline Config page at `OpenShift Web Console`.
 
@@ -308,7 +312,9 @@ Accept the browser certificate warning and the Jenkins/OpenShift permissions, an
 
 ![Prod]({% image_path pipe-jenkins-prompt.png %}){:width="800px"}
 
-**8. Approve the change to go live**
+####8. Approve the change to go live
+
+---
 
 Click **Proceed**, which will approve the change to be pushed to production. You could also have
 clicked **Abort** which would stop the pipeline immediately in case the change was unwanted or unapproved.
@@ -325,7 +331,9 @@ Once it completes, verify that the production application has the new change (bl
 
 ![Prod]({% image_path nav-blue.png %}){:width="800px"}
 
-**9. Run the Pipeline on Every Code Change**
+####9. Run the Pipeline on Every Code Change
+
+---
 
 Manually triggering the deployment pipeline to run is useful but the real goes is to be able 
 to build and deploy every change in code or configuration at least to lower environments 
@@ -365,6 +373,8 @@ immediately.
 ![Prod]({% image_path goal.png %}){:width="800px"}
 
 #### Summary
+
+---
 
 In this lab, you learned how to use the OpenShift Container Platform as a developer to build,
 and deploy applications. You also learned how OpenShift makes your life easier as a developer,
