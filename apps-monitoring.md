@@ -238,6 +238,5 @@ Go back to **Jaeger UI** then click on **Find Traces**. You will see dozens of t
 ---
 
 In this lab, you learned how to monior the cloud-nativa application using Jaeger, Prometheus, and Grafana.
-You also learned how Quarkus makes your observation tasks easier as a developer and operator.
-
-You can use these techniques in future projects to observe your distributed cloud-native applications and container platfrom.
+You also learned how Quarkus makes your observation tasks easier as a developer and operator. You can use these techniques 
+in future projects to observe your distributed cloud-native applications and container platfrom.

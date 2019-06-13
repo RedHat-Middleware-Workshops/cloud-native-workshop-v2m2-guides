@@ -10,9 +10,11 @@ In this step, we are now going to setup a separate production environment and ex
 best practices and techniques for developers and DevOps teams for getting code from
 the developer **(that's YOU!)** to production with less downtime and greater consistency.
 
----
+
 
 #### Production vs. Development
+
+---
 
 The existing `coolstore-dev` project is used as a developer environment for building new
 versions of the app after code changes and deploying them to the development environment.
@@ -23,7 +25,9 @@ OpenShift projects and perhaps even different OpenShift clusters.
 For simplicity in this scenario we will only use a _dev_ and _prod_ environment, and no test/QA
 environment.
 
-**1. Create the production environment**
+####1. Create the production environment
+
+---
 
 We will create and initialize the new production environment using another template
 in a separate OpenShift project.
@@ -41,7 +45,10 @@ This will create a new OpenShift project called `coolstore-prod` from which our 
 
 ![create_dialog]({% image_path create_prod_dialog.png %}){:width="500"}
 
-**2. Add the production elements**
+
+####2. Add the production elements
+
+---
 
 In this case we'll use the production template to create the objects. Execute via Eclipse Che **Terminal** window:
 
@@ -67,6 +74,9 @@ build to run the app previously.
 
 In the next step, we'll _promote_ the app from the _dev_ environment to the _production_
 environment using an OpenShift pipeline build. Let's get going!
+
+
+
 
 #### Promoting Apps Across Environments with Pipelines
 

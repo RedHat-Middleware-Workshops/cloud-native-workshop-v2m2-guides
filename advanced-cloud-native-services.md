@@ -47,7 +47,9 @@ will need to understand as you are building your applications!
 
 `SKIP this setup guide if you already completed the Cloud Native Workshop - Module 1`
 
-**1. Open the file using CodeReady Workspaces**
+####1. Open the file using CodeReady Workspaces
+
+---
 
 Follow these instructions to setup the development environment on CodeReady Workspaces. 
 
@@ -113,7 +115,9 @@ a command in a terminal, you can use the CodeReady Workspaces **Terminal** windo
 
 ![codeready-workspace-terminal]({% image_path codeready-workspace-terminal.png %})
 
-**2. Create the OpenShift project**
+####2. Create the OpenShift project
+
+---
 
 First, open a new brower with the `OpenShift Web Console`
 
@@ -145,7 +149,9 @@ Click on the name of the newly-created project:
 
 This will take you to the project overview. There's nothing there yet, but that's about to change.
 
-**3. Deploy the monolith**
+####3. Deploy the monolith
+
+---
 
 We'll use the CLI to deploy the components for our monolith. To deploy the monolith template using the CLI, execute the following commands via CodeReady Workspaces **Terminal** window:
 
@@ -173,7 +179,9 @@ You can see the components being deployed on the
 Project Overview, but notice the **No deployments for Coolstore**. You have not yet deployed
 the container image built in previous steps, but you'll do that next.
 
-**4. Deploy application using Binary build**
+####4. Deploy application using Binary build
+
+---
 
 In this development project we have selected to use a process called binary builds, which
 means that instead of pointing to a public Git Repository and have the S2I (Source-to-Image) build process
@@ -224,14 +232,16 @@ which will open the monolith Coolstore in your browser, this time running on Ope
 
 ![route_link]({% image_path route_link.png %}){:width="800px"}
 
-**Congratulations!** Now you're ready to create the pipeline for the next CI/CD labs on OpenShift.
+#####Congratulations!
+
+Now you're ready to create the pipeline for the next CI/CD labs on OpenShift.
 
 ![coolstore_web]({% image_path coolstore_web.png %})
 
 
----
-
 #### Developer Concepts
+
+---
 
 There are several concepts in OpenShift useful for developers, and in this workshop
 you should be familiar with them.
@@ -345,9 +355,9 @@ environment as well.
 Consult the [OpenShift documentation](https://docs.openshift.com) for more details on these and other concepts.
 
 
----
+####5. Verifying the Dev Environment
 
-#### Verifying the Dev Environment
+---
 
 In the previous step or module 1 workshop, you created a new OpenShift project called `coolstore-dev` which represents
 your developer personal project in which you deployed the CoolStore monolith.
@@ -409,7 +419,9 @@ coolstore-2-bpkkc              1/1       Running   0          4m
 coolstore-postgresql-1-jpcb8   1/1       Running   0          9m
 ```
 
-##### Verify Database
+####6. Verify Database
+
+---
 
 You can log into the running Postgres container using the following via CodeReady Workspaces **Terminal** window:
 
