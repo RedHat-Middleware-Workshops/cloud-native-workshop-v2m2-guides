@@ -9,4 +9,4 @@ modules:
   debugging-apps:
     name: Debugging Applications
   apps-monitoring:
-    name: Application Performance Monitoring
+    name: Application Monitoring
