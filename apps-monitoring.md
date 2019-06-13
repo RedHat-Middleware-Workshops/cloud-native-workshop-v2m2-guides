@@ -30,6 +30,8 @@ Also, Prometheus is an open source systems monitoring and alerting tool that fit
 
 ####1. Create OpenShift Project
 
+---
+
 In this step, we will deploy our new monitoring tools for our CoolStore application,
 so create a separate project to house it and keep it separate from our monolith and our other microservices we already
 created previously.
@@ -51,6 +53,8 @@ Click on the name of the newly-created project:
 This will take you to the project overview. There's nothing there yet, but that's about to change.
 
 ####2. Deploy Jaeger to OpenShift
+
+---
 
 This template uses an in-memory storage with a limited functionality for local testing and development. 
 Do not use this template in production environments, although there are a number of parameters in the template to 
@@ -74,6 +78,8 @@ When you navigate the **overview** page in OpenShift console, you will see as be
 
 ####3. Exposing Jaeger-Collector
 
+---
+
 **Collector** is by default accessible only to services running inside the cluster. The easiest approach to expose the collector outside of 
 the cluster is via the `jaeger-collector-http` HTTP port using an **OpenShift Route** via CodeReady Workspace **Terminal**:
 
@@ -84,6 +90,8 @@ This allows clients to send data directly to Collector via HTTP senders. If you 
 > **NOTE:** Using Collector will open the collector to be used by any external party, who will then be able to create arbitrary spans. It's advisable to put an OAuth Security Proxy in front of the collector and expose this proxy instead.
 
 ####4. Observe Jaeger UI
+
+---
 
 Once you deployed Jaeger to OpenShift, you will see the route that generated automatically.
 
@@ -96,6 +104,8 @@ Click on the route URL(i.e. https://jaeger-query-monitoring.apps.seoul-7b68.open
 Don't worry! We will utilize tracing data later.
 
 ####5. Utilizing Opentracing with Quarkus
+
+---
 
 We have a catalog service on Spring Boot that calls inventory service on Quarkus as the cloud-native application. These applications would be 
 better to trace using Jaeger rather than monolith coolstore for considering distributed networking system.
@@ -114,6 +124,8 @@ If builds successfully (you will see `BUILD SUCCESS`), you will see `smallrye-op
 ![jaeger_add_extension]({% image_path jaeger-extension.png %})
 
 ####6. Create the configuration
+
+---
 
 Before getting started with this step, confirm your **route URL of Jaeger** and we will use the following step to create the tracing configuration.
 You can find out the URL in OpenShift Console or use the `oc` command as here:
@@ -153,6 +165,8 @@ Currently the tracer can only be configured to report spans directly to the coll
 
 ####7. Re-Deploy to OpenShift
 
+---
+
 > **NOTE**: Be sure to rollback Postgres database configuration as defined in `src/main/resources/application.properties`:
  
 ~~~java
@@ -182,6 +196,8 @@ And wait for the result as below:
 `replication controller "inventory-quarkus-XX" successfully rolled out`
 
 ####8. Observing Jaeger Tracing
+
+---
 
 In order to trace networking and data transaction, we will call the Inventory service via `curl` commands via CodeReady Workspaces **Terminal**:
 
@@ -218,6 +234,8 @@ Go back to **Jaeger UI** then click on **Find Traces**. You will see dozens of t
 ![jaeger_ui]({% image_path jaeger-traces.png %})
 
 #### Summary
+
+---
 
 In this lab, you learned how to monior the cloud-nativa application using Jaeger, Prometheus, and Grafana.
 You also learned how Quarkus makes your observation tasks easier as a developer and operator.
