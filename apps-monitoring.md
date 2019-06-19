@@ -347,11 +347,11 @@ Click on **Save & Test** then you will see the **Data source is working** messag
 
 ![Grafana]({% image_path granfan-setting.png %})
 
-###11. Utilize Metrics specification on Apps
+###11. Utilize metrics specification for Inverntory(Quarkus)
 
 ---
 
-In this lab, we will learn how **Inventory(Quarkus)** application can utilize the MicroProfile Metrics specification through the **SmallRye Metrics extension**.
+In this step, we will learn how **Inventory(Quarkus)** application can utilize the MicroProfile Metrics specification through the **SmallRye Metrics extension**.
 **MicroProfile Metrics** allows applications to gather various metrics and statistics that provide insights into what is happening inside the application.
 
 The metrics can be read remotely using JSON format or the **OpenMetrics** format, so that they can be processed by additional tools such as **Prometheus**, 
@@ -414,7 +414,6 @@ Repackage the inventory application via clicking on `Package for OpenShift` in `
 
 ![codeready-workspace-maven]({% image_path quarkus-dev-run-packageforOcp.png %})
 
-
 Or you can run a maven plugin command directly in **Terminal**:
 
 `mvn clean package -DskipTests`
@@ -431,15 +430,95 @@ Finally, make sure it's actually done rolling out:
 
 `oc rollout status -w dc/inventory-quarkus -n userxx-inventory`
 
+Go to the **USERXX CoolStore Inventory Microservice Application** project in OpenShift Web Console and then on the left sidebar, **Resources >> Config Maps**. 
+
+![prometheus]({% image_path prometheus-quarkus-configmap.png %})
+
+Click on **Create Config Maps** button to create a config map with the following info:
+
+ * Name: `prometheus-config`
+ * Key: `prometheus.yml`
+ * Value: *copy-paste the below content*
+
+> You need to replace **targets** URL align with the route URL in your environment.
+
+ ~~~yaml
+# my global config
+global:
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+    - targets: ['prometheus-userXX-monitoring.apps.seoul-7b68.openshiftworkshop.com']
+  
+  - job_name: 'quarkus'
+    metrics_path: '/metrics/application'
+
+    static_configs:
+    - targets:  [inventory-quarkus-userXX-inventory.apps.seoul-7b68.openshiftworkshop.com']
+ ~~~
+ 
+![prometheus]({% image_path prometheus-quarkus-configmap-detail.png %})
+
+Config maps hold key-value pairs and in the above command an **prometheus-config** config map 
+is created with **prometheus.yml** as the key and the above content as the value. Whenever a config map is injected into a container, 
+it would appear as a file with the same name as the key, at specified path on the filesystem.
+
+You can see the content of the config map in the OpenShift Web Console or by 
+using `oc describe cm prometheus-config -n userXX-monitoring` command via CodeReady Workspace **Terminal**.
+
+Modify the **Prometheus deployment config** so that it injects the **prometheus.yml** configuration you just created as 
+a config map into the Prometheus container. Go to **Application > Deployments** in **USERXX Coolstore App Monitoring Tools** project overview 
+and click on **prometheus** deployment:
+
+![prometheus]({% image_path prometheus-dc.png %})
+
+Move to **Configuration** tab menu and click on **Add Config Files**:
+
+![prometheus]({% image_path prometheus-configuration-tab.png %})
+
+Input the following variables in **Add Config Files to prometheus** and click on **Add**:
+
+ * Source: _prometheus-config_
+ * Mount Path: _/etc/prometheus_
+
+![prometheus]({% image_path prometheus-add-config.png %})
+
+You can also use **oc set volume** command for this:
+
+`oc set volume dc/prometheus --add --configmap-name=prometheus-config --mount-path=/etc/prometheus -n userxx-monitoring`
+
 ###13. Generate some values for the metrics
 
 ---
 
 Open a web browser to access the route URL(i.e. http://inventory-quarkus-user1-inventory.apps.seoul-7b68.openshiftworkshop.com/services/inventory) for invoking **getAll()** method in Inventory service. 
 
-Next, call **getAvailability(@PathParam String itemId)** method as well via the following **CURL** command:
+Next, call **getAvailability(@PathParam String itemId)** method as well via the following **CURL** command with your Inventory's route URL: 
 
-`for i in {1..50}; do curl http://inventory-quarkus-user1-inventory.apps.seoul-7b68.openshiftworkshop.com/services/inventory/329199 ; date ; sleep 1; done`
+`for i in {1..50}; do curl http://inventory-quarkus-userXX-inventory.apps.seoul-7b68.openshiftworkshop.com/services/inventory/329199 ; date ; sleep 1; done`
 
 Let's review the generated metrics. We have 3 ways to view the metircs such as **1)using CURL**, **2)using Prometheus Web UI**, and **3)using Grafana Dashboards**.
 
@@ -486,7 +565,8 @@ Let's review the generated metrics. We have 3 ways to view the metircs such as *
 }
 ~~~
 
-**2)** Open the Prometheus Web UI via a web brower and input(or select) `scrape_duration_seconds` in query box. Click on **Execute** then you will see the metrics:
+**2)** Open the Prometheus Web UI via a web brower and input(or select) `scrape_duration_seconds` in query box. 
+Click on **Execute** then you will see **quarkus job** in the metrics:
 
 ![metrics_prometheus]({% image_path prometheus-metrics-console.png %})
 
@@ -502,14 +582,183 @@ Click on **New dashboard** then select **Add Query** in a new panel:
 
 ![metrics_grafana]({% image_path grafana-add-query.png %}) 
 
-Add `scrape_duration_seconds` in query box:
+Add **scrape_duration_seconds** in query box:
 
 ![metrics_grafana]({% image_path grafana-add-query-detail.png %}) 
 
-Click on **Query Inspector** then you will see the metrics and change **5s** to refresh dashboard:
+Click on **Query Inspector** then you will see **inventory-quarkus metrics** and change **5s** to refresh dashboard:
 
 ![metrics_grafana]({% image_path grafana-add-query-complete.png %}) 
 
+###14. Utilize metrics specification for Catalog(Spring Boot)
+
+---
+
+In this step, we will learn how to export metrics to **Prometheus** from **Spring Boot** application by 
+using the [Prometheus JVM Client](https://github.com/prometheus/client_java).
+
+Go to **Inventory** project directory and open **pom.xml** to add the following **Prometheus dependencies**:
+
+~~~xml
+<!-- Prometheus dependency  -->
+<dependency>
+    <groupId>io.prometheus</groupId>
+    <artifactId>simpleclient_spring_boot</artifactId>
+    <version>0.6.0</version>
+</dependency>
+
+<dependency>
+    <groupId>io.prometheus</groupId>
+    <artifactId>simpleclient_hotspot</artifactId>
+    <version>0.6.0</version>
+</dependency>
+
+<dependency>
+    <groupId>io.prometheus</groupId>
+    <artifactId>simpleclient_servlet</artifactId>
+    <version>0.6.0</version>
+</dependency>
+~~~
+
+![metrics_grafana]({% image_path catalog-prometheus-dependency.png %}) 
+
+Next, create **MonitoringConfig.java** class in `src/main/java/com/redhat/coolstore/` and copy the following codes into **MonitoringConfig.java** file:
+
+~~~java
+package com.redhat.coolstore;
+
+import io.prometheus.client.exporter.MetricsServlet;
+import io.prometheus.client.hotspot.DefaultExports;
+import io.prometheus.client.spring.boot.SpringBootMetricsCollector;
+import org.springframework.boot.actuate.endpoint.PublicMetrics;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.Collection;
+
+@Configuration
+class MonitoringConfig {
+
+    @Bean
+    SpringBootMetricsCollector springBootMetricsCollector(Collection<PublicMetrics> publicMetrics) {
+
+        SpringBootMetricsCollector springBootMetricsCollector = new SpringBootMetricsCollector(publicMetrics);
+        springBootMetricsCollector.register();
+
+        return springBootMetricsCollector;
+    }
+
+    @Bean
+    ServletRegistrationBean servletRegistrationBean() {
+        DefaultExports.initialize();
+        return new ServletRegistrationBean(new MetricsServlet(), "/prometheus");
+    }
+}
+~~~
+
+####15. Re-Build and Re-Deploy to OpenShift
+
+---
+
+Build and deploy the Catalog project using the following command, which will use the maven plugin to deploy via CodeReady Workspace **Terminal**:
+
+`mvn package fabric8:deploy -Popenshift -DskipTests`
+
+The build and deploy may take a minute or two. Wait for it to complete. You should see a **BUILD SUCCESS** at the
+end of the build output.
+
+After the maven build finishes it will take less than a minute for the application to become available.
+To verify that everything is started, run the following command and wait for it complete successfully:
+
+![catalog_deploy_success]({% image_path catalog_deploy_success.png %})
+
+You can also check if the deployment is complete via CodeReady Workspace **Terminal**:
+
+`oc rollout status -w dc/catalog -n userXX-catalog`
+
+Let's **collect metrics**. Open a web browser with the following URL after replacing with your **Catalog route URL**:
+
+`http://catalog-userXX-catalog.apps.seoul-7b68.openshiftworkshop.com/prometheus`
+
+You will see a similar output as here:
+~~~html
+# HELP jvm_gc_collection_seconds Time spent in a given JVM garbage collector in seconds.
+# TYPE jvm_gc_collection_seconds summary
+jvm_gc_collection_seconds_count{gc="PS Scavenge",} 52.0
+jvm_gc_collection_seconds_sum{gc="PS Scavenge",} 1.147
+jvm_gc_collection_seconds_count{gc="PS MarkSweep",} 2.0
+jvm_gc_collection_seconds_sum{gc="PS MarkSweep",} 0.504
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 26.38
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds 1.560957605855E9
+# HELP process_open_fds Number of open file descriptors.
+# TYPE process_open_fds gauge
+process_open_fds 47.0
+# HELP process_max_fds Maximum number of open file descriptors.
+# TYPE process_max_fds gauge
+process_max_fds 1048576.0
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 4.748623872E9
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 2.91467264E8
+# HELP jvm_memory_pool_allocated_bytes_total Total bytes allocated in a given JVM memory pool. Only updated after GC, not continuously.
+# TYPE jvm_memory_pool_allocated_bytes_total counter
+jvm_memory_pool_allocated_bytes_total{pool="Code Cache",} 1.84624E7
+jvm_memory_pool_allocated_bytes_total{pool="PS Eden Space",} 2.070413312E9
+jvm_memory_pool_allocated_bytes_total{pool="PS Old Gen",} 4.1407848E7
+jvm_memory_pool_allocated_bytes_total{pool="PS Survivor Space",} 5595280.0
+jvm_memory_pool_allocated_bytes_total{pool="Compressed Class Space",} 7020064.0
+jvm_memory_pool_allocated_bytes_total{pool="Metaspace",} 5.8175456E7
+# HELP jvm_classes_loaded The number of classes that are currently loaded in the JVM
+# TYPE jvm_classes_loaded gauge
+jvm_classes_loaded 10770.0
+# HELP jvm_classes_loaded_total The total number of classes that have been loaded since the JVM has started execution
+# TYPE jvm_classes_loaded_total counter
+jvm_classes_loaded_total 10770.0
+...
+~~~
+
+####16. Add Catalog(Spring Boot) Job
+
+---
+
+Edit **prometheus-config** configmap in **USER XX CoolStore App Monitoring Tools** project with the following contents:
+
+~~~yaml
+  - job_name: 'spring-boot'
+    metrics_path: '/prometheus'
+
+    static_configs:
+    - targets:  ['catalog-userXX-catalog.apps.seoul-7b68.openshiftworkshop.com']
+~~~
+
+Click on "Save".
+
+![prometheus]({% image_path prometheus-quarkus-configmap-detail-sb.png %})
+
+####17. Observing metrics in Prometheus and Grafana
+
+---
+
+**1)** Open the Prometheus Web UI via a web brower and input(or select) `scrape_duration_seconds` in query box. 
+Click on **Execute** then you will see **quarkus job** in the metrics:
+
+![metrics_prometheus]({% image_path prometheus-metrics-console-final.png %})
+
+Switch to **Graph** tab:
+
+![metrics_prometheus]({% image_path prometheus-metrics-graph-final.png %})
+
+**2)** Open the Grafana Web UI via a web brower and click on **Query Inspector** then you will see 
+**inventory-quarkus** and **catalog-sprinb-boot** metrics:
+
+![metrics_grafana]({% image_path grafana-add-query-complete.png %}) 
 
 #### Summary
 
