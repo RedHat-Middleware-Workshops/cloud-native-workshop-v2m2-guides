@@ -35,7 +35,7 @@ You are all set now to start debugging using the tools of you choice.
 Do not wait for the command to return! The fabric8 maven plugin keeps the forwarded 
 port open so that you can start debugging remotely.
 
-![Fabric8 Debug]({% image_path debug-che-quarkus.png %}){:width="900px"}
+![Fabric8 Debug]({% image_path debug-che-quarkus.png %})
 
 ####2. Remote Debug with CodeReady Workspace
 
@@ -46,7 +46,7 @@ inside containers and debug while following the code execution in the IDE.
 
 From the **Run** menu, click on **Edit Debug Configurations...**.
 
-![Remote Debug]({% image_path debug-che-debug-config-1.png %}){:width="600px"}
+![Remote Debug]({% image_path debug-che-debug-config-1.png %})
 
 The window shows the debuggers available in CodeReady Workspace. Click on the plus sign near the 
 Java debugger.
@@ -72,14 +72,14 @@ on the editor sidebar on the line number of the first line of the `getAvailabili
 method to add a breakpoint to that line. A start appears near the line to show a breakpoint 
 is set.
 
-![Add Breakpoint]({% image_path debug-che-breakpoint.png %}){:width="600px"}
+![Add Breakpoint]({% image_path debug-che-breakpoint.png %})
 
 Open a new **Terminal** window and use `curl` to invoke the Inventory API with the 
 suspect product id in order to pause the code execution at the defined breakpoint.
 
 Note that you can use the the following icons to switch between debug and terminal windows.
 
-![Icons]({% image_path debug-che-window-guide.png %}){:width="700px"}
+![Icons]({% image_path debug-che-window-guide.png %})
 
 Invoke the endpoint URL of the Inventory service using `curl` command:
 
@@ -88,20 +88,21 @@ Invoke the endpoint URL of the Inventory service using `curl` command:
 Switch back to the debug panel and notice that the code execution is paused at the 
 breakpoint on `InventoryResource` class.
 
-![Icons]({% image_path debug-che-breakpoint-stop.png %}){:width="900px"}
+![Icons]({% image_path debug-che-breakpoint-stop.png %})
 
 Click on the _Step Over_ icon to execute one line and retrieve the inventory object for the 
 given product id from the database.
 
-![Step Over]({% image_path debug-che-step-over.png %}){:width="340px"}
+![Step Over]({% image_path debug-che-step-over.png %}){:width="500px"}
 
 Click on the the plus icon in the **Variables** panel to add the `inventory` variable 
-to the list of watch variables. This would allow you to see the value of `inventory` variable 
-during execution.
+to the list of watch variables.
 
-![Watch Variables]({% image_path debug-che-variables.png %}){:width="500px"}
+![Debug]({% image_path debug-che-breakpoint-values.png %})
 
-![Debug]({% image_path debug-che-breakpoint-values.png %}){:width="900px"}
+This would allow you to see the value of `inventory` variable during execution.
+
+![Watch Variables]({% image_path debug-che-variables.png %})
 
 Look at the **Variables** window. The retrieved inventory object is `serialPersistentFields`!
 

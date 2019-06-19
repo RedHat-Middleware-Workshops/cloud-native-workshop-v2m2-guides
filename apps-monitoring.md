@@ -101,7 +101,7 @@ Click on the route URL(i.e. https://jaeger-query-monitoring.apps.seoul-7b68.open
 
 ![jaeger_ui]({% image_path jaeger-ui.png %})
 
-Don't worry! We will utilize tracing data later.
+> Don't worry! We will utilize tracing data later.
 
 ####5. Utilizing Opentracing with Inventory(Quarkus)
 
@@ -113,7 +113,7 @@ better to trace using Jaeger rather than monolith coolstore for considering dist
 In this step, we will add Qurakus extensions to the Inventory application for using `smallrye-opentracing` and we'll use the Quarkus Maven Plugin.
 Copy the following commands to add the tracing extension via CodeReady Workspaces **Terminal**:
 
-Go to `inventory' directory:
+Go to **inventory** directory:
 
 `mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-opentracing"`
 
@@ -268,7 +268,7 @@ Next, you need to click on **Actions > Create Route**:
 
  Click on **Create** with keeping all default variables:
 
-![Prometheus]({% image_path prometheus-route-detail.png %}){:width="800px"}
+![Prometheus]({% image_path prometheus-route-detail.png %})
 
 Now, you have the route URL(i.e. `http://prometheus-user1-monitoring.apps.seoul-7b68.openshiftworkshop.com`) and click on the URL to make sure if you can access the Prometheus web UI:
 
@@ -298,15 +298,16 @@ Next, you need to click on **Actions > Create Route**:
 
  Click on **Create** with keeping all default variables:
 
-![Grafana]({% image_path grafana-route-detail.png %}){:width="800px"}
+![Grafana]({% image_path grafana-route-detail.png %})
 
-Now, you have the route URL(i.e. `http://grafana-user1-monitoring.apps.seoul-7b68.openshiftworkshop.com`) and click on the URL to make sure if you can access the Prometheus web UI:
+Now, you have the route URL(i.e. `http://grafana-user1-monitoring.apps.seoul-7b68.openshiftworkshop.com`) and 
+click on the URL to make sure if you can access the Grafana web UI.
 
 ![Grafana]({% image_path grafana-route-link.png %})
 
 You will see the landing page of Prometheus as shown:
 
-![Grafana]({% image_path grafana-login.png %}){:width="800px"}
+![Grafana]({% image_path grafana-login.png %})
 
 Log in Grafana web UI using the following variables:
 
@@ -315,7 +316,7 @@ Log in Grafana web UI using the following variables:
 
 Skip the **Change Password".
 
-![Grafana]({% image_path grafana-skip-changepwd.png %}){:width="800px"}
+![Grafana]({% image_path grafana-skip-changepwd.png %})
 
 You will see the landing page of Grafana as shown:
 
@@ -359,7 +360,7 @@ and stored for analysis and visualisation.
 We will add Qurakus extensions to the Inventory application for using `smallrye-metrics` and we'll use the Quarkus Maven Plugin.
 Copy the following commands to add the smallrye-metricsextension via CodeReady Workspaces **Terminal**:
 
-Go to `inventory' directory:
+Go to **inventory** directory:
 
 `mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-metrics"`
 
@@ -442,7 +443,7 @@ Next, call **getAvailability(@PathParam String itemId)** method as well via the 
 
 Let's review the generated metrics. We have 3 ways to view the metircs such as **1)using CURL**, **2)using Prometheus Web UI**, and **3)using Grafana Dashboards**.
 
-1) Execute `curl -H"Accept: application/json" inventory-quarkus-user1-inventory.apps.seoul-7b68.openshiftworkshop.com/metrics/application` via CodeReady Workspace Terminal. You should use your own route URL of the Inventory service abd You will receive a similar response as here:
+**1)** Execute `curl -H"Accept: application/json" inventory-quarkus-user1-inventory.apps.seoul-7b68.openshiftworkshop.com/metrics/application` via CodeReady Workspace Terminal. You should use your own route URL of the Inventory service abd You will receive a similar response as here:
 
 ~~~shell
 {
@@ -485,7 +486,7 @@ Let's review the generated metrics. We have 3 ways to view the metircs such as *
 }
 ~~~
 
-2) Open the Prometheus Web UI via a web brower and input(or select) `scrape_duration_seconds` in query box. Click on **Execute** then you will see the metrics:
+**2)** Open the Prometheus Web UI via a web brower and input(or select) `scrape_duration_seconds` in query box. Click on **Execute** then you will see the metrics:
 
 ![metrics_prometheus]({% image_path prometheus-metrics-console.png %})
 
@@ -493,7 +494,7 @@ Switch to **Graph** tab:
 
 ![metrics_prometheus]({% image_path prometheus-metrics-graph.png %})
 
-3) Open the Grafana Web UI via a web brower and create a new **Dashboard** to review the metrics.
+**3)** Open the Grafana Web UI via a web brower and create a new **Dashboard** to review the metrics.
 
 ![metrics_grafana]({% image_path grafana-create-dashboard.png %})
 
@@ -507,7 +508,7 @@ Add `scrape_duration_seconds` in query box:
 
 Click on **Query Inspector** then you will see the metrics and change **5s** to refresh dashboard:
 
-![metrics_grafana]({% image_path grafana-add-complete.png %}) 
+![metrics_grafana]({% image_path grafana-add-query-complete.png %}) 
 
 
 #### Summary

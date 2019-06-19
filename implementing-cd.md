@@ -184,12 +184,12 @@ Let's invoke the build pipeline by using OpenShift Web Console. Open the product
 
 Next, navigate to _Builds -> Pipelines_ and click __Start Pipeline__ next to the `coolstore-monolith` pipeline:
 
-![Prod]({% image_path pipe-start.png %}){:width="800px"}
+![Prod]({% image_path pipe-start.png %})
 
 This will start the pipeline. **It will take a minute or two to start the pipeline** (future runs will not
 take as much time as the Jenkins infrastructure will already be warmed up). You can watch the progress of the pipeline:
 
-![Prod]({% image_path pipe-prog.png %}){:width="800px"}
+![Prod]({% image_path pipe-prog.png %})
 
 Once the pipeline completes, return to the Prod Project Overview at `OpenShift Web Console`
 
@@ -340,7 +340,7 @@ Once it completes, verify that the production application has the new change (bl
 
 * Coolstore - Prod at 
 
-![Prod]({% image_path nav-blue.png %}){:width="800px"}
+![Prod]({% image_path nav-blue.png %})
 
 ####9. Run the Pipeline on Every Code Change
 
