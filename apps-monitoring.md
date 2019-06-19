@@ -442,7 +442,7 @@ Click on **Create Config Maps** button to create a config map with the following
 
 > You need to replace **targets** URL align with the route URL in your environment.
 
- ~~~yaml
+ ~~~java
 # my global config
 global:
   scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
@@ -682,7 +682,8 @@ Let's **collect metrics**. Open a web browser with the following URL after repla
 `http://catalog-userXX-catalog.apps.seoul-7b68.openshiftworkshop.com/prometheus`
 
 You will see a similar output as here:
-~~~html
+
+~~~shell
 # HELP jvm_gc_collection_seconds Time spent in a given JVM garbage collector in seconds.
 # TYPE jvm_gc_collection_seconds summary
 jvm_gc_collection_seconds_count{gc="PS Scavenge",} 52.0
@@ -730,7 +731,7 @@ jvm_classes_loaded_total 10770.0
 
 Edit **prometheus-config** configmap in **USER XX CoolStore App Monitoring Tools** project with the following contents:
 
-~~~yaml
+~~~java
   - job_name: 'spring-boot'
     metrics_path: '/prometheus'
 
