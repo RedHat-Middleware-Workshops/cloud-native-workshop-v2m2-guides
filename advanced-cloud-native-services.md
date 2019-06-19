@@ -134,8 +134,8 @@ You will see the OpenShift landing page:
 
 Click **Create Project**, fill in the fields, and click **Create**:
 
-* Name: `coolstore-dev`
-* Display Name: `Coolstore Monolith - Dev`
+* Name: `userXX-coolstore-dev`
+* Display Name: `USERXX Coolstore Monolith - Dev`
 * Description: _leave this field empty_
 
 > **NOTE**: YOU **MUST** USE `coolstore-dev` AS THE PROJECT NAME, as this name is referenced later
@@ -163,7 +163,7 @@ Paste it on CodeReady Workspaces **Terminal** window.
 
 Switch to the developer project you created earlier via CodeReady Workspaces **Terminal** window:
 
-`oc project coolstore-dev`
+`oc project userXX-coolstore-dev`
 
 And finally deploy template:
 
@@ -359,7 +359,7 @@ Consult the [OpenShift documentation](https://docs.openshift.com) for more detai
 
 ---
 
-In the previous step or module 1 workshop, you created a new OpenShift project called `coolstore-dev` which represents
+In the previous step or module 1 workshop, you created a new OpenShift project called `userXX-coolstore-dev` which represents
 your developer personal project in which you deployed the CoolStore monolith.
 
 ##### Verify Application
@@ -413,11 +413,11 @@ running in separate pods via CodeReady Workspaces **Terminal** window:
 
 The output should look like this:
 
-```
+~~~shell
 NAME                           READY     STATUS    RESTARTS   AGE
 coolstore-2-bpkkc              1/1       Running   0          4m
 coolstore-postgresql-1-jpcb8   1/1       Running   0          9m
-```
+~~~
 
 ####6. Verify Database
 

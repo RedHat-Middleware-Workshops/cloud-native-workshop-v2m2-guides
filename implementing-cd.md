@@ -1,7 +1,7 @@
 ## Lab1 - Automating Deployments Using Pipelines
 
 In the previous scenarios, you deployed the Coolstore monolith using an
-OpenShift Template into the `coolstore-dev` Project. The template
+OpenShift Template into the `userXX-coolstore-dev` Project. The template
 created the necessary objects (BuildConfig, DeploymentConfig, ImageStreams, Services, and Routes)
 and gave you as a Developer a "playground" in which to run the app, make
 changes and debug.
@@ -14,7 +14,7 @@ the developer **(that's YOU!)** to production with less downtime and greater con
 
 ---
 
-The existing `coolstore-dev` project is used as a developer environment for building new
+The existing `userXX-coolstore-dev` project is used as a developer environment for building new
 versions of the app after code changes and deploying them to the development environment.
 
 In a real project on OpenShift, _dev_, _test_ and _production_ environments would typically use different
@@ -32,14 +32,14 @@ in a separate OpenShift project.
 
 In OpenShift web console, click **Create Project**, fill in the fields, and click **Create**:
 
-* Name: `coolstore-prod`
-* Display Name: `Coolstore Monolith - Production`
+* Name: `userXX-coolstore-prod`
+* Display Name: `USERXX Coolstore Monolith - Production`
 * Description: _leave this field empty_
 
-> **NOTE**: YOU **MUST** USE `coolstore-prod` AS THE PROJECT NAME, as this name is referenced later
-on and you will experience failures if you do not name it `coolstore-prod`!
+> **NOTE**: YOU **MUST** USE `userXX-coolstore-prod` AS THE PROJECT NAME, as this name is referenced later
+on and you will experience failures if you do not name it `userXX-coolstore-prod`!
 
-This will create a new OpenShift project called `coolstore-prod` from which our production application will run.
+This will create a new OpenShift project called `userXX-coolstore-prod` from which our production application will run.
 
 ![create_dialog]({% image_path create_prod_dialog.png %}){:width="500"}
 
@@ -47,9 +47,9 @@ This will create a new OpenShift project called `coolstore-prod` from which our 
 
 ---
 
-In this case we'll use the production template to create the objects. Execute via Eclipse Che **Terminal** window:
+In this case we'll use the production template to create the objects. Execute via CodeReady Workspace **Terminal** window:
 
-`oc project coolstore-prod`
+`oc project userXX-coolstore-prod`
 
 And finally deploy template:
 
@@ -126,13 +126,13 @@ pipeline by navigating **Builds > Pipelines > monolith-pipeline > Configuration*
 
 ![monolith-pipeline]({% image_path coolstore-prod-monolith-pipeline.png %})
 
-You can also inspect this via the following command via Eclipse Che **Terminal** window:
+You can also inspect this via the following command via CodeReady Workspace **Terminal** window:
 
 `oc describe bc/monolith-pipeline`
 
 You can see the Jenkinsfile definition of the pipeline in the output:
 
-~~~
+~~~shell
 Jenkinsfile contents:
   node ('maven') {
     stage 'Build'
@@ -142,13 +142,16 @@ Jenkinsfile contents:
     sleep 10
 
     stage 'Deploy to PROD'
-    openshiftTag(sourceStream: 'coolstore', sourceTag: 'latest', namespace: 'coolstore-dev', destinationStream: 'coolstore', destinationTag: 'prod', destinationNamespace: 'coolstore-prod')
+    openshiftTag(sourceStream: 'coolstore', sourceTag: 'latest', namespace: 'userXX-coolstore-dev', destinationStream: 'coolstore', destinationTag: 'prod', destinationNamespace: 'userXX-coolstore-prod')
     sleep 10
 
     stage 'Run Tests in PROD'
     sleep 30
   }
 ~~~
+
+> **NOTE:** You have to replace your username with `userXX` in Jenkinsfile via clicking on **Actions > Edit** menu. 
+For example, if your username is **user1**, it will be **user1-coolstore-dev** and **user1-coolstore-prod**.
 
 Pipeline syntax allows creating complex deployment scenarios with the possibility of defining
 checkpoint for manual interaction and approval process using
@@ -166,8 +169,16 @@ created using a tag which will trigger deployment in the production environment.
 
 ---
 
-You can use the _oc_ command line to invoke the build pipeline, or the Web Console. Let's use the
-Web Console. Open the production project in the web console:
+Before prmoting the dev image, you need to modify a **RoleBinding** to access the dev image by Jenkins.
+Go to overview page of **UserXX Coolstore Monolith Dev** project then naviage `Resources > Role Binding > ci_admin > Edit YAML` as here:
+
+![Prod]({% image_path coolstore-dev-ci-admin.png %})
+
+Replace your username with `userXX` then click on **Save**.
+
+![Prod]({% image_path coolstore-dev-ci-admin-save.png %})
+
+Let's invoke the build pipeline by using OpenShift Web Console. Open the production project in the web console:
 
 * Web Console - Coolstore Monolith Prod at `OpenShift Web Console`.
 
@@ -184,7 +195,7 @@ Once the pipeline completes, return to the Prod Project Overview at `OpenShift W
 
 and notice that the application is now deployed and running!
 
-![Prod]({% image_path pipe-done.png %}){:width="800px"}
+![Prod]({% image_path pipe-done.png %})
 
 View the production app **with the blue header from before** is running by clicking: CoolStore Production App at `OpenShift Web Console`
 
@@ -253,7 +264,7 @@ Click **Save**.
 With the approval step in place, let's simulate a new change from a developer who wants to change
 the color of the header in the coolstore back to the original (black) color.
 
-First, open `src/main/webapp/app/css/coolstore.css` via Eclipse Che, which contains the CSS stylesheet for the
+First, open `src/main/webapp/app/css/coolstore.css` via CodeReady Workspace, which contains the CSS stylesheet for the
 CoolStore app.
 
 Add the following CSS to turn the header bar background to Red Hat red (**Copy** to add it at the bottom):
@@ -266,29 +277,29 @@ Add the following CSS to turn the header bar background to Red Hat red (**Copy**
 
 ~~~
 
-Next, re-build the app once more via Eclipse Che **Terminal**:
+Next, re-build the app once more via CodeReady Workspace **Terminal**:
 
 `mvn clean package -Popenshift`
 
-And re-deploy it to the dev environment using a binary build just as we did before via Eclipse Che **Terminal**:
+And re-deploy it to the dev environment using a binary build just as we did before via CodeReady Workspace **Terminal**:
 
-`oc start-build -n coolstore-dev coolstore --from-file=deployments/ROOT.war`
+`oc start-build -n userXX-coolstore-dev coolstore --from-file=deployments/ROOT.war`
 
-Now wait for it to complete the deployment via Eclipse Che **Terminal**:
+Now wait for it to complete the deployment via CodeReady Workspace **Terminal**:
 
-`oc -n coolstore-dev rollout status -w dc/coolstore`
+`oc -n userXX-coolstore-dev rollout status -w dc/coolstore`
 
 And verify that the blue header is visible in the dev application:
 
-* Coolstore - Dev at 
+* USERXX Coolstore Monolith - Dev at 
 
-![Prod]({% image_path nav-blue.png %}){:width="800px"}
+![Prod]({% image_path nav-blue.png %})
 
 While the production application is still black:
 
-* Coolstore - Prod at 
+* USERXX Coolstore Monolith - Prod at 
 
-![Prod]({% image_path pipe-orig.png %}){:width="800px"}
+![Prod]({% image_path pipe-orig.png %})
 
 We're happy with this change in dev, so let's promote the new change to prod, using the new approval step!
 
@@ -321,7 +332,7 @@ clicked **Abort** which would stop the pipeline immediately in case the change w
 
 Once you click **Proceed**, you will see the log file from Jenkins showing the final progress and deployment.
 
-Wait for the production deployment to complete via Eclipse Che **Terminal**:
+Wait for the production deployment to complete via CodeReady Workspace **Terminal**:
 
 `oc rollout -n coolstore-prod status dc/coolstore-prod`
 
