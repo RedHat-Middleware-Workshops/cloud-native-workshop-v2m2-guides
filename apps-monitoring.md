@@ -442,7 +442,7 @@ Click on **Create Config Maps** button to create a config map with the following
 
 > You need to replace **targets** URL align with the route URL in your environment.
 
- ~~~java
+~~~java
 # my global config
 global:
   scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
@@ -478,7 +478,7 @@ scrape_configs:
 
     static_configs:
     - targets:  [inventory-quarkus-userXX-inventory.apps.seoul-7b68.openshiftworkshop.com']
- ~~~
+~~~
  
 ![prometheus]({% image_path prometheus-quarkus-configmap-detail.png %})
 
@@ -739,7 +739,7 @@ Edit **prometheus-config** configmap in **USER XX CoolStore App Monitoring Tools
     - targets:  ['catalog-userXX-catalog.apps.seoul-7b68.openshiftworkshop.com']
 ~~~
 
-Click on "Save".
+Click on **Save**.
 
 ![prometheus]({% image_path prometheus-quarkus-configmap-detail-sb.png %})
 
