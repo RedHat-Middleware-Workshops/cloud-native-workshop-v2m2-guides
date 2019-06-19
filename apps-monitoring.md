@@ -742,6 +742,10 @@ Click on "Save".
 
 ![prometheus]({% image_path prometheus-quarkus-configmap-detail-sb.png %})
 
+Redeploy **prometheus** in Overview page:
+
+![prometheus]({% image_path prometheus-redeploy.png %})
+
 ####17. Observing metrics in Prometheus and Grafana
 
 ---
