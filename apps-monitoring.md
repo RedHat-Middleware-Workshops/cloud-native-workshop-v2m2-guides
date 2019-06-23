@@ -115,9 +115,9 @@ Copy the following commands to add the tracing extension via CodeReady Workspace
 
 Go to **inventory** directory:
 
-`mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-opentracing"`
+`mvn quarkus:add-extension -Dextensions="opentracing"`
 
-If builds successfully (you will see `BUILD SUCCESS`), you will see `smallrye-opentracing` dependency in `pom.xml` automatically.
+If builds successfully (you will see `BUILD SUCCESS`), you will see `smallrye-opentracing` dependency in `pom.xml`.
 
 ![jaeger_add_extension]({% image_path jaeger-extension.png %})
 
@@ -202,6 +202,7 @@ And wait for the result as below:
 ---
 
 In order to trace networking and data transaction, we will call the Inventory service via `curl` commands via CodeReady Workspaces **Terminal**:
+Be sure to use your route URL of Inventory.
 
 `curl http://inventory-quarkus-userXX-inventory.apps.seoul-7b68.openshiftworkshop.com/services/inventory/165613 ; echo`
 
@@ -291,7 +292,7 @@ Once you find the image correctly as the above screenshot, click on **Deploy**.
 
 ![Grafana]({% image_path grafana-deploy-done.png %})
 
-Create the route to access **Grafana** web UI. Navigate **Application > Services** on the left menu and click on **Prometheus** service.
+Create the route to access **Grafana** web UI. Navigate **Application > Services** on the left menu and click on **Grafana** service.
 Next, you need to click on **Actions > Create Route**:
 
 ![Grafana]({% image_path grafana-create-route.png %})
@@ -314,7 +315,7 @@ Log in Grafana web UI using the following variables:
 * Username: admin
 * Password: admin
 
-Skip the **Change Password".
+**Skip** the Change Password.
 
 ![Grafana]({% image_path grafana-skip-changepwd.png %})
 
@@ -362,7 +363,7 @@ Copy the following commands to add the smallrye-metricsextension via CodeReady W
 
 Go to **inventory** directory:
 
-`mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-metrics"`
+`mvn quarkus:add-extension -Dextensions="metrics"`
 
 If builds successfully (you will see `BUILD SUCCESS`), you will see `smallrye-opentracing` dependency in `pom.xml` automatically.
 
