@@ -381,7 +381,7 @@ The metrics that we will gather are these:
 Open **InventoryResource** file in `src/main/java/com/redhat/coolstore` and add **@Counted**, **@Timed** annotations to `getAll(), getAvailability(@PathParam String itemId)` methods:
 
 ~~~java
-@GET
+    @GET
     @Counted(name = "performedChecksAll", monotonic = true, description = "How many getAll() have been performed.")
     @Timed(name = "checksTimerAll", description = "A measure of how long it takes to perform the getAll().", unit = MetricUnits.MILLISECONDS)
     public List<Inventory> getAll() {
