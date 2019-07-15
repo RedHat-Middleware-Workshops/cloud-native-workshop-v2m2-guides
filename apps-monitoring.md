@@ -431,7 +431,7 @@ Finally, make sure it's actually done rolling out:
 
 `oc rollout status -w dc/inventory-quarkus -n userxx-inventory`
 
-Go to the **USERXX CoolStore Inventory Microservice Application** project in OpenShift Web Console and then on the left sidebar, **Resources >> Config Maps**. 
+Go to the **USERXX CoolStore App Monitoring Tools** project in OpenShift Web Console and then on the left sidebar, **Resources >> Config Maps**. 
 
 ![prometheus]({% image_path prometheus-quarkus-configmap.png %})
 
@@ -663,6 +663,8 @@ class MonitoringConfig {
 ---
 
 Build and deploy the Catalog project using the following command, which will use the maven plugin to deploy via CodeReady Workspace **Terminal**:
+
+`oc project userxx-catalog`
 
 `mvn package fabric8:deploy -Popenshift -DskipTests`
 
