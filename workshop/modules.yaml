@@ -1,0 +1,25 @@
+config:
+    vars:
+    - name: OC_VERSION
+      value: undefined
+    - name: KUBECTL_VERSION
+      value: undefined
+
+modules:
+    workshop-overview:
+        name: Workshop Overview
+        exit_sign: Setup Environment
+    setup-environment:
+        name: Workshop Setup
+        exit_sign: Start Workshop
+    exercises/01-advanced-cloud-native-services:
+        name: Advanced Cloud-Native Services
+    exercises/02-implementing-cd:
+        name: Implementing Continuous Delivery
+    exercises/03-debugging-apps:
+        name: Debugging Applications
+    exercises/04-apps-monitoring:
+        name: Application Monitoring
+    workshop-summary:
+        name: Workshop Summary
+        exit_sign: Finish Workshop

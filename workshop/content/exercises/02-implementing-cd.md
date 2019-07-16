@@ -41,7 +41,7 @@ on and you will experience failures if you do not name it `userXX-coolstore-prod
 
 This will create a new OpenShift project called `userXX-coolstore-prod` from which our production application will run.
 
-![create_dialog]({% image_path create_prod_dialog.png %}){:width="500"}
+![create_dialog](images/create_prod_dialog.png)
 
 ####2. Add the production elements
 
@@ -62,7 +62,7 @@ Navigate to the Web Console to see your new app and the components using this li
 
 * Coolstore Prod Project Overview at `OpenShift Web Console`:
 
-![Prod]({% image_path coolstore-prod-overview.png %})
+![Prod](images/coolstore-prod-overview.png)
 
 You can see the production database, and an application called _Jenkins_ which OpenShift uses
 to manage CI/CD pipeline deployments. There is no running production
@@ -124,7 +124,7 @@ like test or production.
 Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the
 pipeline by navigating **Builds > Pipelines > monolith-pipeline > Configuration** in OpenShift Web Console:
 
-![monolith-pipeline]({% image_path coolstore-prod-monolith-pipeline.png %})
+![monolith-pipeline](images/coolstore-prod-monolith-pipeline.png)
 
 You can also inspect this via the following command via CodeReady Workspace **Terminal** window:
 
@@ -172,11 +172,11 @@ created using a tag which will trigger deployment in the production environment.
 Before prmoting the dev image, you need to modify a **RoleBinding** to access the dev image by Jenkins.
 Go to overview page of **UserXX Coolstore Monolith Dev** project then naviage `Resources > Role Binding > ci_admin > Edit YAML` as here:
 
-![Prod]({% image_path coolstore-dev-ci-admin.png %})
+![Prod](images/coolstore-dev-ci-admin.png)
 
 Replace your username with `userXX` then click on **Save**.
 
-![Prod]({% image_path coolstore-dev-ci-admin-save.png %})
+![Prod](images/coolstore-dev-ci-admin-save.png)
 
 Let's invoke the build pipeline by using OpenShift Web Console. Open the production project in the web console:
 
@@ -184,18 +184,18 @@ Let's invoke the build pipeline by using OpenShift Web Console. Open the product
 
 Next, navigate to _Builds -> Pipelines_ and click __Start Pipeline__ next to the `coolstore-monolith` pipeline:
 
-![Prod]({% image_path pipe-start.png %})
+![Prod](images/pipe-start.png)
 
 This will start the pipeline. **It will take a minute or two to start the pipeline** (future runs will not
 take as much time as the Jenkins infrastructure will already be warmed up). You can watch the progress of the pipeline:
 
-![Prod]({% image_path pipe-prog.png %})
+![Prod](images/pipe-prog.png)
 
 Once the pipeline completes, return to the Prod Project Overview at `OpenShift Web Console`
 
 and notice that the application is now deployed and running!
 
-![Prod]({% image_path pipe-done.png %})
+![Prod](images/pipe-done.png)
 
 View the production app **with the blue header from before** is running by clicking: CoolStore Production App at `OpenShift Web Console`
 
@@ -238,7 +238,7 @@ _Builds -> Pipelines_ but here's a quick link):
 
 On this page you can see the pipeline definition. Click _Actions -> Edit_ to edit the pipeline:
 
-![Prod]({% image_path pipe-edit.png %}){:width="800px"}
+![Prod](images/pipe-edit.png)
 
 In the pipeline definition editor, add a new stage to the pipeline, just before the `Deploy to PROD` step:
 
@@ -253,7 +253,7 @@ In the pipeline definition editor, add a new stage to the pipeline, just before 
 
 Your final pipeline should look like:
 
-![Prod]({% image_path pipe-edit2.png %}){:width="800px"}
+![Prod](images/pipe-edit2.png)
 
 Click **Save**.
 
@@ -293,13 +293,13 @@ And verify that the blue header is visible in the dev application:
 
 * USERXX Coolstore Monolith - Dev at 
 
-![Prod]({% image_path nav-blue.png %})
+![Prod](images/nav-blue.png)
 
 While the production application is still black:
 
 * USERXX Coolstore Monolith - Prod at 
 
-![Prod]({% image_path pipe-orig.png %})
+![Prod](images/pipe-orig.png)
 
 We're happy with this change in dev, so let's promote the new change to prod, using the new approval step!
 
@@ -311,7 +311,7 @@ Invoke the pipeline once more by clicking **Start Pipeline** on the Pipeline Con
 
 The same pipeline progress will be shown, however before deploying to prod, you will see a prompt in the pipeline:
 
-![Prod]({% image_path pipe-prompt.png %}){:width="800px"}
+![Prod](images/pipe-prompt.png)
 
 Click on the link for `Input Required`. This will open a new tab and direct you to Jenkins itself, where you can login with
 the same credentials as OpenShift:
@@ -321,7 +321,7 @@ the same credentials as OpenShift:
 
 Accept the browser certificate warning and the Jenkins/OpenShift permissions, and then you'll find yourself at the approval prompt:
 
-![Prod]({% image_path pipe-jenkins-prompt.png %}){:width="800px"}
+![Prod](images/pipe-jenkins-prompt.png)
 
 ####8. Approve the change to go live
 
@@ -340,7 +340,7 @@ Once it completes, verify that the production application has the new change (bl
 
 * Coolstore - Prod at 
 
-![Prod]({% image_path nav-blue.png %})
+![Prod](images/nav-blue.png)
 
 ####9. Run the Pipeline on Every Code Change
 
@@ -361,7 +361,7 @@ Copy the Generic webhook url which you will need in the next steps.
 
 Go to your [Git repository]({{GIT_URL}}/userXX/cloud-native-workshop-v2m1-labs.git), then click on **Settings**.
 
-![Repository Settings]({% image_path cd-gogs-settings-link.png %}){:width="900px"}
+![Repository Settings](images/cd-gogs-settings-link.png)
 
 On the left menu, click on **Webhooks** and then on **Add Webhook** button and then **Gogs**. 
 
@@ -372,7 +372,7 @@ Create a webhook with the following details:
 
 Click on **Add Webhook**. 
 
-![Repository Webhook]({% image_path cd-gogs-webhook-add.png %}){:width="660px"}
+![Repository Webhook](images/cd-gogs-webhook-add.png)
 
 All done. You can click on the newly defined webhook to see the list of *Recent Delivery*. 
 Clicking on the **Test Delivery** button allows you to manually trigger the webhook for 
@@ -381,7 +381,7 @@ immediately.
 
 **Congratulations!** You have added a human approval step for all future developer changes. You now have two projects that can be visualized as:
 
-![Prod]({% image_path goal.png %}){:width="800px"}
+![Prod](images/goal.png)
 
 #### Summary
 

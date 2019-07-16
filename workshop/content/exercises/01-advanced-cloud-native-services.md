@@ -62,7 +62,7 @@ Go to the [CodeReady Workspaces URL]({{ ECLIPSE_CHE_URL }}) in order to configur
 First, you need to register as a user. Register and choose the same username and password as 
 your OpenShift credentials.
 
-![codeready-workspace-register]({% image_path codeready-workspace-register.png %})
+![codeready-workspace-register](images/codeready-workspace-register.png)
 
 Log into CodeReady Workspaces with your user. You can now create your workspace based on a stack. A 
 stack is a template of workspace configuration. For example, it includes the programming language and tools needed
@@ -71,20 +71,20 @@ on-demand.
 
 For this lab, click on the **Java Cloud-Native** stack and then on the **Create** button. 
 
-![codeready-workspace-create-workspace]({% image_path codeready-workspace-create-workspace.png %})
+![codeready-workspace-create-workspace](images/codeready-workspace-create-workspace.png)
 
 Click on **Open** to open the workspace and then on the **Start** button to start the workspace for use, if it hasn't started automatically.
 
-![codeready-workspace-start-workspace]({% image_path codeready-workspace-start-workspace.png %})
+![codeready-workspace-start-workspace](images/codeready-workspace-start-workspace.png)
 
 You can click on the left arrow icon to switch to the wide view:
 
-![codeready-workspace-wide]({% image_path codeready-workspace-wide.png %})
+![codeready-workspace-wide](images/codeready-workspace-wide.png)
 
 It takes a little while for the workspace to be ready. When it's ready, you will see a fully functional 
 CodeReady Workspaces IDE running in your browser.
 
-![codeready-workspace-workspace]({% image_path codeready-workspace.png %})
+![codeready-workspace-workspace](images/codeready-workspace.png)
 
 Now you can import the project skeletons into your workspace.
 
@@ -95,25 +95,25 @@ In the project explorer pane, click on the **Import Projects...** and enter the 
   * Check **Import recursively (for multi-module projects)**
   * Name: `cloud-native-workshop-v2m2-labs`
 
-![codeready-workspace-import]({% image_path codeready-workspace-import.png %}){:width="700px"}
+![codeready-workspace-import](images/codeready-workspace-import.png)
 
 The projects are imported now into your workspace and is visible in the project explorer.
 
 CodeReady Workspaces is a full featured IDE and provides language specific capabilities for various project types. In order to 
 enable these capabilities, let's convert the imported project skeletons to a Maven projects. In the project explorer, right-click on **monolith** and then click on **Convert to Project**.
 
-![codeready-workspace-convert]({% image_path codeready-workspace-convert.png %}){:width="500px"}
+![codeready-workspace-convert](images/codeready-workspace-convert.png)
 
 Choose **Maven** from the project configurations and then click on **Save**.
 
-![codeready-workspace-maven]({% image_path codeready-workspace-maven.png %}){:width="700px"}
+![codeready-workspace-maven](images/codeready-workspace-maven.png)
 
 Repeat the above for inventory and catalog projects.
 
 > **NOTE**: the **Terminal** window in CodeReady Workspaces. For the rest of these labs, anytime you need to run 
 a command in a terminal, you can use the CodeReady Workspaces **Terminal** window.
 
-![codeready-workspace-terminal]({% image_path codeready-workspace-terminal.png %})
+![codeready-workspace-terminal](images/codeready-workspace-terminal.png)
 
 ####2. Create the OpenShift project
 
@@ -121,7 +121,7 @@ a command in a terminal, you can use the CodeReady Workspaces **Terminal** windo
 
 First, open a new brower with the `OpenShift Web Console`
 
-![openshift_login]({% image_path openshift_login.png %})
+![openshift_login](images/openshift_login.png)
 
 Login using:
 
@@ -130,7 +130,7 @@ Login using:
 
 You will see the OpenShift landing page:
 
-![openshift_landing]({% image_path openshift_landing.png %})
+![openshift_landing](images/openshift_landing.png)
 
 Click **Create Project**, fill in the fields, and click **Create**:
 
@@ -141,11 +141,11 @@ Click **Create Project**, fill in the fields, and click **Create**:
 > **NOTE**: YOU **MUST** USE `coolstore-dev` AS THE PROJECT NAME, as this name is referenced later
 on and you will experience failures if you do not name it `coolstore-dev`!
 
-![create_dialog]({% image_path create_dialog.png %}){:width="500"}
+![create_dialog](images/create_dialog.png)
 
 Click on the name of the newly-created project:
 
-![create_new]({% image_path create_new.png %}){:width="500"}
+![create_new](images/create_new.png)
 
 This will take you to the project overview. There's nothing there yet, but that's about to change.
 
@@ -157,7 +157,7 @@ We'll use the CLI to deploy the components for our monolith. To deploy the monol
 
 Copy login command and Login OpenShift cluster:
 
-![codeready-workspace-copy-login-cmd]({% image_path codeready-workspace-oc-login-copy.png %}){:width="700px"}
+![codeready-workspace-copy-login-cmd](images/codeready-workspace-oc-login-copy.png)
 
 Paste it on CodeReady Workspaces **Terminal** window.
 
@@ -173,7 +173,7 @@ This will deploy both a PostgreSQL database and JBoss EAP, but it will not start
 
 Then open up the Monolith Overview page and verify the monolith template items are created:
 
-![no_deployments]({% image_path no_deployments.png %}){:width="800px"}
+![no_deployments](images/no_deployments.png)
 
 You can see the components being deployed on the
 Project Overview, but notice the **No deployments for Coolstore**. You have not yet deployed
@@ -209,7 +209,7 @@ thanks to the *DeploymentConfig* object created from the template via CodeReady 
 
 Check the OpenShift web console and you'll see the application being built:
 
-![building]({% image_path building.png %}){:width="800px"}
+![building](images/building.png)
 
 Wait for the build and deploy to complete via CodeReady Workspaces **Terminal** window:
 
@@ -224,19 +224,19 @@ You should eventually see `replication controller "coolstore-1" successfully rol
 When it's done you should see the application deployed successfully with blue circles for the
 database and the monolith:
 
-![build_done]({% image_path build_done.png %}){:width="800px"}
+![build_done](images/build_done.png)
 
 Test the application by clicking on the Route link at `OpenShift Web Console`
 
 which will open the monolith Coolstore in your browser, this time running on OpenShift:
 
-![route_link]({% image_path route_link.png %}){:width="800px"}
+![route_link](images/route_link.png)
 
 #####Congratulations!
 
 Now you're ready to create the pipeline for the next CI/CD labs on OpenShift.
 
-![coolstore_web]({% image_path coolstore_web.png %})
+![coolstore_web](images/coolstore_web.png)
 
 
 #### Developer Concepts

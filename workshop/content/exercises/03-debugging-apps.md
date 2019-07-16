@@ -35,7 +35,7 @@ You are all set now to start debugging using the tools of you choice.
 Do not wait for the command to return! The fabric8 maven plugin keeps the forwarded 
 port open so that you can start debugging remotely.
 
-![Fabric8 Debug]({% image_path debug-che-quarkus.png %})
+![Fabric8 Debug](images/debug-che-quarkus.png)
 
 ####2. Remote Debug with CodeReady Workspace
 
@@ -46,40 +46,40 @@ inside containers and debug while following the code execution in the IDE.
 
 From the **Run** menu, click on **Edit Debug Configurations...**.
 
-![Remote Debug]({% image_path debug-che-debug-config-1.png %})
+![Remote Debug](images/debug-che-debug-config-1.png)
 
 The window shows the debuggers available in CodeReady Workspace. Click on the plus sign near the 
 Java debugger.
 
-![Remote Debug]({% image_path debug-che-debug-config-2.png %}){:width="700px"}
+![Remote Debug](images/debug-che-debug-config-2.png)
 
 Configure the remote debugger and click on the **Save** button:
 
 * Check **Connect to process on workspace machine**
 * Port: `5005`
 
-![Remote Debug]({% image_path debug-che-debug-config-3.png %}){:width="700px"}
+![Remote Debug](images/debug-che-debug-config-3.png)
 
 You can now click on the **Debug** button to make CodeReady Workspace connect to the 
 Inventory service running on OpenShift.
 
 You should see a confirmation that the remote debugger is successfully connected.
 
-![Remote Debug]({% image_path debug-che-debug-config-4.png %}){:width="360px"}
+![Remote Debug](images/debug-che-debug-config-4.png)
 
 Open `com.redhat.coolstore.InventoryResource` and double-click 
 on the editor sidebar on the line number of the first line of the `getAvailability()` 
 method to add a breakpoint to that line. A start appears near the line to show a breakpoint 
 is set.
 
-![Add Breakpoint]({% image_path debug-che-breakpoint.png %})
+![Add Breakpoint](images/debug-che-breakpoint.png)
 
 Open a new **Terminal** window and use `curl` to invoke the Inventory API with the 
 suspect product id in order to pause the code execution at the defined breakpoint.
 
 Note that you can use the the following icons to switch between debug and terminal windows.
 
-![Icons]({% image_path debug-che-window-guide.png %})
+![Icons](images/debug-che-window-guide.png)
 
 Invoke the endpoint URL of the Inventory service using `curl` command:
 
@@ -88,21 +88,21 @@ Invoke the endpoint URL of the Inventory service using `curl` command:
 Switch back to the debug panel and notice that the code execution is paused at the 
 breakpoint on `InventoryResource` class.
 
-![Icons]({% image_path debug-che-breakpoint-stop.png %})
+![Icons](images/debug-che-breakpoint-stop.png)
 
 Click on the _Step Over_ icon to execute one line and retrieve the inventory object for the 
 given product id from the database.
 
-![Step Over]({% image_path debug-che-step-over.png %}){:width="500px"}
+![Step Over](images/debug-che-step-over.png)
 
 Click on the the plus icon in the **Variables** panel to add the `inventory` variable 
 to the list of watch variables.
 
-![Debug]({% image_path debug-che-breakpoint-values.png %})
+![Debug](images/debug-che-breakpoint-values.png)
 
 This would allow you to see the value of `inventory` variable during execution.
 
-![Watch Variables]({% image_path debug-che-variables.png %})
+![Watch Variables](images/debug-che-variables.png)
 
 Look at the **Variables** window. The retrieved inventory object is `serialPersistentFields`!
 
@@ -119,7 +119,7 @@ end the debug session. When you swich to **Terminal-2** window, you will see the
 [{"id":3,"itemId":"165613","link":"http://maps.google.com/?q=Seoul","location":"Seoul","quantity":256}]
 ~~~
 
-![Icons]({% image_path debug-che-window-result.png %}){:width="700px"}
+![Icons](images/debug-che-window-result.png)
 
 > **NOTE**: Make sure to stop Quarkus development mode via `Close` the terminal.
 

@@ -10,7 +10,7 @@ service mesh.
 
 In this lab, you will monitor coolstore applications using [Jaeger](https://www.jaegertracing.io/) and [Prometheus](https://prometheus.io/).
 
-![logo]({% image_path quarkus-jaeger-prometheus.png %}){:width="900px"}
+![logo](images/quarkus-jaeger-prometheus.png)
 
 Jaeger is an open source distributed tracing tool for monitoring and troubleshooting microservices-based distributed systems, including:
 
@@ -44,11 +44,11 @@ Click **Create Project**, fill in the fields, and click **Create**:
 * Display Name: `USERXX CoolStore App Monitoring Tools`
 * Description: _leave this field empty_
 
-![create_dialog]({% image_path create_monitoring_dialog.png %}){:width="500"}
+![create_dialog](images/create_monitoring_dialog.png)
 
 Click on the name of the newly-created project:
 
-![create_new]({% image_path create_new_monitoring.png %}){:width="500"}
+![create_new](images/create_new_monitoring.png)
 
 This will take you to the project overview. There's nothing there yet, but that's about to change.
 
@@ -74,7 +74,7 @@ You can also check if the deployment is complete via CodeReady Workspace **Termi
 
 When you navigate the **overview** page in OpenShift console, you will see as below:
 
-![jaeger_deployments]({% image_path jaeger-deployment.png %})
+![jaeger_deployments](images/jaeger-deployment.png)
 
 ####3. Exposing Jaeger-Collector
 
@@ -95,11 +95,11 @@ This allows clients to send data directly to Collector via HTTP senders. If you 
 
 Once you deployed Jaeger to OpenShift, you will see the route that generated automatically.
 
-![jaeger_route]({% image_path jaeger-route.png %})
+![jaeger_route](images/jaeger-route.png)
 
 Click on the route URL(i.e. https://jaeger-query-monitoring.apps.seoul-7b68.openshiftworkshop.com) then there is no **Service** and **Operation** at this moment.
 
-![jaeger_ui]({% image_path jaeger-ui.png %})
+![jaeger_ui](images/jaeger-ui.png)
 
 > Don't worry! We will utilize tracing data later.
 
@@ -119,7 +119,7 @@ Go to **inventory** directory:
 
 If builds successfully (you will see `BUILD SUCCESS`), you will see `smallrye-opentracing` dependency in `pom.xml`.
 
-![jaeger_add_extension]({% image_path jaeger-extension.png %})
+![jaeger_add_extension](images/jaeger-extension.png)
 
 >**NOTE:** There are many [more extensions](https://quarkus.io/extensions/) for Quarkus for popular frameworks 
 like [CodeReady Workspaces Vert.x](https://vertx.io/), [Apache Camel](http://camel.apache.org/), [Infinispan](http://infinispan.org/), 
@@ -132,7 +132,7 @@ Spring DI compatibility (e.g. @Autowired), and more.
 Before getting started with this step, confirm your **route URL of Jaeger** and we will use the following step to create the tracing configuration.
 You can find out the URL in OpenShift Console or use the `oc` command as here:
 
-![jaeger_ui]({% image_path jaeger-collector-route.png %})
+![jaeger_ui](images/jaeger-collector-route.png)
 
 `oc get route`
 
@@ -178,7 +178,7 @@ quarkus.datasource.driver=org.postgresql.Driver
 
 Repackage the inventory application via clicking on `Package for OpenShift` in `Commands Palette`:
 
-![codeready-workspace-maven]({% image_path quarkus-dev-run-packageforOcp.png %})
+![codeready-workspace-maven](images/quarkus-dev-run-packageforOcp.png)
 
 Next, update a temp directory to store only previously-built application with necessary lib directory via CodeReady Workspaces **Terminal**:
 
@@ -212,7 +212,7 @@ Go to `Pods > inventory-quarkus-11-sfg4n > Logs` in OpenShift console, you will 
 2019-06-13 08:59:28,731 INFO  [io.jae.Configuration] (executor-thread-1) Initialized tracer=JaegerTracer(version=Java-0.34.0, serviceName=inventory, reporter=RemoteReporter(sender=HttpSender(), closeEnqueueTimeout=1000), sampler=ConstSampler(decision=true, tags={sampler.type=const, sampler.param=true}), tags={hostname=inventory-quarkus-11-sfg4n, jaeger.version=Java-0.34.0, ip=10.1.16.21}, zipkinSharedRpcSpan=false, expandExceptionLogs=false, useTraceId128Bit=false)
 ~~~
 
-![jaeger_ui]({% image_path jaeger-init.png %})
+![jaeger_ui](images/jaeger-init.png)
 
 Now, reload the Jaeger UI then you will find that 2 services are created as here:
 
@@ -221,20 +221,20 @@ Now, reload the Jaeger UI then you will find that 2 services are created as here
 
 Click on `Find Traces` and observe the first trace in the graph:
 
-![jaeger_ui]({% image_path jaeger-reload.png %})
+![jaeger_ui](images/jaeger-reload.png)
 
 If you click on `Span` and you will see a logical unit of work in Jaeger that has an operation name, the start time of the operation, 
 and the duration. Spans may be nested and ordered to model causal relationships:
 
-![jaeger_ui]({% image_path jaeger-span.png %})
+![jaeger_ui](images/jaeger-span.png)
 
 Let's make more traces!! Open a new web browser to access **CoolStore Inventory Pagre**(i.e. http://inventory-quarkus-inventory.apps.seoul-7b68.openshiftworkshop.com):
 
-![jaeger_ui]({% image_path jaeger-coolstore.png %})
+![jaeger_ui](images/jaeger-coolstore.png)
 
 Go back to **Jaeger UI** then click on **Find Traces**. You will see dozens of traces because the Inventory page continues to calling the endpoint of Inventory service in every 2 seconds like we called via **curl** command:
 
-![jaeger_ui]({% image_path jaeger-traces.png %})
+![jaeger_ui](images/jaeger-traces.png)
 
 ####9. Deploy Prometheus and Grafana to OpenShift
 
@@ -245,70 +245,70 @@ on the [Prometheus](https://prometheus.io) open source project and its wider eco
 of cluster components and ships with a set of alerts to immediately notify the cluster administrator about any occurring problems 
 and a set of [Grafana](https://grafana.com/) dashboards.
 
-![Prometheus]({% image_path monitoring-diagram.png %}){:width="800px"}
+![Prometheus](images/monitoring-diagram.png)
 
 However, we will deploy custom **Prometheus** to scrape services metrics of Inventory and Catalog applications. 
 Then we will visualize the metrics data via custom **Grafana** dashboards deployment.
 
 Go to **Overview** page in `CoolStore App Monitoring Tools` project and click on `Deploy Image` under `Add to Project` menu:
 
-![Prometheus]({% image_path add-to-project.png %})
+![Prometheus](images/add-to-project.png)
 
 Select **Image Name** and input `prom/prometheus` to search the Prometheus container image via clicking on **Search** icon.
 
-![Prometheus]({% image_path search-prometheus-image.png %})
+![Prometheus](images/search-prometheus-image.png)
 
 Once you find the image correctly as the above screenshot, click on **Deploy**.
 
-![Prometheus]({% image_path prometheus-deploy-done.png %})
+![Prometheus](images/prometheus-deploy-done.png)
 
 Create the route to access **Prometheus** web UI. Navigate **Application > Services** on the left menu and click on **Prometheus** service.
 Next, you need to click on **Actions > Create Route**:
 
-![Prometheus]({% image_path prometheus-create-route.png %})
+![Prometheus](images/prometheus-create-route.png)
 
  Click on **Create** with keeping all default variables:
 
-![Prometheus]({% image_path prometheus-route-detail.png %})
+![Prometheus](images/prometheus-route-detail.png)
 
 Now, you have the route URL(i.e. `http://prometheus-user1-monitoring.apps.seoul-7b68.openshiftworkshop.com`) and click on the URL to make sure if you can access the Prometheus web UI:
 
-![Prometheus]({% image_path prometheus-route-link.png %})
+![Prometheus](images/prometheus-route-link.png)
 
 You will see the landing page of Prometheus as shown:
 
-![Prometheus]({% image_path prometheus-webui.png %})
+![Prometheus](images/prometheus-webui.png)
 
 Let's deploy **Grafana Dashboards** to OpenShift. Go to **Overview** page in `CoolStore App Monitoring Tools` project 
 and click on `Deploy Image` under `Add to Project` menu:
 
-![Grafana]({% image_path add-to-project-grafana.png %})
+![Grafana](images/add-to-project-grafana.png)
 
 Select **Image Name** and input `grafana/grafana` to search the Prometheus container image via clicking on **Search** icon.
 
-![Grafana]({% image_path search-grafana-image.png %})
+![Grafana](images/search-grafana-image.png)
 
 Once you find the image correctly as the above screenshot, click on **Deploy**.
 
-![Grafana]({% image_path grafana-deploy-done.png %})
+![Grafana](images/grafana-deploy-done.png)
 
 Create the route to access **Grafana** web UI. Navigate **Application > Services** on the left menu and click on **Grafana** service.
 Next, you need to click on **Actions > Create Route**:
 
-![Grafana]({% image_path grafana-create-route.png %})
+![Grafana](images/grafana-create-route.png)
 
  Click on **Create** with keeping all default variables:
 
-![Grafana]({% image_path grafana-route-detail.png %})
+![Grafana](images/grafana-route-detail.png)
 
 Now, you have the route URL(i.e. `http://grafana-user1-monitoring.apps.seoul-7b68.openshiftworkshop.com`) and 
 click on the URL to make sure if you can access the Grafana web UI.
 
-![Grafana]({% image_path grafana-route-link.png %})
+![Grafana](images/grafana-route-link.png)
 
 You will see the landing page of Prometheus as shown:
 
-![Grafana]({% image_path grafana-login.png %})
+![Grafana](images/grafana-login.png)
 
 Log in Grafana web UI using the following variables:
 
@@ -317,11 +317,11 @@ Log in Grafana web UI using the following variables:
 
 **Skip** the Change Password.
 
-![Grafana]({% image_path grafana-skip-changepwd.png %})
+![Grafana](images/grafana-skip-changepwd.png)
 
 You will see the landing page of Grafana as shown:
 
-![Grafana]({% image_path grafana-webui.png %})
+![Grafana](images/grafana-webui.png)
 
 ####10. Add a data source to Grafana
 
@@ -330,15 +330,15 @@ You will see the landing page of Grafana as shown:
 Before we create monitoring dashboard, we need to add a data source.
 Go to the cog on the side menu that will show you the configuration menu. If the side menu is not visible click the Grafana icon in the upper left corner.
 
-![Grafana]({% image_path grafana-sidemenu-datasource.png %}){:width="600px"}
+![Grafana](images/grafana-sidemenu-datasource.png)
 
 Click on data sources of the configuration menu and you’ll be taken to the data sources page where you can add and edit data sources. 
 
-![Grafana]({% image_path grafana-add-datasource.png %}){:width="700px"}
+![Grafana](images/grafana-add-datasource.png)
 
 Click Add data source and select **Prometheus** as data source type.
 
-![Grafana]({% image_path grafana-datasource-types.png %})
+![Grafana](images/grafana-datasource-types.png)
 
 Next, input the following variables to configure the dashboard. Make sure to replace `HTTP URL` with your **Prometheus Route URL**. 
 Click on **Save & Test** then you will see the **Data source is working** message.
@@ -346,7 +346,7 @@ Click on **Save & Test** then you will see the **Data source is working** messag
 * Name: CloudNativeApps
 * HTTP URL: http://prometheus-user1-monitoring.apps.seoul-7b68.openshiftworkshop.com
 
-![Grafana]({% image_path granfan-setting.png %})
+![Grafana](images/granfan-setting.png)
 
 ###11. Utilize metrics specification for Inverntory(Quarkus)
 
@@ -367,7 +367,7 @@ Go to **inventory** directory:
 
 If builds successfully (you will see `BUILD SUCCESS`), you will see `smallrye-opentracing` dependency in `pom.xml` automatically.
 
-![metrics_add_extension]({% image_path metrics-extension.png %})
+![metrics_add_extension](images/metrics-extension.png)
 
 Let's add a few annotations to make sure that our desired metrics are calculated over time and can be exported for processing by **Prometheus** and **Grafana**.
 
@@ -413,7 +413,7 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
 
 Repackage the inventory application via clicking on `Package for OpenShift` in `Commands Palette`:
 
-![codeready-workspace-maven]({% image_path quarkus-dev-run-packageforOcp.png %})
+![codeready-workspace-maven](images/quarkus-dev-run-packageforOcp.png)
 
 Or you can run a maven plugin command directly in **Terminal**:
 
@@ -433,7 +433,7 @@ Finally, make sure it's actually done rolling out:
 
 Go to the **USERXX CoolStore App Monitoring Tools** project in OpenShift Web Console and then on the left sidebar, **Resources >> Config Maps**. 
 
-![prometheus]({% image_path prometheus-quarkus-configmap.png %})
+![prometheus](images/prometheus-quarkus-configmap.png)
 
 Click on **Create Config Maps** button to create a config map with the following info:
 
@@ -481,7 +481,7 @@ scrape_configs:
     - targets:  [inventory-quarkus-userXX-inventory.apps.seoul-7b68.openshiftworkshop.com']
 ~~~
  
-![prometheus]({% image_path prometheus-quarkus-configmap-detail.png %})
+![prometheus](images/prometheus-quarkus-configmap-detail.png)
 
 Config maps hold key-value pairs and in the above command an **prometheus-config** config map 
 is created with **prometheus.yml** as the key and the above content as the value. Whenever a config map is injected into a container, 
@@ -494,18 +494,18 @@ Modify the **Prometheus deployment config** so that it injects the **prometheus.
 a config map into the Prometheus container. Go to **Application > Deployments** in **USERXX Coolstore App Monitoring Tools** project overview 
 and click on **prometheus** deployment:
 
-![prometheus]({% image_path prometheus-dc.png %})
+![prometheus](images/prometheus-dc.png)
 
 Move to **Configuration** tab menu and click on **Add Config Files**:
 
-![prometheus]({% image_path prometheus-configuration-tab.png %})
+![prometheus](images/prometheus-configuration-tab.png)
 
 Input the following variables in **Add Config Files to prometheus** and click on **Add**:
 
  * Source: _prometheus-config_
  * Mount Path: _/etc/prometheus_
 
-![prometheus]({% image_path prometheus-add-config.png %})
+![prometheus](images/prometheus-add-config.png)
 
 You can also use **oc set volume** command for this:
 
@@ -569,27 +569,27 @@ Let's review the generated metrics. We have 3 ways to view the metircs such as *
 **2)** Open the Prometheus Web UI via a web brower and input(or select) `scrape_duration_seconds` in query box. 
 Click on **Execute** then you will see **quarkus job** in the metrics:
 
-![metrics_prometheus]({% image_path prometheus-metrics-console.png %})
+![metrics_prometheus](images/prometheus-metrics-console.png)
 
 Switch to **Graph** tab:
 
-![metrics_prometheus]({% image_path prometheus-metrics-graph.png %})
+![metrics_prometheus](images/prometheus-metrics-graph.png)
 
 **3)** Open the Grafana Web UI via a web brower and create a new **Dashboard** to review the metrics.
 
-![metrics_grafana]({% image_path grafana-create-dashboard.png %})
+![metrics_grafana](images/grafana-create-dashboard.png)
 
 Click on **New dashboard** then select **Add Query** in a new panel:
 
-![metrics_grafana]({% image_path grafana-add-query.png %}) 
+![metrics_grafana](images/grafana-add-query.png) 
 
 Add **scrape_duration_seconds** in query box:
 
-![metrics_grafana]({% image_path grafana-add-query-detail.png %}) 
+![metrics_grafana](images/grafana-add-query-detail.png) 
 
 Click on **Query Inspector** then you will see **inventory-quarkus metrics** and change **5s** to refresh dashboard:
 
-![metrics_grafana]({% image_path grafana-add-query-complete.png %}) 
+![metrics_grafana](images/grafana-add-query-complete.png) 
 
 ###14. Utilize metrics specification for Catalog(Spring Boot)
 
@@ -621,7 +621,7 @@ Go to **Inventory** project directory and open **pom.xml** to add the following 
 </dependency>
 ~~~
 
-![metrics_grafana]({% image_path catalog-prometheus-dependency.png %}) 
+![metrics_grafana](images/catalog-prometheus-dependency.png) 
 
 Next, create **MonitoringConfig.java** class in `src/main/java/com/redhat/coolstore/` and copy the following codes into **MonitoringConfig.java** file:
 
@@ -674,7 +674,7 @@ end of the build output.
 After the maven build finishes it will take less than a minute for the application to become available.
 To verify that everything is started, run the following command and wait for it complete successfully:
 
-![catalog_deploy_success]({% image_path catalog_deploy_success.png %})
+![catalog_deploy_success](images/catalog_deploy_success.png)
 
 You can also check if the deployment is complete via CodeReady Workspace **Terminal**:
 
@@ -744,11 +744,11 @@ Edit **prometheus-config** configmap in **USER XX CoolStore App Monitoring Tools
 
 Click on **Save**.
 
-![prometheus]({% image_path prometheus-quarkus-configmap-detail-sb.png %})
+![prometheus](images/prometheus-quarkus-configmap-detail-sb.png)
 
 Redeploy **prometheus** in Overview page:
 
-![prometheus]({% image_path prometheus-redeploy.png %})
+![prometheus](images/prometheus-redeploy.png)
 
 ####17. Observing metrics in Prometheus and Grafana
 
@@ -757,16 +757,16 @@ Redeploy **prometheus** in Overview page:
 **1)** Open the Prometheus Web UI via a web brower and input(or select) `scrape_duration_seconds` in query box. 
 Click on **Execute** then you will see **quarkus job** in the metrics:
 
-![metrics_prometheus]({% image_path prometheus-metrics-console-final.png %})
+![metrics_prometheus](images/prometheus-metrics-console-final.png)
 
 Switch to **Graph** tab:
 
-![metrics_prometheus]({% image_path prometheus-metrics-graph-final.png %})
+![metrics_prometheus](images/prometheus-metrics-graph-final.png)
 
 **2)** Open the Grafana Web UI via a web brower and click on **Query Inspector** then you will see 
 **inventory-quarkus** and **catalog-sprinb-boot** metrics:
 
-![metrics_grafana]({% image_path grafana-add-query-complete.png %}) 
+![metrics_grafana](images/grafana-add-query-complete.png) 
 
 #### Summary
 
