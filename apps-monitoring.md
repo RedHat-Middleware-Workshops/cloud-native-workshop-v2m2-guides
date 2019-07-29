@@ -598,7 +598,7 @@ Click on **Query Inspector** then you will see **inventory-quarkus metrics** and
 In this step, we will learn how to export metrics to **Prometheus** from **Spring Boot** application by 
 using the [Prometheus JVM Client](https://github.com/prometheus/client_java).
 
-Go to **Inventory** project directory and open **pom.xml** to add the following **Prometheus dependencies**:
+Go to **Catalog** project directory and open **pom.xml** to add the following **Prometheus dependencies**:
 
 ~~~xml
 <!-- Prometheus dependency  -->
