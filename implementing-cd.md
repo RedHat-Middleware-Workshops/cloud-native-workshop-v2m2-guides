@@ -262,13 +262,17 @@ Go back to `Builds > Build Configs > monolith-pipeline` then click on `Edit Buil
 
 ![Prod]({% image_path pipe-edit.png %})
 
-Click on `YAML` tab and add a new step to the pipeline, just before the `Deploy to PROD` step:
+Click on `YAML` tab and add `a new stage` to the pipeline, just before the `Deploy to PROD` stage:
 
 > **NOTE**: You will need to copy and paste the below code into the right place as shown in the below image.
 
 ~~~groovy
-timeout(time:15, unit:'MINUTES') {
-  input message: "Go Live in Production (switch to new version)?", ok: "Promote"
+stage ('Approve Go Live') {
+  steps {
+    timeout(time:30, unit:'MINUTES') {
+      input message:'Go Live in Production (switch to new version)?'
+    }
+  }
 }
 ~~~
 
@@ -334,7 +338,7 @@ Invoke the pipeline once more by navigating to `Builds > Build Configs > monolit
 
 The same pipeline progress will be shown, however before deploying to prod, you will see a prompt in the pipeline:
 
-![Prod]({% image_path pipe-prompt.png %}){:width="800px"}
+![Prod]({% image_path pipe-prompt.png %})
 
 Click on the link for `Input Required`. This will open a new tab and direct you to Jenkins itself, where you can login with
 the same credentials as OpenShift:
@@ -344,7 +348,9 @@ the same credentials as OpenShift:
 
 Accept the browser certificate warning and the Jenkins/OpenShift permissions, and then you'll find yourself at the approval prompt:
 
-![Prod]({% image_path pipe-jenkins-prompt.png %}){:width="800px"}
+Click on `Console Output` on left menu then click on `Proceed`.
+
+![Prod]({% image_path pipe-jenkins-prompt.png %})
 
 ####8. Approve the change to go live
 
