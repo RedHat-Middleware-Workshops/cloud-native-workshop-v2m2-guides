@@ -38,17 +38,13 @@ created previously.
 
 Create a new project for the _Monitoring_ tools:
 
-Click **Create Project**, fill in the fields, and click **Create**:
+Click `Create Project`, fill in the fields, and click `Create`:
 
 * Name: `userXX-monitoring`
 * Display Name: `USERXX CoolStore App Monitoring Tools`
 * Description: _leave this field empty_
 
-![create_dialog]({% image_path create_monitoring_dialog.png %}){:width="500"}
-
-Click on the name of the newly-created project:
-
-![create_new]({% image_path create_new_monitoring.png %}){:width="500"}
+![create_dialog]({% image_path create_monitoring_dialog.png %}){:width="700"}
 
 This will take you to the project overview. There's nothing there yet, but that's about to change.
 
@@ -60,19 +56,19 @@ This template uses an in-memory storage with a limited functionality for local t
 Do not use this template in production environments, although there are a number of parameters in the template to 
 constrain the maximum number of traces and the amount of CPU/Memory consumed to prevent node instability.
 
-Install everything in the current namespace via CodeReady Workspace **Terminal**:
+Install everything in the current namespace via CodeReady Workspace `Terminal`:
 
 `oc project userXX-monitoring`
 
-`oc process -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs/master/monitoring/jaeger-all-in-one-template.yml | oc create -f -`
+`oc process -f /projects/cloud-native-workshop-v2m2-labs/monitoring/jaeger-all-in-one-template.yml | oc create -f -`
 
-You can also check if the deployment is complete via CodeReady Workspace **Terminal**:
+You can also check if the deployment is complete via CodeReady Workspace `Terminal`:
 
 `oc rollout status -w deployment.apps/jaeger`
 
 > deployment "jaeger" successfully rolled out
 
-When you navigate the **overview** page in OpenShift console, you will see as below:
+When you navigate the `Project Status` page in OpenShift console, you will see as below:
 
 ![jaeger_deployments]({% image_path jaeger-deployment.png %})
 
@@ -80,14 +76,14 @@ When you navigate the **overview** page in OpenShift console, you will see as be
 
 ---
 
-**Collector** is by default accessible only to services running inside the cluster. The easiest approach to expose the collector outside of 
-the cluster is via the `jaeger-collector-http` HTTP port using an **OpenShift Route** via CodeReady Workspace **Terminal**:
+`Collector` is by default accessible only to services running inside the cluster. The easiest approach to expose the collector outside of 
+the cluster is via the `jaeger-collector-http` HTTP port using an `OpenShift Route` via CodeReady Workspace `Terminal`:
 
 `oc create route edge --service=jaeger-collector --port jaeger-collector-http --insecure-policy=Allow`
 
 This allows clients to send data directly to Collector via HTTP senders. If you want to use the Agent then use ExternalIP or NodePort to expose the Collector service.
 
-> **NOTE:** Using Collector will open the collector to be used by any external party, who will then be able to create arbitrary spans. It's advisable to put an OAuth Security Proxy in front of the collector and expose this proxy instead.
+> `NOTE:` Using Collector will open the collector to be used by any external party, who will then be able to create arbitrary spans. It's advisable to put an OAuth Security Proxy in front of the collector and expose this proxy instead.
 
 ####4. Observe Jaeger UI
 
@@ -97,7 +93,7 @@ Once you deployed Jaeger to OpenShift, you will see the route that generated aut
 
 ![jaeger_route]({% image_path jaeger-route.png %})
 
-Click on the route URL(i.e. https://jaeger-query-monitoring.apps.seoul-7b68.openshiftworkshop.com) then there is no **Service** and **Operation** at this moment.
+Click on the route URL(i.e. `https://jaeger-query-user0-monitoring.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com`) then there is no `Service` and `Operation` at this moment.
 
 ![jaeger_ui]({% image_path jaeger-ui.png %})
 
@@ -111,9 +107,9 @@ We have a catalog service on Spring Boot that calls inventory service on Quarkus
 better to trace using Jaeger rather than monolith coolstore for considering distributed networking system.
 
 In this step, we will add Qurakus extensions to the Inventory application for using `smallrye-opentracing` and we'll use the Quarkus Maven Plugin.
-Copy the following commands to add the tracing extension via CodeReady Workspaces **Terminal**:
+Copy the following commands to add the tracing extension via CodeReady Workspaces `Terminal`:
 
-Go to **inventory** directory:
+Go to `inventory` directory:
 
 `mvn quarkus:add-extension -Dextensions="opentracing"`
 
@@ -121,7 +117,7 @@ If builds successfully (you will see `BUILD SUCCESS`), you will see `smallrye-op
 
 ![jaeger_add_extension]({% image_path jaeger-extension.png %})
 
->**NOTE:** There are many [more extensions](https://quarkus.io/extensions/) for Quarkus for popular frameworks 
+>`NOTE:` There are many [more extensions](https://quarkus.io/extensions/) for Quarkus for popular frameworks 
 like [CodeReady Workspaces Vert.x](https://vertx.io/), [Apache Camel](http://camel.apache.org/), [Infinispan](http://infinispan.org/), 
 Spring DI compatibility (e.g. @Autowired), and more.
 
@@ -129,7 +125,7 @@ Spring DI compatibility (e.g. @Autowired), and more.
 
 ---
 
-Before getting started with this step, confirm your **route URL of Jaeger** and we will use the following step to create the tracing configuration.
+Before getting started with this step, confirm your `route Collector URL of Jaeger` and we will use the following step to create the tracing configuration.
 You can find out the URL in OpenShift Console or use the `oc` command as here:
 
 ![jaeger_ui]({% image_path jaeger-collector-route.png %})
@@ -137,39 +133,39 @@ You can find out the URL in OpenShift Console or use the `oc` command as here:
 `oc get route`
 
 ~~~shell
-NAME               HOST/PORT                                                                 PATH   SERVICES           PORT                    TERMINATION   WILDCARD
-jaeger-collector   jaeger-collector-user1-monitoring.apps.seoul-7b68.openshiftworkshop.com          jaeger-collector   jaeger-collector-http   edge/Allow    None
-jaeger-query       jaeger-query-user1-monitoring.apps.seoul-7b68.openshiftworkshop.com              jaeger-query       query-http              edge/Allow    None
+NAME               HOST/PORT                                                                                    PATH   SERVICES           PORT                    TERMINATION   WILDCARD
+jaeger-collector   jaeger-collector-user0-monitoring.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com          jaeger-collector   jaeger-collector-http   edge/Allow    None
+jaeger-query       jaeger-query-user0-monitoring.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com              jaeger-query       query-http              edge/Allow    None
 ~~~
 
 The easiest way to configure the Jaeger tracer is to set up in the application(i.e. Inventory).
 
-Open `src/main/resources/application.properties` file and add the following configuration via CodeReady Workspaces **Terminal**:
+Open `src/main/resources/application.properties` file and add the following configuration via CodeReady Workspaces `Terminal`:
 
 ~~~java
 # Jaeger configuration
 quarkus.jaeger.service-name=inventory
 quarkus.jaeger.sampler-type=const
 quarkus.jaeger.sampler-param=1
-quarkus.jaeger.endpoint=https://jaeger-collector-user1-monitoring.apps.seoul-7b68.openshiftworkshop.com/api/traces
+quarkus.jaeger.endpoint=https://YOUR_JAEGR_COLLECTOR_ROUTE_URL/api/traces
 ~~~
 
-> You should replace **quarkus.jaeger.endpoint** with your own route URL(**HTTPS**) as you created.
+> You should replace `quarkus.jaeger.endpoint` with your own route URL(`HTTPS`) as you created.
 
 You can also specify the configuration using `jvm.args` that Jaeger supplys the properties as [environment variables](https://www.jaegertracing.io/docs/1.12/client-features/).
 
-If the **quarkus.jaeger.service-name** property (or **JAEGER_SERVICE_NAME** environment variable) is not provided then a "no-op" tracer will be configured, 
+If the `quarkus.jaeger.service-name` property (or `JAEGER_SERVICE_NAME` environment variable) is not provided then a "no-op" tracer will be configured, 
 resulting in no tracing data being reported to the backend.
 
 Currently the tracer can only be configured to report spans directly to the collector via HTTP, using the `quarkus.jaeger.endpoint` property (or `JAEGER_ENDPOINT` environment variable). Support for using the Jaeger agent, via UDP, will be available in a future version.
 
->**NOTE:** there is no tracing specific code included in the application. By default, requests sent to this endpoint will be traced without any code changes being required. It is also possible to enhance the tracing information. For more information on this, please see the [MicroProfile OpenTracing specification](https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc).
+>`NOTE:` there is no tracing specific code included in the application. By default, requests sent to this endpoint will be traced without any code changes being required. It is also possible to enhance the tracing information. For more information on this, please see the [MicroProfile OpenTracing specification](https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc).
 
 ####7. Re-Deploy to OpenShift
 
 ---
 
-> **NOTE**: Be sure to rollback Postgres database configuration as defined in `src/main/resources/application.properties`:
+> `NOTE`: Be sure to rollback Postgres database configuration as defined in `src/main/resources/application.properties`:
  
 ~~~java
 quarkus.datasource.url=jdbc:postgresql:inventory
@@ -180,7 +176,7 @@ Repackage the inventory application via clicking on `Package for OpenShift` in `
 
 ![codeready-workspace-maven]({% image_path quarkus-dev-run-packageforOcp.png %})
 
-Next, update a temp directory to store only previously-built application with necessary lib directory via CodeReady Workspaces **Terminal**:
+Next, update a temp directory to store only previously-built application with necessary lib directory via CodeReady Workspaces `Terminal`:
 
 `rm -rf target/binary && mkdir -p target/binary && cp -r target/*runner.jar target/lib target/binary`
 
@@ -188,8 +184,8 @@ And then start and watch the build, which will take about a minute to complete:
 
 `oc start-build inventory-quarkus --from-dir=target/binary --follow -n userXX-inventory`
 
-You should see a **Push successful** at the end of the build output and it. To verify that deployment is started and completed automatically, 
-run the following command via CodeReady Workspaces **Terminal** :
+You should see a `Push successful` at the end of the build output and it. To verify that deployment is started and completed automatically, 
+run the following command via CodeReady Workspaces `Terminal` :
 
 `oc rollout status -w dc/inventory-quarkus -n userXX-inventory`
 
@@ -201,15 +197,19 @@ And wait for the result as below:
 
 ---
 
-In order to trace networking and data transaction, we will call the Inventory service via `curl` commands via CodeReady Workspaces **Terminal**:
+In order to trace networking and data transaction, we will call the Inventory service via `curl` commands via CodeReady Workspaces `Terminal`:
 Be sure to use your route URL of Inventory.
 
-`curl http://inventory-quarkus-userXX-inventory.apps.seoul-7b68.openshiftworkshop.com/services/inventory/165613 ; echo`
+`curl http://YOUR_INVENTORY_ROUTE_URL/services/inventory/165613 ; echo`
 
-Go to `Pods > inventory-quarkus-11-sfg4n > Logs` in OpenShift console, you will see that tracer is initialized after you call the Inventory service at the first time.
+Go to `Workloads > Pods ` in the left menu and click on `inventory-quarkus-xxxxxx`.
+
+![codeready-workspace-maven]({% image_path quarkus-jaeger-pod.png %})
+
+Click on `Logs` tab and you will see that tracer is initialized after you call the Inventory service at the first time.
 
 ~~~shell
-2019-06-13 08:59:28,731 INFO  [io.jae.Configuration] (executor-thread-1) Initialized tracer=JaegerTracer(version=Java-0.34.0, serviceName=inventory, reporter=RemoteReporter(sender=HttpSender(), closeEnqueueTimeout=1000), sampler=ConstSampler(decision=true, tags={sampler.type=const, sampler.param=true}), tags={hostname=inventory-quarkus-11-sfg4n, jaeger.version=Java-0.34.0, ip=10.1.16.21}, zipkinSharedRpcSpan=false, expandExceptionLogs=false, useTraceId128Bit=false)
+2019-08-05 12:12:17,574 INFO [io.jae.Configuration] (executor-thread-1) Initialized tracer=JaegerTracer(version=Java-0.34.0, serviceName=inventory, reporter=RemoteReporter(sender=HttpSender(), closeEnqueueTimeout=1000), sampler=ConstSampler(decision=true, tags={sampler.type=const, sampler.param=true}), tags={hostname=inventory-quarkus-4-kc4t6, jaeger.version=Java-0.34.0, ip=10.131.8.48}, zipkinSharedRpcSpan=false, expandExceptionLogs=false, useTraceId128Bit=false)
 ~~~
 
 ![jaeger_ui]({% image_path jaeger-init.png %})
@@ -228,11 +228,11 @@ and the duration. Spans may be nested and ordered to model causal relationships:
 
 ![jaeger_ui]({% image_path jaeger-span.png %})
 
-Let's make more traces!! Open a new web browser to access **CoolStore Inventory Pagre**(i.e. http://inventory-quarkus-inventory.apps.seoul-7b68.openshiftworkshop.com):
+Let's make more traces!! Open a new web browser to access `CoolStore Inventory Pagre`(i.e. http://inventory-quarkus-inventory.apps.seoul-7b68.openshiftworkshop.com):
 
 ![jaeger_ui]({% image_path jaeger-coolstore.png %})
 
-Go back to **Jaeger UI** then click on **Find Traces**. You will see dozens of traces because the Inventory page continues to calling the endpoint of Inventory service in every 2 seconds like we called via **curl** command:
+Go back to `Jaeger UI` then click on `Find Traces`. You will see dozens of traces because the Inventory page continues to calling the endpoint of Inventory service in every 2 seconds like we called via `curl` command:
 
 ![jaeger_ui]({% image_path jaeger-traces.png %})
 
@@ -247,31 +247,35 @@ and a set of [Grafana](https://grafana.com/) dashboards.
 
 ![Prometheus]({% image_path monitoring-diagram.png %}){:width="800px"}
 
-However, we will deploy custom **Prometheus** to scrape services metrics of Inventory and Catalog applications. 
-Then we will visualize the metrics data via custom **Grafana** dashboards deployment.
+However, we will deploy custom `Prometheus` to scrape services metrics of Inventory and Catalog applications. 
+Then we will visualize the metrics data via custom `Grafana` dashboards deployment.
 
-Go to **Overview** page in `CoolStore App Monitoring Tools` project and click on `Deploy Image` under `Add to Project` menu:
+Go to `Project Status` page in `userXX-monitoring` project and click on `Deploy Image` under `Add` on the right top menu:
 
 ![Prometheus]({% image_path add-to-project.png %})
 
-Select **Image Name** and input `prom/prometheus` to search the Prometheus container image via clicking on **Search** icon.
+Select `Image Name` and input `prom/prometheus` to search the Prometheus container image via clicking on `Search` icon.
 
 ![Prometheus]({% image_path search-prometheus-image.png %})
 
-Once you find the image correctly as the above screenshot, click on **Deploy**.
+Once you find the image correctly as the above page, click on `Deploy`. It takes 1 ~ 2 mins to deploy a pod.
 
 ![Prometheus]({% image_path prometheus-deploy-done.png %})
 
-Create the route to access **Prometheus** web UI. Navigate **Application > Services** on the left menu and click on **Prometheus** service.
-Next, you need to click on **Actions > Create Route**:
+Create the route to access `Prometheus` web UI. Navigate `Networking > Routes` on the left menu and click on `Create Route` service.
 
 ![Prometheus]({% image_path prometheus-create-route.png %})
 
- Click on **Create** with keeping all default variables:
+Input the following variables and keep the rest of all default variables. Click on `Create`.
+
+ * Name: `prometheus`
+ * Service: `prometheus`
+ * Target Port: `9090 -> 9090 (TCP)`
 
 ![Prometheus]({% image_path prometheus-route-detail.png %})
 
-Now, you have the route URL(i.e. `http://prometheus-user1-monitoring.apps.seoul-7b68.openshiftworkshop.com`) and click on the URL to make sure if you can access the Prometheus web UI:
+Now, you have the route URL(i.e. `http://prometheus-user0-monitoring.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com`) as below 
+and click on the URL to make sure if you can access the `Prometheus web UI`.
 
 ![Prometheus]({% image_path prometheus-route-link.png %})
 
@@ -279,29 +283,32 @@ You will see the landing page of Prometheus as shown:
 
 ![Prometheus]({% image_path prometheus-webui.png %})
 
-Let's deploy **Grafana Dashboards** to OpenShift. Go to **Overview** page in `CoolStore App Monitoring Tools` project 
-and click on `Deploy Image` under `Add to Project` menu:
+Let's deploy `Grafana Dashboards` to OpenShift. Go to `Project Status` page in `userXX-monitoring` project 
+and click on `Deploy Image` under `Add` menu:
 
 ![Grafana]({% image_path add-to-project-grafana.png %})
 
-Select **Image Name** and input `grafana/grafana` to search the Prometheus container image via clicking on **Search** icon.
+Select `Image Name` and input `grafana/grafana` to search the Prometheus container image via clicking on `Search` icon.
 
 ![Grafana]({% image_path search-grafana-image.png %})
 
-Once you find the image correctly as the above screenshot, click on **Deploy**.
+Once you find the image correctly as the above screenshot, click on `Deploy`. It takes 1 ~ 2 mins to deploy a pod.
 
 ![Grafana]({% image_path grafana-deploy-done.png %})
 
-Create the route to access **Grafana** web UI. Navigate **Application > Services** on the left menu and click on **Grafana** service.
-Next, you need to click on **Actions > Create Route**:
+Create the route to access `Grafana` web UI. Navigate `Networking > Routes` on the left menu and click on `Create Route` service.
 
 ![Grafana]({% image_path grafana-create-route.png %})
 
- Click on **Create** with keeping all default variables:
+Input the following variables and keep the rest of all default variables. Click on `Create`.
+
+ * Name: `grafana`
+ * Service: `grafana`
+ * Target Port: `3000 -> 3000 (TCP)`
 
 ![Grafana]({% image_path grafana-route-detail.png %})
 
-Now, you have the route URL(i.e. `http://grafana-user1-monitoring.apps.seoul-7b68.openshiftworkshop.com`) and 
+Now, you have the route URL(i.e. `http://grafana-user0-monitoring.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com`) and 
 click on the URL to make sure if you can access the Grafana web UI.
 
 ![Grafana]({% image_path grafana-route-link.png %})
@@ -315,7 +322,7 @@ Log in Grafana web UI using the following variables:
 * Username: admin
 * Password: admin
 
-**Skip** the Change Password.
+`Skip` the Change Password.
 
 ![Grafana]({% image_path grafana-skip-changepwd.png %})
 
@@ -336,15 +343,15 @@ Click on data sources of the configuration menu and you’ll be taken to the dat
 
 ![Grafana]({% image_path grafana-add-datasource.png %}){:width="700px"}
 
-Click Add data source and select **Prometheus** as data source type.
+Click Add data source and select `Prometheus` as data source type.
 
 ![Grafana]({% image_path grafana-datasource-types.png %})
 
-Next, input the following variables to configure the dashboard. Make sure to replace `HTTP URL` with your **Prometheus Route URL**. 
-Click on **Save & Test** then you will see the **Data source is working** message.
+Next, input the following variables to configure the dashboard. Make sure to replace `HTTP URL` with your `Prometheus Route URL`. 
+Click on `Save & Test` then you will see the `Data source is working` message.
 
 * Name: CloudNativeApps
-* HTTP URL: http://prometheus-user1-monitoring.apps.seoul-7b68.openshiftworkshop.com
+* HTTP URL: http://YOUR_PROMETHEUS_ROUTE_URL
 
 ![Grafana]({% image_path granfan-setting.png %})
 
@@ -352,16 +359,16 @@ Click on **Save & Test** then you will see the **Data source is working** messag
 
 ---
 
-In this step, we will learn how **Inventory(Quarkus)** application can utilize the MicroProfile Metrics specification through the **SmallRye Metrics extension**.
-**MicroProfile Metrics** allows applications to gather various metrics and statistics that provide insights into what is happening inside the application.
+In this step, we will learn how `Inventory(Quarkus)` application can utilize the MicroProfile Metrics specification through the `SmallRye Metrics extension`.
+`MicroProfile Metrics` allows applications to gather various metrics and statistics that provide insights into what is happening inside the application.
 
-The metrics can be read remotely using JSON format or the **OpenMetrics** format, so that they can be processed by additional tools such as **Prometheus**, 
+The metrics can be read remotely using JSON format or the `OpenMetrics` format, so that they can be processed by additional tools such as `Prometheus`, 
 and stored for analysis and visualisation.
 
 We will add Qurakus extensions to the Inventory application for using `smallrye-metrics` and we'll use the Quarkus Maven Plugin.
-Copy the following commands to add the smallrye-metricsextension via CodeReady Workspaces **Terminal**:
+Copy the following commands to add the smallrye-metricsextension via CodeReady Workspaces `Terminal`:
 
-Go to **inventory** directory:
+Go to `inventory` directory:
 
 `mvn quarkus:add-extension -Dextensions="metrics"`
 
@@ -369,7 +376,7 @@ If builds successfully (you will see `BUILD SUCCESS`), you will see `smallrye-op
 
 ![metrics_add_extension]({% image_path metrics-extension.png %})
 
-Let's add a few annotations to make sure that our desired metrics are calculated over time and can be exported for processing by **Prometheus** and **Grafana**.
+Let's add a few annotations to make sure that our desired metrics are calculated over time and can be exported for processing by `Prometheus` and `Grafana`.
 
 The metrics that we will gather are these:
 
@@ -378,18 +385,18 @@ The metrics that we will gather are these:
  * performedChecksAvail: A counter of how many getAvailability() have been performed.
  * checksTimerAvail: A measure of how long it takes to perform the getAvailability().
 
-Open **InventoryResource** file in `src/main/java/com/redhat/coolstore` and add **@Counted**, **@Timed** annotations to `getAll(), getAvailability(@PathParam String itemId)` methods:
+Open `InventoryResource` file in `src/main/java/com/redhat/coolstore` and add `@Counted`, `@Timed` annotations to `getAll(), getAvailability(@PathParam String itemId)` methods:
 
 ~~~java
     @GET
-    @Counted(name = "performedChecksAll", monotonic = true, description = "How many getAll() have been performed.")
+    @Counted(name = "performedChecksAll", description = "How many getAll() have been performed.")
     @Timed(name = "checksTimerAll", description = "A measure of how long it takes to perform the getAll().", unit = MetricUnits.MILLISECONDS)
     public List<Inventory> getAll() {
         return Inventory.listAll();
     }
 
     @GET
-    @Counted(name = "performedChecksAvail", monotonic = true, description = "How many getAvailability() have been performed.")
+    @Counted(name = "performedChecksAvail", description = "How many getAvailability() have been performed.")
     @Timed(name = "checksTimerAvail", description = "A measure of how long it takes to perform the getAvailability().", unit = MetricUnits.MILLISECONDS)
     @Path("{itemId}")
     public List<Inventory> getAvailability(@PathParam String itemId) {
@@ -415,11 +422,11 @@ Repackage the inventory application via clicking on `Package for OpenShift` in `
 
 ![codeready-workspace-maven]({% image_path quarkus-dev-run-packageforOcp.png %})
 
-Or you can run a maven plugin command directly in **Terminal**:
+Or you can run a maven plugin command directly in `Terminal`:
 
 `mvn clean package -DskipTests`
 
-Next, create a temp directory to store only previously-built application with necessary lib directory via CodeReady Workspaces **Terminal**:
+Next, create a temp directory to store only previously-built application with necessary lib directory via CodeReady Workspaces `Terminal`:
 
 `rm -rf target/binary && mkdir -p target/binary && cp -r target/*runner.jar target/lib target/binary`
 
@@ -431,83 +438,110 @@ Finally, make sure it's actually done rolling out:
 
 `oc rollout status -w dc/inventory-quarkus -n userxx-inventory`
 
-Go to the **USERXX CoolStore App Monitoring Tools** project in OpenShift Web Console and then on the left sidebar, **Resources >> Config Maps**. 
+Go to the `userXX-monitoring` project in OpenShift Web Console and then on the left sidebar, `Workloads > Config Maps`. 
 
 ![prometheus]({% image_path prometheus-quarkus-configmap.png %})
 
-Click on **Create Config Maps** button to create a config map with the following info:
+Click on `Create Config Maps` button to create a config map with the following info:
 
- * Name: `prometheus-config`
- * Key: `prometheus.yml`
- * Value: *copy-paste the below content*
+> You need to replace `userXX-monitoring`, `YOUR_PROMETHEUS_ROUTE_URL` and `YOUR_INVENTORY_ROUTE_URL` except `http://` align with your environment.
 
-> You need to replace **targets** URL align with the route URL in your environment.
+ * Prometheus Route URL example: _prometheus-user0-monitoring.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com_
+ * Inventory Route URL example: _inventory-quarkus-user0-inventory.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com_
 
-~~~java
-# my global config
-global:
-  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
-  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
-  # scrape_timeout is set to the global default (10s).
+~~~yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: userXX-monitoring
+data:
+  prometheus.yml: >-
+    # my global config
 
-# Alertmanager configuration
-alerting:
-  alertmanagers:
-  - static_configs:
-    - targets:
-      # - alertmanager:9093
+    global:
+      scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+      evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+      # scrape_timeout is set to the global default (10s).
 
-# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
-rule_files:
-  # - "first_rules.yml"
-  # - "second_rules.yml"
+    # Alertmanager configuration
 
-# A scrape configuration containing exactly one endpoint to scrape:
-# Here it's Prometheus itself.
-scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: 'prometheus'
+    alerting:
+      alertmanagers:
+      - static_configs:
+        - targets:
+          # - alertmanager:9093
 
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
+    # Load rules once and periodically evaluate them according to the global
+    'evaluation_interval'.
 
-    static_configs:
-    - targets: ['prometheus-userXX-monitoring.apps.seoul-7b68.openshiftworkshop.com']
-  
-  - job_name: 'quarkus'
-    metrics_path: '/metrics/application'
+    rule_files:
+      # - "first_rules.yml"
+      # - "second_rules.yml"
 
-    static_configs:
-    - targets:  [inventory-quarkus-userXX-inventory.apps.seoul-7b68.openshiftworkshop.com']
+    # A scrape configuration containing exactly one endpoint to scrape:
+
+    # Here it's Prometheus itself.
+
+    scrape_configs:
+      # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+      - job_name: 'prometheus'
+
+        # metrics_path defaults to '/metrics'
+        # scheme defaults to 'http'.
+
+        static_configs:
+        - targets: ['YOUR_PROMETHEUS_ROUTE_URL']
+      
+      - job_name: 'quarkus'
+        metrics_path: '/metrics/application'
+
+        static_configs:
+        - targets:  ['YOUR_INVENTORY_ROUTE_URL']
 ~~~
  
 ![prometheus]({% image_path prometheus-quarkus-configmap-detail.png %})
 
-Config maps hold key-value pairs and in the above command an **prometheus-config** config map 
-is created with **prometheus.yml** as the key and the above content as the value. Whenever a config map is injected into a container, 
+Config maps hold key-value pairs and in the above command an `prometheus-config` config map 
+is created with `prometheus.yml` as the key and the above content as the value. Whenever a config map is injected into a container, 
 it would appear as a file with the same name as the key, at specified path on the filesystem.
 
 You can see the content of the config map in the OpenShift Web Console or by 
-using `oc describe cm prometheus-config -n userXX-monitoring` command via CodeReady Workspace **Terminal**.
+using `oc describe cm prometheus-config -n userXX-monitoring` command via CodeReady Workspace `Terminal`.
 
-Modify the **Prometheus deployment config** so that it injects the **prometheus.yml** configuration you just created as 
-a config map into the Prometheus container. Go to **Application > Deployments** in **USERXX Coolstore App Monitoring Tools** project overview 
-and click on **prometheus** deployment:
+Modify the `Prometheus deployment config` so that it injects the `prometheus.yml` configuration you just created as 
+a config map into the Prometheus container. Go to `Workloads > Deployment Configs` in `userXX-monitoring` project page 
+and click on `prometheus` deployment:
 
 ![prometheus]({% image_path prometheus-dc.png %})
 
-Move to **Configuration** tab menu and click on **Add Config Files**:
+Move to `YAML` tab menu and add the `prometheus-config` in `spec.volumes` and `spec.containers.volumeMounts` sections.
+
+ * `spec.volumes` section:
+
+ ~~~yaml
+ volumes:
+  - name: prometheus-1
+    emptyDir: {}
+  - configMap:
+      defaultMode: 420
+      name: prometheus-config
+    name: volume-tcjnf
+ ~~~
+
+ * `spec.containers.volumeMounts` section:
+
+~~~yaml
+volumeMounts:
+  - name: prometheus-1
+    mountPath: /prometheus
+  - name: volume-tcjnf
+    mountPath: /etc/prometheus
+~~~
 
 ![prometheus]({% image_path prometheus-configuration-tab.png %})
 
-Input the following variables in **Add Config Files to prometheus** and click on **Add**:
-
- * Source: _prometheus-config_
- * Mount Path: _/etc/prometheus_
-
-![prometheus]({% image_path prometheus-add-config.png %})
-
-You can also use **oc set volume** command for this:
+You can also use `oc set volume` command for this:
 
 `oc set volume dc/prometheus --add --configmap-name=prometheus-config --mount-path=/etc/prometheus -n userxx-monitoring`
 
@@ -515,15 +549,15 @@ You can also use **oc set volume** command for this:
 
 ---
 
-Open a web browser to access the route URL(i.e. http://inventory-quarkus-user1-inventory.apps.seoul-7b68.openshiftworkshop.com/services/inventory) for invoking **getAll()** method in Inventory service. 
+Open a web browser to access the inventory route URL for invoking `getAll()` method in Inventory service. 
 
-Next, call **getAvailability(@PathParam String itemId)** method as well via the following **CURL** command with your Inventory's route URL: 
+Next, call `getAvailability(@PathParam String itemId)` method as well via the following `CURL` command with your Inventory's route URL: 
 
-`for i in {1..50}; do curl http://inventory-quarkus-userXX-inventory.apps.seoul-7b68.openshiftworkshop.com/services/inventory/329199 ; date ; sleep 1; done`
+`for i in {1..50}; do curl http://YOUR_INVENTORY_ROUTE_URL/services/inventory/329199 ; date ; sleep 1; done`
 
-Let's review the generated metrics. We have 3 ways to view the metircs such as **1)using CURL**, **2)using Prometheus Web UI**, and **3)using Grafana Dashboards**.
+Let's review the generated metrics. We have 3 ways to view the metircs such as `1)using CURL`, `2)using Prometheus Web UI`, and `3)using Grafana Dashboards`.
 
-**1)** Execute `curl -H"Accept: application/json" inventory-quarkus-user1-inventory.apps.seoul-7b68.openshiftworkshop.com/metrics/application` via CodeReady Workspace Terminal. You should use your own route URL of the Inventory service abd You will receive a similar response as here:
+`1)` Execute `curl -H"Accept: application/json" http://YOUR_INVENTORY_ROUTE_URL/metrics/application` via CodeReady Workspace Terminal. You should use your own route URL of the Inventory service abd You will receive a similar response as here:
 
 ~~~shell
 {
@@ -566,28 +600,28 @@ Let's review the generated metrics. We have 3 ways to view the metircs such as *
 }
 ~~~
 
-**2)** Open the Prometheus Web UI via a web brower and input(or select) `scrape_duration_seconds` in query box. 
-Click on **Execute** then you will see **quarkus job** in the metrics:
+`2)` Open the `Prometheus Web UI` via a web brower and input(or select) `scrape_duration_seconds` in query box. 
+Click on `Execute` then you will see `quarkus job` in the metrics:
 
 ![metrics_prometheus]({% image_path prometheus-metrics-console.png %})
 
-Switch to **Graph** tab:
+Switch to `Graph` tab:
 
 ![metrics_prometheus]({% image_path prometheus-metrics-graph.png %})
 
-**3)** Open the Grafana Web UI via a web brower and create a new **Dashboard** to review the metrics.
+`3)` Open the `Grafana Web UI` via a web brower and create a new `Dashboard` to review the metrics.
 
 ![metrics_grafana]({% image_path grafana-create-dashboard.png %})
 
-Click on **New dashboard** then select **Add Query** in a new panel:
+Click on `New dashboard` then select `Add Query` in a new panel:
 
 ![metrics_grafana]({% image_path grafana-add-query.png %}) 
 
-Add **scrape_duration_seconds** in query box:
+Add `scrape_duration_seconds` in query box:
 
 ![metrics_grafana]({% image_path grafana-add-query-detail.png %}) 
 
-Click on **Query Inspector** then you will see **inventory-quarkus metrics** and change **5s** to refresh dashboard:
+Click on `Query Inspector` then you will see `inventory-quarkus metrics` and change `5s` to refresh dashboard:
 
 ![metrics_grafana]({% image_path grafana-add-query-complete.png %}) 
 
@@ -595,10 +629,10 @@ Click on **Query Inspector** then you will see **inventory-quarkus metrics** and
 
 ---
 
-In this step, we will learn how to export metrics to **Prometheus** from **Spring Boot** application by 
+In this step, we will learn how to export metrics to `Prometheus` from `Spring Boot` application by 
 using the [Prometheus JVM Client](https://github.com/prometheus/client_java).
 
-Go to **Catalog** project directory and open **pom.xml** to add the following **Prometheus dependencies**:
+Go to `Catalog` project directory and open `pom.xml` to add the following `Prometheus dependencies`:
 
 ~~~xml
 <!-- Prometheus dependency  -->
@@ -623,7 +657,7 @@ Go to **Catalog** project directory and open **pom.xml** to add the following **
 
 ![metrics_grafana]({% image_path catalog-prometheus-dependency.png %}) 
 
-Next, create **MonitoringConfig.java** class in `src/main/java/com/redhat/coolstore/` and copy the following codes into **MonitoringConfig.java** file:
+Next, create `MonitoringConfig.java` class in `src/main/java/com/redhat/coolstore/` and copy the following codes into `MonitoringConfig.java` file:
 
 ~~~java
 package com.redhat.coolstore;
@@ -662,13 +696,13 @@ class MonitoringConfig {
 
 ---
 
-Build and deploy the Catalog project using the following command, which will use the maven plugin to deploy via CodeReady Workspace **Terminal**:
+Build and deploy the Catalog project using the following command, which will use the maven plugin to deploy via CodeReady Workspace `Terminal`:
 
 `oc project userxx-catalog`
 
 `mvn package fabric8:deploy -Popenshift -DskipTests`
 
-The build and deploy may take a minute or two. Wait for it to complete. You should see a **BUILD SUCCESS** at the
+The build and deploy may take a minute or two. Wait for it to complete. You should see a `BUILD SUCCESS` at the
 end of the build output.
 
 After the maven build finishes it will take less than a minute for the application to become available.
@@ -676,11 +710,11 @@ To verify that everything is started, run the following command and wait for it 
 
 ![catalog_deploy_success]({% image_path catalog_deploy_success.png %})
 
-You can also check if the deployment is complete via CodeReady Workspace **Terminal**:
+You can also check if the deployment is complete via CodeReady Workspace `Terminal`:
 
 `oc rollout status -w dc/catalog -n userXX-catalog`
 
-Let's **collect metrics**. Open a web browser with the following URL after replacing with your **Catalog route URL**:
+Let's `collect metrics`. Open a web browser with the following URL after replacing with your `Catalog route URL`:
 
 `http://catalog-userXX-catalog.apps.seoul-7b68.openshiftworkshop.com/prometheus`
 
@@ -732,21 +766,21 @@ jvm_classes_loaded_total 10770.0
 
 ---
 
-Edit **prometheus-config** configmap in **USER XX CoolStore App Monitoring Tools** project with the following contents:
+Edit `prometheus-config` configmap in `userXX-monitoring` project with the following contents:
 
 ~~~java
   - job_name: 'spring-boot'
     metrics_path: '/prometheus'
 
     static_configs:
-    - targets:  ['catalog-userXX-catalog.apps.seoul-7b68.openshiftworkshop.com']
+    - targets:  ['YOUR_CATALOG_ROUTE_URL']
 ~~~
 
-Click on **Save**.
+Click on `Save`.
 
 ![prometheus]({% image_path prometheus-quarkus-configmap-detail-sb.png %})
 
-Redeploy **prometheus** in Overview page:
+Redeploy `Workloads > Deployment Configs` in the left menu and click on `Start Rollout`:
 
 ![prometheus]({% image_path prometheus-redeploy.png %})
 
@@ -754,17 +788,17 @@ Redeploy **prometheus** in Overview page:
 
 ---
 
-**1)** Open the Prometheus Web UI via a web brower and input(or select) `scrape_duration_seconds` in query box. 
-Click on **Execute** then you will see **quarkus job** in the metrics:
+`1)` Open the Prometheus Web UI via a web brower and input(or select) `scrape_duration_seconds` in query box. 
+Click on `Execute` then you will see `quarkus job` in the metrics:
 
 ![metrics_prometheus]({% image_path prometheus-metrics-console-final.png %})
 
-Switch to **Graph** tab:
+Switch to `Graph` tab:
 
 ![metrics_prometheus]({% image_path prometheus-metrics-graph-final.png %})
 
-**2)** Open the Grafana Web UI via a web brower and click on **Query Inspector** then you will see 
-**inventory-quarkus** and **catalog-sprinb-boot** metrics:
+`2)` Open the Grafana Web UI via a web brower and click on `Query Inspector` then you will see 
+`inventory-quarkus` and `catalog-sprinb-boot` metrics:
 
 ![metrics_grafana]({% image_path grafana-add-query-complete.png %}) 
 

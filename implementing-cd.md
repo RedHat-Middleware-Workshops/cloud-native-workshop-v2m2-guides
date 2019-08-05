@@ -8,7 +8,7 @@ changes and debug.
 
 In this step, we are now going to setup a separate production environment and explore some
 best practices and techniques for developers and DevOps teams for getting code from
-the developer **(that's YOU!)** to production with less downtime and greater consistency.
+the developer `(that's YOU!)` to production with less downtime and greater consistency.
 
 #### Production vs. Development
 
@@ -30,13 +30,13 @@ environment.
 We will create and initialize the new production environment using another template
 in a separate OpenShift project.
 
-In OpenShift web console, click **Create Project**, fill in the fields, and click **Create**:
+In OpenShift web console, click `Create Project`, fill in the fields, and click `Create`:
 
 * Name: `userXX-coolstore-prod`
 * Display Name: `USERXX Coolstore Monolith - Production`
 * Description: _leave this field empty_
 
-> **NOTE**: YOU **MUST** USE `userXX-coolstore-prod` AS THE PROJECT NAME, as this name is referenced later
+> `NOTE`: YOU `MUST` USE `userXX-coolstore-prod` AS THE PROJECT NAME, as this name is referenced later
 on and you will experience failures if you do not name it `userXX-coolstore-prod`!
 
 This will create a new OpenShift project called `userXX-coolstore-prod` from which our production application will run.
@@ -47,7 +47,7 @@ This will create a new OpenShift project called `userXX-coolstore-prod` from whi
 
 ---
 
-In this case we'll use the production template to create the objects. Execute via CodeReady Workspace **Terminal** window:
+In this case we'll use the production template to create the objects. Execute via CodeReady Workspace `Terminal` window:
 
 `oc project userXX-coolstore-prod`
 
@@ -133,7 +133,7 @@ Then, you will the details of `Jenkinsfile` on the right side:
 
 ![monolith-pipeline]({% image_path coolstore-prod-monolith-bc.png %})
 
-You can also inspect this via the following command via CodeReady Workspace **Terminal** window:
+You can also inspect this via the following command via CodeReady Workspace `Terminal` window:
 
 `oc describe bc/monolith-pipeline`
 
@@ -174,7 +174,7 @@ Jenkinsfile contents:
   }
 ~~~
 
-> **NOTE:** You have to replace your username with `userXX` in Jenkinsfile via clicking on `YAML` tab. 
+> `NOTE:` You have to replace your username with `userXX` in Jenkinsfile via clicking on `YAML` tab. 
 For example, if your username is `user0`, it will be `user0-coolstore-dev` and `user0-coolstore-prod`. Don't forget to click on `Save`.
 
 ![monolith-pipeline]({% image_path coolstore-prod-monolith-update-jenkins.png %})
@@ -261,7 +261,7 @@ Go back to `Builds > Build Configs > monolith-pipeline` then click on `Edit Buil
 
 Click on `YAML` tab and add `a new stage` to the pipeline, just before the `Deploy to PROD` stage:
 
-> **NOTE**: You will need to copy and paste the below code into the right place as shown in the below image.
+> `NOTE`: You will need to copy and paste the below code into the right place as shown in the below image.
 
 ~~~groovy
 stage ('Approve Go Live') {
@@ -299,15 +299,15 @@ Add the following CSS to turn the header bar background to Red Hat red (`Copy` t
 
 ~~~
 
-Next, re-build the app once more via CodeReady Workspace **Terminal**:
+Next, re-build the app once more via CodeReady Workspace `Terminal`:
 
 `mvn clean package -Popenshift`
 
-And re-deploy it to the dev environment using a binary build just as we did before via CodeReady Workspace **Terminal**:
+And re-deploy it to the dev environment using a binary build just as we did before via CodeReady Workspace `Terminal`:
 
 `oc start-build -n userXX-coolstore-dev coolstore --from-file=deployments/ROOT.war`
 
-Now wait for it to complete the deployment via CodeReady Workspace **Terminal**:
+Now wait for it to complete the deployment via CodeReady Workspace `Terminal`:
 
 `oc -n userXX-coolstore-dev rollout status -w dc/coolstore`
 
@@ -350,12 +350,12 @@ Click on `Console Output` on left menu then click on `Proceed`.
 
 ---
 
-Click **Proceed**, which will approve the change to be pushed to production. You could also have
-clicked **Abort** which would stop the pipeline immediately in case the change was unwanted or unapproved.
+Click `Proceed`, which will approve the change to be pushed to production. You could also have
+clicked `Abort` which would stop the pipeline immediately in case the change was unwanted or unapproved.
 
-Once you click **Proceed**, you will see the log file from Jenkins showing the final progress and deployment.
+Once you click `Proceed`, you will see the log file from Jenkins showing the final progress and deployment.
 
-Wait for the production deployment to complete via CodeReady Workspace **Terminal**:
+Wait for the production deployment to complete via CodeReady Workspace `Terminal`:
 
 `oc rollout -n coolstore-prod status dc/coolstore-prod`
 
@@ -377,32 +377,32 @@ In order to automate triggering the pipeline, you can define a webhook on your G
 to notify OpenShift on every commit that is made to the Git repository and trigger a pipeline 
 execution.
 
-You can get see the webhook links in the OpenShift Web Console by going to **Build >> Pipelines**, clicking 
-on the pipeline and going to the **Configurations** tab.
+You can get see the webhook links in the OpenShift Web Console by going to `Build >> Pipelines`, clicking 
+on the pipeline and going to the `Configurations` tab.
 
 Copy the Generic webhook url which you will need in the next steps.
 
-Go to your [Git repository]({{GIT_URL}}/userXX/cloud-native-workshop-v2m1-labs.git), then click on **Settings**.
+Go to your [Git repository]({{GIT_URL}}/userXX/cloud-native-workshop-v2m1-labs.git), then click on `Settings`.
 
 ![Repository Settings]({% image_path cd-gogs-settings-link.png %}){:width="900px"}
 
-On the left menu, click on **Webhooks** and then on **Add Webhook** button and then **Gogs**. 
+On the left menu, click on `Webhooks` and then on `Add Webhook` button and then `Gogs`. 
 
 Create a webhook with the following details:
 
-* **Payload URL**: paste the Generic webhook url you copied from the `monolith-pipeline`
-* **Content type**: `application/json`
+* `Payload URL`: paste the Generic webhook url you copied from the `monolith-pipeline`
+* `Content type`: `application/json`
 
-Click on **Add Webhook**. 
+Click on `Add Webhook`. 
 
 ![Repository Webhook]({% image_path cd-gogs-webhook-add.png %}){:width="660px"}
 
 All done. You can click on the newly defined webhook to see the list of *Recent Delivery*. 
-Clicking on the **Test Delivery** button allows you to manually trigger the webhook for 
+Clicking on the `Test Delivery` button allows you to manually trigger the webhook for 
 testing purposes. Click on it and verify that the `monolith-pipeline` start running 
 immediately.
 
-**Congratulations!** You have added a human approval step for all future developer changes. You now have two projects that can be visualized as:
+`Congratulations!` You have added a human approval step for all future developer changes. You now have two projects that can be visualized as:
 
 ![Prod]({% image_path goal.png %}){:width="800px"}
 
