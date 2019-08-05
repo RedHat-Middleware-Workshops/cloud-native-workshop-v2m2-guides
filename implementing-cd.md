@@ -128,13 +128,10 @@ like test or production.
 ---
 
 Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the
-pipeline by navigating `Builds > Build Configs` and click on `monolith-pipeline`in OpenShift Web Console:
-
-![monolith-pipeline]({% image_path coolstore-prod-monolith-bc.png %})
-
+pipeline by navigating `Builds > Build Configs` and click on `monolith-pipeline`in OpenShift Web Console.
 Then, you will the details of `Jenkinsfile` on the right side:
 
-![monolith-pipeline]({% image_path coolstore-prod-monolith-pipeline.png %})
+![monolith-pipeline]({% image_path coolstore-prod-monolith-bc.png %})
 
 You can also inspect this via the following command via CodeReady Workspace **Terminal** window:
 
