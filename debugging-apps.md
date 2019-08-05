@@ -51,21 +51,21 @@ From the **Run** menu, click on **Edit Debug Configurations...**.
 The window shows the debuggers available in CodeReady Workspace. Click on the plus sign near the 
 Java debugger.
 
-![Remote Debug]({% image_path debug-che-debug-config-2.png %}){:width="700px"}
+![Remote Debug]({% image_path debug-che-debug-config-2.png %})
 
 Configure the remote debugger and click on the **Save** button:
 
 * Check **Connect to process on workspace machine**
 * Port: `5005`
 
-![Remote Debug]({% image_path debug-che-debug-config-3.png %}){:width="700px"}
+![Remote Debug]({% image_path debug-che-debug-config-3.png %}
 
 You can now click on the **Debug** button to make CodeReady Workspace connect to the 
 Inventory service running on OpenShift.
 
 You should see a confirmation that the remote debugger is successfully connected.
 
-![Remote Debug]({% image_path debug-che-debug-config-4.png %}){:width="360px"}
+![Remote Debug]({% image_path debug-che-debug-config-4.png %}){:width="700px"}
 
 Open `com.redhat.coolstore.InventoryResource` and double-click 
 on the editor sidebar on the line number of the first line of the `getAvailability()` 
@@ -93,7 +93,7 @@ breakpoint on `InventoryResource` class.
 Click on the _Step Over_ icon to execute one line and retrieve the inventory object for the 
 given product id from the database.
 
-![Step Over]({% image_path debug-che-step-over.png %}){:width="500px"}
+![Step Over]({% image_path debug-che-step-over.png %}){:width="700px"}
 
 Click on the the plus icon in the **Variables** panel to add the `inventory` variable 
 to the list of watch variables.
@@ -119,7 +119,7 @@ end the debug session. When you swich to **Terminal-2** window, you will see the
 [{"id":3,"itemId":"165613","link":"http://maps.google.com/?q=Seoul","location":"Seoul","quantity":256}]
 ~~~
 
-![Icons]({% image_path debug-che-window-result.png %}){:width="700px"}
+![Icons]({% image_path debug-che-window-result.png %})
 
 > **NOTE**: Make sure to stop Quarkus development mode via `Close` the terminal.
 

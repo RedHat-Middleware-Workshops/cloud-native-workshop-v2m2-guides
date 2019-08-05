@@ -41,7 +41,7 @@ on and you will experience failures if you do not name it `userXX-coolstore-prod
 
 This will create a new OpenShift project called `userXX-coolstore-prod` from which our production application will run.
 
-![create_dialog]({% image_path create_prod_dialog.png %}){:width="500"}
+![create_dialog]({% image_path create_prod_dialog.png %})
 
 ####2. Add the production elements
 
@@ -55,12 +55,18 @@ And finally deploy template:
 
 `oc new-app --template=coolstore-monolith-pipeline-build`
 
+We have to deploy `Jenkins Server` in the namespace because OpenShift 4 doesn't deploy a Jenkins server automatically when we use `Jenkins Pipeline` build strategy.
+
+`oc new-app --template=jenkins-ephemeral -l app=jenkins -p JENKINS_SERVICE_NAME=jenkins -p DISABLE_ADMINISTRATIVE_MONITORS=true`
+
+`oc set resources dc/jenkins --limits=cpu=1,memory=2Gi --requests=cpu=1,memory=512Mi`
+
 This will use an OpenShift Template called `coolstore-monolith-pipeline-build` to construct the production application.
 As you probably guessed it will also include a Jenkins Pipeline to control the production application (more on this later!)
 
 Navigate to the Web Console to see your new app and the components using this link:
 
-* Coolstore Prod Project Overview at `OpenShift Web Console`:
+* Coolstore Prod Project Status at `OpenShift Web Console`:
 
 ![Prod]({% image_path coolstore-prod-overview.png %})
 
@@ -122,7 +128,11 @@ like test or production.
 ---
 
 Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the
-pipeline by navigating **Builds > Pipelines > monolith-pipeline > Configuration** in OpenShift Web Console:
+pipeline by navigating `Builds > Build Configs` and click on `monolith-pipeline`in OpenShift Web Console:
+
+![monolith-pipeline]({% image_path coolstore-prod-monolith-bc.png %})
+
+Then, you will the details of `Jenkinsfile` on the right side:
 
 ![monolith-pipeline]({% image_path coolstore-prod-monolith-pipeline.png %})
 
@@ -134,24 +144,43 @@ You can see the Jenkinsfile definition of the pipeline in the output:
 
 ~~~shell
 Jenkinsfile contents:
-  node ('maven') {
-    stage 'Build'
-    sleep 5
-
-    stage 'Run Tests in DEV'
-    sleep 10
-
-    stage 'Deploy to PROD'
-    openshiftTag(sourceStream: 'coolstore', sourceTag: 'latest', namespace: 'userXX-coolstore-dev', destinationStream: 'coolstore', destinationTag: 'prod', destinationNamespace: 'userXX-coolstore-prod')
-    sleep 10
-
-    stage 'Run Tests in PROD'
-    sleep 30
+  pipeline {
+    agent {
+      label 'maven'
+    }
+    stages {
+      stage ('Build') {
+        steps {
+          sleep 5
+        }
+      }
+      stage ('Run Tests in DEV') {
+        steps {
+          sleep 10
+        }
+      }
+      stage ('Deploy to PROD') {
+        steps {
+          script {
+            openshift.withCluster() {  
+              openshift.tag("userXX-coolstore-dev/coolstore:latest", "userXX-coolstore-prod/coolstore:prod")
+            }
+          }
+        }
+      }
+      stage ('Run Tests in PROD') {
+        steps {
+          sleep 30
+        }
+      }
+    }
   }
 ~~~
 
-> **NOTE:** You have to replace your username with `userXX` in Jenkinsfile via clicking on **Actions > Edit** menu. 
-For example, if your username is **user1**, it will be **user1-coolstore-dev** and **user1-coolstore-prod**.
+> **NOTE:** You have to replace your username with `userXX` in Jenkinsfile via clicking on `YAML` tab. 
+For example, if your username is `user0`, it will be `user0-coolstore-dev` and `user0-coolstore-prod`. Don't forget to click on `Save`.
+
+![monolith-pipeline]({% image_path coolstore-prod-monolith-update-jenkins.png %})
 
 Pipeline syntax allows creating complex deployment scenarios with the possibility of defining
 checkpoint for manual interaction and approval process using
@@ -169,12 +198,12 @@ created using a tag which will trigger deployment in the production environment.
 
 ---
 
-Before prmoting the dev image, you need to modify a **RoleBinding** to access the dev image by Jenkins.
-Go to overview page of **UserXX Coolstore Monolith Dev** project then naviage `Resources > Role Binding > ci_admin > Edit YAML` as here:
+Before prmoting the dev image, you need to modify a `RoleBinding` to access the dev image by Jenkins.
+Go to overview page of `UserXX Coolstore Monolith Dev` project then naviage `Administration > Role Bindings`. Click on `ci_admin`:
 
 ![Prod]({% image_path coolstore-dev-ci-admin.png %})
 
-Replace your username with `userXX` then click on **Save**.
+Move to `YAML` tab and replace your username with `userXX` then click on `Save`:
 
 ![Prod]({% image_path coolstore-dev-ci-admin-save.png %})
 
@@ -182,24 +211,22 @@ Let's invoke the build pipeline by using OpenShift Web Console. Open the product
 
 * Web Console - Coolstore Monolith Prod at `OpenShift Web Console`.
 
-Next, navigate to _Builds -> Pipelines_ and click __Start Pipeline__ next to the `coolstore-monolith` pipeline:
+Next, navigate to `Builds > Build Configs > monolith-pipeline > Start Build`:
 
 ![Prod]({% image_path pipe-start.png %})
 
-This will start the pipeline. **It will take a minute or two to start the pipeline** (future runs will not
+This will start the pipeline. `It will take a minute or two to start the pipeline`(future runs will not
 take as much time as the Jenkins infrastructure will already be warmed up). You can watch the progress of the pipeline:
 
 ![Prod]({% image_path pipe-prog.png %})
 
-Once the pipeline completes, return to the Prod Project Overview at `OpenShift Web Console`
+Once the pipeline completes, return to the Prod Project Status at `OpenShift Web Console`
 
 and notice that the application is now deployed and running!
 
 ![Prod]({% image_path pipe-done.png %})
 
-View the production app **with the blue header from before** is running by clicking: CoolStore Production App at `OpenShift Web Console`
-
-(it may take a few moments for the container to deploy fully.)
+It may take a few moments for the container to deploy fully.
 
 #####Congratulations!
 You have successfully setup a development and production environment for your project and can use this workflow for future projects as well.
@@ -209,7 +236,7 @@ lead can be in charge of approving changes.
 
 ##### More Reading
 
-* [OpenShift Pipeline Documentation](https://docs.openshift.com/container-platform/3.7/dev_guide/dev_tutorials/openshift_pipeline.html)
+* [OpenShift Pipeline Documentation](https://docs.openshift.com/container-platform/4.1/builds/build-strategies.html#builds-strategy-pipeline-build_build-strategies)
 
 
 #### Adding Pipeline Approval Steps
@@ -231,31 +258,25 @@ and to change the pipeline you'd edit the _Jenkinsfile_ in the source base. For 
 just edit it directly to add the necessary changes. You can edit it with the `oc` command but we'll
 use the Web Console.
 
-Open the `monolith-pipeline` configuration page in the Web Console (you can navigate to it from
-_Builds -> Pipelines_ but here's a quick link):
+Go back to `Builds > Build Configs > monolith-pipeline` then click on `Edit Build Config`.
 
-* Pipeline Config page at `OpenShift Web Console`.
+![Prod]({% image_path pipe-edit.png %})
 
-On this page you can see the pipeline definition. Click _Actions -> Edit_ to edit the pipeline:
-
-![Prod]({% image_path pipe-edit.png %}){:width="800px"}
-
-In the pipeline definition editor, add a new stage to the pipeline, just before the `Deploy to PROD` step:
+Click on `YAML` tab and add a new step to the pipeline, just before the `Deploy to PROD` step:
 
 > **NOTE**: You will need to copy and paste the below code into the right place as shown in the below image.
 
 ~~~groovy
-  stage 'Approve Go Live'
-  timeout(time:30, unit:'MINUTES') {
-    input message:'Go Live in Production (switch to new version)?'
-  }
+timeout(time:15, unit:'MINUTES') {
+  input message: "Go Live in Production (switch to new version)?", ok: "Promote"
+}
 ~~~
 
 Your final pipeline should look like:
 
-![Prod]({% image_path pipe-edit2.png %}){:width="800px"}
+![Prod]({% image_path pipe-edit2.png %})
 
-Click **Save**.
+Click `Save`.
 
 ####6. Make a simple change to the app
 
@@ -267,7 +288,7 @@ the color of the header in the coolstore back to the original (black) color.
 First, open `src/main/webapp/app/css/coolstore.css` via CodeReady Workspace, which contains the CSS stylesheet for the
 CoolStore app.
 
-Add the following CSS to turn the header bar background to Red Hat red (**Copy** to add it at the bottom):
+Add the following CSS to turn the header bar background to Red Hat red (`Copy` to add it at the bottom):
 
 ~~~java
 
@@ -307,7 +328,9 @@ We're happy with this change in dev, so let's promote the new change to prod, us
 
 ---
 
-Invoke the pipeline once more by clicking **Start Pipeline** on the Pipeline Config page at `OpenShift Web Console`.
+Invoke the pipeline once more by navigating to `Builds > Build Configs > monolith-pipeline > Start Build`:
+
+![Prod]({% image_path pipe-start2.png %}).
 
 The same pipeline progress will be shown, however before deploying to prod, you will see a prompt in the pipeline:
 
@@ -317,7 +340,7 @@ Click on the link for `Input Required`. This will open a new tab and direct you 
 the same credentials as OpenShift:
 
 * Username: `userXX`
-* Password: `openshift`
+* Password: `r3dh4t1!`
 
 Accept the browser certificate warning and the Jenkins/OpenShift permissions, and then you'll find yourself at the approval prompt:
 
