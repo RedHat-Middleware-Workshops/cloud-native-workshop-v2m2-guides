@@ -41,7 +41,7 @@ on and you will experience failures if you do not name it `userXX-coolstore-prod
 
 This will create a new OpenShift project called `userXX-coolstore-prod` from which our production application will run.
 
-![create_dialog]({% image_path create_prod_dialog.png %})
+![create_dialog]({% image_path create_prod_dialog.png %}){:width="700px"}
 
 ####2. Add the production elements
 
@@ -332,13 +332,10 @@ We're happy with this change in dev, so let's promote the new change to prod, us
 
 ---
 
-Invoke the pipeline once more by navigating to `Builds > Build Configs > monolith-pipeline > Start Build`:
-
-![Prod]({% image_path pipe-start2.png %}).
-
+Invoke the pipeline once more by navigating to `Builds > Build Configs > monolith-pipeline > Start Build`.
 The same pipeline progress will be shown, however before deploying to prod, you will see a prompt in the pipeline:
 
-![Prod]({% image_path pipe-prompt.png %})
+![Prod]({% image_path pipe-start2.png %}).
 
 Click on the link for `Input Required`. This will open a new tab and direct you to Jenkins itself, where you can login with
 the same credentials as OpenShift:
