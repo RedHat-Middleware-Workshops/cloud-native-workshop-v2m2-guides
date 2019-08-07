@@ -1,6 +1,6 @@
 ## Lab3 - Application Monitoring
 
-In the previous labs, you learned how to debug cloud-native apps to fix errors quickly using CodeReady Workspace 
+In the previous labs, you learned how to debug cloud-native apps to fix errors quickly using CodeReady Workspaces 
 with Quarkus framework, and you got a glimpse into the power of Quarkus for developer joy.
 
 You will now begin observing applications in term of a distributed transaction, performance and latency because 
@@ -56,13 +56,13 @@ This template uses an in-memory storage with a limited functionality for local t
 Do not use this template in production environments, although there are a number of parameters in the template to 
 constrain the maximum number of traces and the amount of CPU/Memory consumed to prevent node instability.
 
-Install everything in the current namespace via CodeReady Workspace `Terminal`:
+Install everything in the current namespace via CodeReady Workspaces `Terminal`:
 
 `oc project userXX-monitoring`
 
 `oc process -f /projects/cloud-native-workshop-v2m2-labs/monitoring/jaeger-all-in-one-template.yml | oc create -f -`
 
-You can also check if the deployment is complete via CodeReady Workspace `Terminal`:
+You can also check if the deployment is complete via CodeReady Workspaces `Terminal`:
 
 `oc rollout status -w deployment.apps/jaeger`
 
@@ -77,7 +77,7 @@ When you navigate the `Project Status` page in OpenShift console, you will see a
 ---
 
 `Collector` is by default accessible only to services running inside the cluster. The easiest approach to expose the collector outside of 
-the cluster is via the `jaeger-collector-http` HTTP port using an `OpenShift Route` via CodeReady Workspace `Terminal`:
+the cluster is via the `jaeger-collector-http` HTTP port using an `OpenShift Route` via CodeReady Workspaces `Terminal`:
 
 `oc create route edge --service=jaeger-collector --port jaeger-collector-http --insecure-policy=Allow`
 
@@ -507,7 +507,7 @@ is created with `prometheus.yml` as the key and the above content as the value. 
 it would appear as a file with the same name as the key, at specified path on the filesystem.
 
 You can see the content of the config map in the OpenShift Web Console or by 
-using `oc describe cm prometheus-config -n userXX-monitoring` command via CodeReady Workspace `Terminal`.
+using `oc describe cm prometheus-config -n userXX-monitoring` command via CodeReady Workspaces `Terminal`.
 
 Modify the `Prometheus deployment config` so that it injects the `prometheus.yml` configuration you just created as 
 a config map into the Prometheus container. Go to `Workloads > Deployment Configs` in `userXX-monitoring` project page 
@@ -557,7 +557,7 @@ Next, call `getAvailability(@PathParam String itemId)` method as well via the fo
 
 Let's review the generated metrics. We have 3 ways to view the metircs such as `1)using CURL`, `2)using Prometheus Web UI`, and `3)using Grafana Dashboards`.
 
-`1)` Execute `curl -H"Accept: application/json" http://YOUR_INVENTORY_ROUTE_URL/metrics/application` via CodeReady Workspace Terminal. You should use your own route URL of the Inventory service abd You will receive a similar response as here:
+`1)` Execute `curl -H"Accept: application/json" http://YOUR_INVENTORY_ROUTE_URL/metrics/application` via CodeReady Workspaces Terminal. You should use your own route URL of the Inventory service abd You will receive a similar response as here:
 
 ~~~shell
 {
@@ -696,7 +696,7 @@ class MonitoringConfig {
 
 ---
 
-Build and deploy the Catalog project using the following command, which will use the maven plugin to deploy via CodeReady Workspace `Terminal`:
+Build and deploy the Catalog project using the following command, which will use the maven plugin to deploy via CodeReady Workspaces `Terminal`:
 
 `oc project userxx-catalog`
 
@@ -710,7 +710,7 @@ To verify that everything is started, run the following command and wait for it 
 
 ![catalog_deploy_success]({% image_path catalog_deploy_success.png %})
 
-You can also check if the deployment is complete via CodeReady Workspace `Terminal`:
+You can also check if the deployment is complete via CodeReady Workspaces `Terminal`:
 
 `oc rollout status -w dc/catalog -n userXX-catalog`
 

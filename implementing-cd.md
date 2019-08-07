@@ -47,7 +47,7 @@ This will create a new OpenShift project called `userXX-coolstore-prod` from whi
 
 ---
 
-In this case we'll use the production template to create the objects. Execute via CodeReady Workspace `Terminal` window:
+In this case we'll use the production template to create the objects. Execute via CodeReady Workspaces `Terminal` window:
 
 `oc project userXX-coolstore-prod`
 
@@ -133,7 +133,7 @@ Then, you will the details of `Jenkinsfile` on the right side:
 
 ![monolith-pipeline]({% image_path coolstore-prod-monolith-bc.png %})
 
-You can also inspect this via the following command via CodeReady Workspace `Terminal` window:
+You can also inspect this via the following command via CodeReady Workspaces `Terminal` window:
 
 `oc describe bc/monolith-pipeline`
 
@@ -299,15 +299,15 @@ Add the following CSS to turn the header bar background to Red Hat red (`Copy` t
 
 ~~~
 
-Next, re-build the app once more via CodeReady Workspace `Terminal`:
+Next, re-build the app once more via CodeReady Workspaces `Terminal`:
 
 `mvn clean package -Popenshift`
 
-And re-deploy it to the dev environment using a binary build just as we did before via CodeReady Workspace `Terminal`:
+And re-deploy it to the dev environment using a binary build just as we did before via CodeReady Workspaces `Terminal`:
 
 `oc start-build -n userXX-coolstore-dev coolstore --from-file=deployments/ROOT.war`
 
-Now wait for it to complete the deployment via CodeReady Workspace `Terminal`:
+Now wait for it to complete the deployment via CodeReady Workspaces `Terminal`:
 
 `oc -n userXX-coolstore-dev rollout status -w dc/coolstore`
 
@@ -355,7 +355,7 @@ clicked `Abort` which would stop the pipeline immediately in case the change was
 
 Once you click `Proceed`, you will see the log file from Jenkins showing the final progress and deployment.
 
-Wait for the production deployment to complete via CodeReady Workspace `Terminal`:
+Wait for the production deployment to complete via CodeReady Workspaces `Terminal`:
 
 `oc rollout -n coolstore-prod status dc/coolstore-prod`
 

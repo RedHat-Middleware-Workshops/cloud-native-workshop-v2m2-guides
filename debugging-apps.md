@@ -24,7 +24,7 @@ the Inventory pod. It also forwards the default remote debugging port, 5005, fro
 Inventory pod to your workstation so simplify connectivity.
 
 Enable remote debugging on Inventory by running the following inside the `inventory` 
-directory in the CodeReady Workspace `Terminal` window:
+directory in the CodeReady Workspaces `Terminal` window:
 
 `mvn compile quarkus:dev`
 
@@ -41,7 +41,7 @@ port open so that you can start debugging remotely.
 
 ---
 
-CodeReady Workspace provides a convenience way to remotely connect to Java applications running 
+CodeReady Workspaces provides a convenience way to remotely connect to Java applications running 
 inside containers and debug while following the code execution in the IDE.
 
 From the `Run` menu, click on `Edit Debug Configurations...`.
@@ -60,7 +60,7 @@ Configure the remote debugger and click on the `Save` button:
 
 ![Remote Debug]({% image_path debug-che-debug-config-3.png %}
 
-You can now click on the `Debug` button to make CodeReady Workspace connect to the 
+You can now click on the `Debug` button to make CodeReady Workspaces connect to the 
 Inventory service running on OpenShift.
 
 You should see a confirmation that the remote debugger is successfully connected.
