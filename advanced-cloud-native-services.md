@@ -69,7 +69,7 @@ stack is a template of workspace configuration. For example, it includes the pro
 in your workspace. Stacks make it possible to recreate identical workspaces with all the tools and needed configuration
 on-demand. 
 
-For this lab, click on the `Java Cloud-Native` stack and then on the `Create` button. 
+For this lab, click on the `Cloud Native Roadshow` stack and then on the `Create` button. 
 
 ![codeready-workspace-create-workspace]({% image_path codeready-workspace-create-workspace.png %})
 
@@ -102,7 +102,7 @@ In the project explorer pane, click on the `Import Projects...` and enter the fo
 The projects are imported now into your workspace and is visible in the project explorer.
 
 CodeReady Workspaces is a full featured IDE and provides language specific capabilities for various project types. In order to 
-enable these capabilities, let's convert the imported project skeletons to a Maven projects. In the project explorer, right-click on `monolith` and then click on `Convert to Project`.
+enable these capabilities, let's convert the imported project skeletons to a Maven projects. In the project explorer, right-click on each project and then click on `Convert to Project`.
 
 ![codeready-workspace-convert]({% image_path codeready-workspace-convert.png %}){:width="500px"}
 
