@@ -471,17 +471,11 @@ Don't forget to exit the pod's shell with `exit`
 With our running project on OpenShift, in the next step we'll explore how you as a developer can work with the running app
 to make changes and debug the application!
 
-#### Your Connection is not secure?
-
----
+##### Note! Your Connection is not secure?
 
 When you access OpenShift web console or the other route URL via `HTTPS` protocol, you will see `Your Connection is not secure` warning message.
 Because, OpenShift uses self-certification to create TLS termication route as default. For example, if you're using `Firefox`, you will see the following screen.
 
-Click on `Advanced > Add Exception...`.
+Click on `Advanced > Add Exception...` then, you can access the `HTTPS` page when you click on `Confirm Security Exception`!!!
 
 ![warning]({% image_path browser_warning.png %})
-
-Then, you can access the `HTTPS` page when you click on `Confirm Security Exception`
-
-![warning]({% image_path browser_warning_confirmation.png %})
