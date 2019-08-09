@@ -72,18 +72,14 @@ When you navigate the `Project Status` page in OpenShift console, you will see a
 
 ![jaeger_deployments]({% image_path jaeger-deployment.png %})
 
-####3. Exposing Jaeger-Collector
+####3. Examine Jaeger-Collector
 
 ---
 
-`Collector` is by default accessible only to services running inside the cluster. The easiest approach to expose the collector outside of 
-the cluster is via the `jaeger-collector-http` HTTP port using an `OpenShift Route` via CodeReady Workspaces `Terminal`:
+`Collector` is by default accessible only to services running inside the cluster. We will use `jaeger-collector-http` service with port `14268` to gather tracing data of Inventoty service later.
 
-`oc create route edge --service=jaeger-collector --port jaeger-collector-http --insecure-policy=Allow`
+![jaeger_deployments]({% image_path jaeger-collector.png %})
 
-This allows clients to send data directly to Collector via HTTP senders. If you want to use the Agent then use ExternalIP or NodePort to expose the Collector service.
-
-> `NOTE:` Using Collector will open the collector to be used by any external party, who will then be able to create arbitrary spans. It's advisable to put an OAuth Security Proxy in front of the collector and expose this proxy instead.
 
 ####4. Observe Jaeger UI
 
@@ -125,39 +121,37 @@ Spring DI compatibility (e.g. @Autowired), and more.
 
 ---
 
-Before getting started with this step, confirm your `route Collector URL of Jaeger` and we will use the following step to create the tracing configuration.
-You can find out the URL in OpenShift Console or use the `oc` command as here:
+Before getting started with this step, confirm your `jaeger-collector` service in `userXX-monitoring` project via `oc` command in CodeReady Workspaces `Terminal`:
 
-![jaeger_ui]({% image_path jaeger-collector-route.png %})
-
-`oc get route`
+`oc get svc -n userXX-monitoring | grep jaeger`
 
 ~~~shell
-NAME               HOST/PORT                                                                                    PATH   SERVICES           PORT                    TERMINATION   WILDCARD
-jaeger-collector   jaeger-collector-user0-monitoring.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com          jaeger-collector   jaeger-collector-http   edge/Allow    None
-jaeger-query       jaeger-query-user0-monitoring.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com              jaeger-query       query-http              edge/Allow    None
+jaeger-agent       ClusterIP      None             <none>                                                                         5775/UDP,6831/UDP,6832/UDP,5778/TCP   4d3h
+jaeger-collector   ClusterIP      172.30.225.227   <none>                                                                         14267/TCP,14268/TCP,9411/TCP          4d3h
+jaeger-query       LoadBalancer   172.30.88.160    af514f3d7b77711e98f2c06fc57e3ee7-2124798632.ap-southeast-1.elb.amazonaws.com   80:31616/TCP                          4d3h
 ~~~
 
-The easiest way to configure the Jaeger tracer is to set up in the application(i.e. Inventory).
+The easiest way to configure the `Jaeger tracer` is to set up in the application(i.e. inventory).
 
 Open `src/main/resources/application.properties` file and add the following configuration via CodeReady Workspaces `Terminal`:
+
+> You need to replace `userXX` with your username in the configuration.
 
 ~~~java
 # Jaeger configuration
 quarkus.jaeger.service-name=inventory
 quarkus.jaeger.sampler-type=const
 quarkus.jaeger.sampler-param=1
-quarkus.jaeger.endpoint=https://YOUR_JAEGR_COLLECTOR_ROUTE_URL/api/traces
+quarkus.jaeger.endpoint=http://jaeger-collector.userXX-monitoring:14268/api/traces
 ~~~
-
-> You should replace `quarkus.jaeger.endpoint` with your own route URL(`HTTPS`) as you created.
 
 You can also specify the configuration using `jvm.args` that Jaeger supplys the properties as [environment variables](https://www.jaegertracing.io/docs/1.12/client-features/).
 
 If the `quarkus.jaeger.service-name` property (or `JAEGER_SERVICE_NAME` environment variable) is not provided then a "no-op" tracer will be configured, 
 resulting in no tracing data being reported to the backend.
 
-Currently the tracer can only be configured to report spans directly to the collector via HTTP, using the `quarkus.jaeger.endpoint` property (or `JAEGER_ENDPOINT` environment variable). Support for using the Jaeger agent, via UDP, will be available in a future version.
+Currently the tracer can only be configured to report spans directly to the collector via HTTP, using the `quarkus.jaeger.endpoint` property (or `JAEGER_ENDPOINT` environment variable). 
+Support for using the Jaeger agent, via UDP, will be available in a future version.
 
 >`NOTE:` there is no tracing specific code included in the application. By default, requests sent to this endpoint will be traced without any code changes being required. It is also possible to enhance the tracing information. For more information on this, please see the [MicroProfile OpenTracing specification](https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc).
 
