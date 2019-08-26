@@ -338,7 +338,7 @@ Click on the link for `Input Required`. This will open a new tab and direct you 
 the same credentials as OpenShift:
 
 * Username: `userXX`
-* Password: `r3dh4t1!`
+* Password: `openshift`
 
 Accept the browser certificate warning and the Jenkins/OpenShift permissions, and then you'll find yourself at the approval prompt:
 
