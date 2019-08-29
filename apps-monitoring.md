@@ -159,13 +159,6 @@ Support for using the Jaeger agent, via UDP, will be available in a future versi
 
 ---
 
-> `NOTE`: Be sure to rollback Postgres database configuration as defined in `src/main/resources/application.properties`:
- 
-~~~java
-quarkus.datasource.url=jdbc:postgresql:inventory
-quarkus.datasource.driver=org.postgresql.Driver
-~~~
-
 Repackage the inventory application via clicking on `Package for OpenShift` in `Commands Palette`:
 
 ![codeready-workspace-maven]({% image_path quarkus-dev-run-packageforOcp.png %})
