@@ -163,13 +163,9 @@ Repackage the inventory application via clicking on `Package for OpenShift` in `
 
 ![codeready-workspace-maven]({% image_path quarkus-dev-run-packageforOcp.png %})
 
-Next, update a temp directory to store only previously-built application with necessary lib directory via CodeReady Workspaces `Terminal`:
+Start and watch the build, which will take about a minute to complete:
 
-`rm -rf target/binary && mkdir -p target/binary && cp -r target/*runner.jar target/lib target/binary`
-
-And then start and watch the build, which will take about a minute to complete:
-
-`oc start-build inventory-quarkus --from-dir=target/binary --follow -n userXX-inventory`
+`oc start-build inventory-quarkus --from-file target/*-runner.jar --follow -n userXX-inventory`
 
 You should see a `Push successful` at the end of the build output and it. To verify that deployment is started and completed automatically, 
 run the following command via CodeReady Workspaces `Terminal` :
@@ -413,13 +409,9 @@ Or you can run a maven plugin command directly in `Terminal`:
 
 `mvn clean package -DskipTests`
 
-Next, create a temp directory to store only previously-built application with necessary lib directory via CodeReady Workspaces `Terminal`:
+Start and watch the build, which will take about a minute to complete:
 
-`rm -rf target/binary && mkdir -p target/binary && cp -r target/*runner.jar target/lib target/binary`
-
-And then start and watch the build, which will take about a minute to complete:
-
-`oc start-build inventory-quarkus --from-dir=target/binary --follow -n userxx-inventory`
+`oc start-build inventory-quarkus --from-file target/*-runner.jar --follow -n userxx-inventory`
 
 Finally, make sure it's actually done rolling out:
 
