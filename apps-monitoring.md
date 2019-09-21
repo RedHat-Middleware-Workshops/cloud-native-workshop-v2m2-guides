@@ -417,7 +417,7 @@ Finally, make sure it's actually done rolling out:
 
 `oc rollout status -w dc/inventory-quarkus -n userxx-inventory`
 
-Go to the `userXX-monitoring` project in OpenShift Web Console and then on the left sidebar, `Workloads > Config Maps`. 
+Go to the `userXX-monitoring` project in [OpenShift web console]({{ CONSOLE_URL}}) and then on the left sidebar, `Workloads > Config Maps`. 
 
 ![prometheus]({% image_path prometheus-quarkus-configmap.png %})
 
@@ -485,7 +485,7 @@ Config maps hold key-value pairs and in the above command an `prometheus-config`
 is created with `prometheus.yml` as the key and the above content as the value. Whenever a config map is injected into a container, 
 it would appear as a file with the same name as the key, at specified path on the filesystem.
 
-You can see the content of the config map in the OpenShift Web Console or by 
+You can see the content of the config map in the [OpenShift web console]({{ CONSOLE_URL}}) or by 
 using `oc describe cm prometheus-config -n userXX-monitoring` command via CodeReady Workspaces `Terminal`.
 
 Modify the `Prometheus deployment config` so that it injects the `prometheus.yml` configuration you just created as 

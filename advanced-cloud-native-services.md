@@ -182,7 +182,7 @@ or IP).
 * Route: `www` route registers the service on the built-in external load-balancer
 and assigns a public DNS name to it so that it can be reached from outside OpenShift cluster.
 
-You can review the above resources in the OpenShift Web Console or using the `oc get` or `oc describe` commands
+You can review the above resources in the [OpenShift web console]({{ CONSOLE_URL}}) or using the `oc get` or `oc describe` commands
 (`oc describe` gives more detailed info):
 
 > You can use short synonyms for long words, like `bc` instead of `buildconfig`,
@@ -311,9 +311,9 @@ Repeat the above for inventory and catalog projects.
 
 ##### Connnecting to Openshift
 
-When you access OpenShift web console or the other route URL via HTTPS protocol, you will see `Your Connection is not secure` warning message.
-Because, OpenShift uses self-certification to create TLS termication route as default. For example, if you're using Firefox, you will see the following screen.
+When you access [OpenShift web console]({{ CONSOLE_URL}}) or the other route URL via HTTPS protocol, you will see `Your Connection is not secure` warning message.
+Because, OpenShift uses self-certification to create TLS termication route as default. For example, if you're using *Chrome Browser*, you will see the following screen.
 
-Click on `Advanced > Add Exception...` then, you can access the HTTPS page when you click on `Confirm Security Exception`!!!
+Click on `Advanced` then, you can access the HTTPS page when you click on `Proceed to...`!!!
 
 ![warning]({% image_path browser_warning.png %})

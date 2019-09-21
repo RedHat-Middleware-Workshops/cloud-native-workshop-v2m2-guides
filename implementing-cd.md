@@ -30,7 +30,7 @@ environment.
 We will create and initialize the new production environment using another template
 in a separate OpenShift project.
 
-In OpenShift web console, click `Create Project`, fill in the fields, and click `Create`:
+In [OpenShift web console]({{ CONSOLE_URL}}), click `Create Project`, fill in the fields, and click `Create`:
 
 * Name: `userXX-coolstore-prod`
 * Display Name: `USERXX Coolstore Monolith - Production`
@@ -66,7 +66,7 @@ As you probably guessed it will also include a Jenkins Pipeline to control the p
 
 Navigate to the Web Console to see your new app and the components using this link:
 
-* Coolstore Prod Project Status at `OpenShift Web Console`:
+* Coolstore Prod Project Status at `[OpenShift web console]({{ CONSOLE_URL}})`:
 
 ![Prod]({% image_path coolstore-prod-overview.png %})
 
@@ -128,7 +128,7 @@ like test or production.
 ---
 
 Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the
-pipeline by navigating `Builds > Build Configs` and click on `monolith-pipeline`in OpenShift Web Console.
+pipeline by navigating `Builds > Build Configs` and click on `monolith-pipeline`in [OpenShift web console]({{ CONSOLE_URL}}).
 Then, you will the details of `Jenkinsfile` on the right side:
 
 ![monolith-pipeline]({% image_path coolstore-prod-monolith-bc.png %})
@@ -204,9 +204,9 @@ Move to `YAML` tab and replace your username with `userXX` then click on `Save`:
 
 ![Prod]({% image_path coolstore-dev-ci-admin-save.png %})
 
-Let's invoke the build pipeline by using OpenShift Web Console. Open the production project in the web console:
+Let's invoke the build pipeline by using [OpenShift web console]({{ CONSOLE_URL}}). Open the production project in the web console:
 
-* Web Console - Coolstore Monolith Prod at `OpenShift Web Console`.
+* Web Console - Coolstore Monolith Prod at `[OpenShift web console]({{ CONSOLE_URL}})`.
 
 Next, navigate to `Builds > Build Configs > monolith-pipeline > Start Build`:
 
@@ -217,7 +217,7 @@ take as much time as the Jenkins infrastructure will already be warmed up). You 
 
 ![Prod]({% image_path pipe-prog.png %})
 
-Once the pipeline completes, return to the Prod Project Status at `OpenShift Web Console`
+Once the pipeline completes, return to the Prod Project Status at `[OpenShift web console]({{ CONSOLE_URL}})`
 
 and notice that the application is now deployed and running!
 
@@ -377,7 +377,7 @@ In order to automate triggering the pipeline, you can define a webhook on your G
 to notify OpenShift on every commit that is made to the Git repository and trigger a pipeline 
 execution.
 
-You can get see the webhook links in the OpenShift Web Console by going to `Build >> Pipelines`, clicking 
+You can get see the webhook links in the [OpenShift web console]({{ CONSOLE_URL}}) by going to `Build >> Pipelines`, clicking 
 on the pipeline and going to the `Configurations` tab.
 
 Copy the Generic webhook url which you will need in the next steps.
