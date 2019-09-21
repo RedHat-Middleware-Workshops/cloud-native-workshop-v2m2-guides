@@ -40,223 +40,6 @@ For example, to use OpenShift from the Eclipse IDE, you would want to use the of
 Now that you know how to interact with OpenShift, let's focus on some core concepts that you as a developer
 will need to understand as you are building your applications!
 
-
-#### Setup for Lab Environment
-
----
-
-`SKIP this setup guide if you already completed the Cloud Native Workshop - Module 1`
-
-####1. Open the file using CodeReady Workspaces
-
----
-
-Follow these instructions to setup the development environment on CodeReady Workspaces. 
-
-You might be familiar with the Eclipse IDE which is one of the most popular IDEs for Java and other
-programming languages. [CodeReady Workspaces](https://access.redhat.com/documentation/en-us/red_hat_codeready_workspaces) is the next-generation Eclipse IDE which is web-based and gives you a full-featured IDE running in the cloud. You have an CodeReady Workspaces instance deployed on your OpenShift cluster
-which you will use during these labs.
-
-Go to the [CodeReady Workspaces URL]({{ ECLIPSE_CHE_URL }}) in order to configure your development workspace.
-
-First, you need to register as a user. Register and choose the same username and password as 
-your OpenShift credentials.
-
-![codeready-workspace-register]({% image_path codeready-workspace-register.png %})
-
-Log into CodeReady Workspaces with your user. You can now create your workspace based on a stack. A 
-stack is a template of workspace configuration. For example, it includes the programming language and tools needed
-in your workspace. Stacks make it possible to recreate identical workspaces with all the tools and needed configuration
-on-demand. 
-
-For this lab, click on the `Cloud Native Roadshow` stack and then on the `Create` button. 
-
-![codeready-workspace-create-workspace]({% image_path codeready-workspace-create-workspace.png %})
-
-Click on `Open` to open the workspace and then on the `Start` button to start the workspace for use, if it hasn't started automatically.
-
-![codeready-workspace-start-workspace]({% image_path codeready-workspace-start-workspace.png %})
-
-You can click on the left arrow icon to switch to the wide view:
-
-![codeready-workspace-wide]({% image_path codeready-workspace-wide.png %})
-
-It takes a little while for the workspace to be ready. When it's ready, you will see a fully functional 
-CodeReady Workspaces IDE running in your browser.
-
-![codeready-workspace-workspace]({% image_path codeready-workspace.png %})
-
-Now you can import the project skeletons into your workspace.
-
-In the project explorer pane, click on the `Import Projects...` and enter the following:
-
-> You can find `GIT URL` when you log in {{GIT_URL}} with your credential(i.e. user1 / openshift).
-
-  * Version Control System: `GIT`
-  * URL: `{{GIT_URL}}/userXX/cloud-native-workshop-v2m2-labs.git`
-  * Check `Import recursively (for multi-module projects)`
-  * Name: `cloud-native-workshop-v2m2-labs`
-
-![codeready-workspace-import]({% image_path codeready-workspace-import.png %}){:width="700px"}
-
-The projects are imported now into your workspace and is visible in the project explorer.
-
-CodeReady Workspaces is a full featured IDE and provides language specific capabilities for various project types. In order to 
-enable these capabilities, let's convert the imported project skeletons to a Maven projects. In the project explorer, right-click on each project and then click on `Convert to Project`.
-
-![codeready-workspace-convert]({% image_path codeready-workspace-convert.png %}){:width="500px"}
-
-Choose `Maven` from the project configurations and then click on `Save`.
-
-![codeready-workspace-maven]({% image_path codeready-workspace-maven.png %}){:width="700px"}
-
-Repeat the above for inventory and catalog projects.
-
-> `NOTE`: the `Terminal` window in CodeReady Workspaces. For the rest of these labs, anytime you need to run 
-a command in a terminal, you can use the CodeReady Workspaces `Terminal` window.
-
-![codeready-workspace-terminal]({% image_path codeready-workspace-terminal.png %})
-
-####2. Create the OpenShift project
-
----
-
-First, open a new brower with the `OpenShift Web Console`
-
-![openshift_login]({% image_path openshift_login.png %})
-
-Login using:
-
-* Username: `userXX`
-* Password: `r3dh4t1`
-
-You will see the OpenShift landing page:
-
-![openshift_landing]({% image_path openshift_landing.png %})
-
-> The project displayed in the landing page depends on which labs you will run today. If you will develop `Service Mesh and Identity` then you will see pre-created projects as the above screeenshot.
-
-Click `Create Project`, fill in the fields, and click `Create`:
-
-* Name: `userXX-coolstore-dev`
-* Display Name: `USERXX Coolstore Monolith - Dev`
-* Description: _leave this field empty_
-
-> `NOTE`: YOU `MUST` USE `userXX-coolstore-dev` AS THE PROJECT NAME, as this name is referenced later
-on and you will experience failures if you do not name it `userXX-coolstore-dev`!
-
-![create_dialog]({% image_path create_dialog.png %}){:width="700px"}
-
-This will take you to the project status. There's nothing there yet, but that's about to change.
-
-![create_new]({% image_path create_new.png %})
-
-This will take you to the project overview. There's nothing there yet, but that's about to change.
-
-####3. Deploy the monolith
-
----
-
-We'll use the CLI to deploy the components for our monolith. To deploy the monolith template using the CLI, execute the following commands via CodeReady Workspaces `Terminal` window:
-
-Copy login command and Login OpenShift cluster:
-
-![codeready-workspace-copy-login-cmd]({% image_path codeready-workspace-oc-login-copy.png %}){:width="700px"}
-
-Then you will redirect to OpenShift Login page again. 
-
-![openshift_login]({% image_path openshift_login.png %})
-
-When you login with your credential, you will see `Display Token` link in the redirected page.
-
-![openshift_login]({% image_path display_token_link.png %})
-
-Click on the link and copy the `oc login` command:
-
-![openshift_login]({% image_path your_token.png %})
-
-Paste it on CodeReady Workspaces `Terminal` window.
-
-Switch to the developer project you created earlier via CodeReady Workspaces `Terminal` window:
-
-`oc project userXX-coolstore-dev`
-
-And finally deploy template:
-
-`oc new-app coolstore-monolith-binary-build`
-
-This will deploy both a PostgreSQL database and JBoss EAP, but it will not start a build for our application.
-
-Then open up the userXX-coolstore-dev project status page at `OpenShift Web Console`
-
-and verify the monolith template items are created:
-
-![no_deployments]({% image_path no_deployments.png %})
-
-You can see the components being deployed on the
-Project Status, but notice the `No running pod for Coolstore`. When you click on `coolstore DC`(Deployment Configs), you will see overview and resources.
-
-![no_deployments]({% image_path dc_overview.png %})
-
-You have not yet deployed the container image built in previous steps, but you'll do that next.
-
-####4. Deploy application using Binary build
-
----
-
-In this development project we have selected to use a process called binary builds, which
-means that instead of pointing to a public Git Repository and have the S2I (Source-to-Image) build process
-download, build, and then create a container image for us we are going to build locally
-and just upload the artifact (e.g. the `.war` file). The binary deployment will speed up
-the build process significantly.
-
-First, build the project once more using the `openshift` Maven profile, which will create a
-suitable binary for use with OpenShift (this is not a container image yet, but just the `.war`
-file). We will do this with the `oc` command line.
-
-Build the project via CodeReady Workspaces `Terminal` window:
-
-`mvn clean package -Popenshift`
-
-> `NOTE`: Make sure to run this mvn command at working directory(i.e monolith).
-
-Wait for the build to finish and the `BUILD SUCCESS` message!
-
-And finally, start the build process that will take the `.war` file and combine it with JBoss
-EAP and produce a Linux container image which will be automatically deployed into the project,
-thanks to the *DeploymentConfig* object created from the template:
-
-`oc start-build coolstore --from-file=deployments/ROOT.war`
-
-When you navigate `Builds` menu, you will find out `coolstore-xx` is `running` in Status field:
-
-![building]({% image_path building.png %})
-
-Wait for the build and deploy to complete:
-
-`oc rollout status -w dc/coolstore`
-
-This command will be used often to wait for deployments to complete. Be sure it returns success when you use it!
-You should eventually see `replication controller "coolstore-1" successfully rolled out`.
-
-> If the above command reports `Error from server (ServerTimeout)` then simply re-run the command until it reports success!
-
-When it's done you should see the application deployed successfully with blue circles for the
-database and the monolith:
-
-![build_done]({% image_path build_done.png %})
-
-Test the application by clicking on the Route link at `Networking > Routes` on the lefe menu:
-
-![route_link]({% image_path route_link.png %})
-
-#####Congratulations!
-
-Now you're ready to create the pipeline for the next CI/CD labs on OpenShift.
-
-![coolstore_web]({% image_path coolstore_web.png %})
-
-
 #### Developer Concepts
 
 ---
@@ -471,11 +254,66 @@ Don't forget to exit the pod's shell with `exit`
 With our running project on OpenShift, in the next step we'll explore how you as a developer can work with the running app
 to make changes and debug the application!
 
-##### Note! Your Connection is not secure?
+#### Getting Ready for the labs
 
-When you access OpenShift web console or the other route URL via `HTTPS` protocol, you will see `Your Connection is not secure` warning message.
-Because, OpenShift uses self-certification to create TLS termication route as default. For example, if you're using `Firefox`, you will see the following screen.
+---
 
-Click on `Advanced > Add Exception...` then, you can access the `HTTPS` page when you click on `Confirm Security Exception`!!!
+##### Access Your Development Environment
+
+You will be using Red Hat CodeReady Workspaces, an online IDE based on [Eclipe Che](https://www.eclipse.org/che/){:target="_blank"}. **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
+
+To get started, [access the Che instance]({{ ECLIPSE_CHE_URL }}) and log in using the username and password you've been assigned (e.g. `{{ CHE_USER_NAME }}/{{ CHE_USER_PASSWORD }}`):
+
+![cdw]({% image_path che-login.png %}){:width="700px"}
+
+Once you log in, you'll be placed on your personal dashboard. We've pre-created workspaces for you to use. Click on the name of the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number). You can also click on the name of the workspace in the center, and then click on the green button that says "OPEN" on the top right hand side of the screen:
+
+![cdw]({% image_path che-precreated.png %})
+
+After a minute or two, you'll be placed in the workspace:
+
+![cdw]({% image_path che-workspace.png %})
+
+To gain extra screen space, click on the yellow arrow to hide the left menu (you won't need it):
+
+![cdw]({% image_path che-realestate.png %})
+
+Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout: a project/file browser on the left, a code editor on the right, and a terminal at the bottom. You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
+
+In the project explorer pane, click on the `Import Projects...` and enter the following:
+
+  * Version Control System: `GIT`
+  * URL: `{{GIT_URL}}/userXX/cloud-native-workshop-v2m2-labs.git`(IMPORTANT: replace userXX with your lab user)
+  * Check `Import recursively (for multi-module projects)`
+  * Name: `cloud-native-workshop-v2m2-labs`
+
+`Tip`: You can find GIT URL when you click on {{GIT_URL}} then login with your credentials. 
+
+![codeready-workspace-import]({% image_path codeready-workspace-import.png %}){:width="700px"}
+
+The projects are imported now into your workspace and is visible in the project explorer.
+
+CodeReady Workspaces is a full featured IDE and provides language specific capabilities for various project types. In order to 
+enable these capabilities, let's convert the imported project skeletons to a Maven projects. In the project explorer, right-click on each project and 
+then click on `Convert to Project` continuously.
+
+![codeready-workspace-convert]({% image_path codeready-workspace-convert.png %}){:width="500px"}
+
+Choose `Maven` from the project configurations and then click on `Save`.
+
+![codeready-workspace-maven]({% image_path codeready-workspace-maven.png %}){:width="700px"}
+
+Repeat the above for inventory and catalog projects.
+
+> `NOTE`: the Terminal window in CodeReady Workspaces. For the rest of these labs, anytime you need to run a command in a terminal, you can use the CodeReady Workspaces `Terminal` window.
+
+![codeready-workspace-terminal]({% image_path codeready-workspace-terminal.png %})
+
+##### Connnecting to Openshift
+
+When you access OpenShift web console or the other route URL via HTTPS protocol, you will see `Your Connection is not secure` warning message.
+Because, OpenShift uses self-certification to create TLS termication route as default. For example, if you're using Firefox, you will see the following screen.
+
+Click on `Advanced > Add Exception...` then, you can access the HTTPS page when you click on `Confirm Security Exception`!!!
 
 ![warning]({% image_path browser_warning.png %})
