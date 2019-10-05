@@ -1,45 +1,34 @@
 ## Lab1 - Automating Deployments Using Pipelines
 
-In the previous scenarios, you deployed the Coolstore monolith using an
-OpenShift Template into the `userXX-coolstore-dev` Project. The template
-created the necessary objects (BuildConfig, DeploymentConfig, ImageStreams, Services, and Routes)
-and gave you as a Developer a "playground" in which to run the app, make
-changes and debug.
+In the previous scenarios, you deployed the Coolstore monolith using an OpenShift Template into the **userXX-coolstore-dev** Project. The template created the necessary objects (BuildConfig, DeploymentConfig, ImageStreams, Services, and Routes) and gave you as a Developer a "playground" in which to run the app, make changes and debug.
 
-In this step, we are now going to setup a separate production environment and explore some
-best practices and techniques for developers and DevOps teams for getting code from
-the developer `(that's YOU!)` to production with less downtime and greater consistency.
+In this step, we are now going to setup a separate production environment and explore some best practices and techniques for developers and DevOps teams for getting code from the developer **(that's YOU!)** to production with less downtime and greater consistency.
 
 #### Production vs. Development
 
 ---
 
-The existing `userXX-coolstore-dev` project is used as a developer environment for building new
-versions of the app after code changes and deploying them to the development environment.
+The existing **userXX-coolstore-dev** project is used as a developer environment for building new versions of the app after code changes and deploying them to the development environment.
 
-In a real project on OpenShift, _dev_, _test_ and _production_ environments would typically use different
-OpenShift projects and perhaps even different OpenShift clusters.
+In a real project on OpenShift, _dev_, _test_ and _production_ environments would typically use different OpenShift projects and perhaps even different OpenShift clusters.
 
-For simplicity in this scenario we will only use a _dev_ and _prod_ environment, and no test/QA
-environment.
+For simplicity in this scenario we will only use a _dev_ and _prod_ environment, and no test/QA environment.
 
 ####1. Create the production environment
 
 ---
 
-We will create and initialize the new production environment using another template
-in a separate OpenShift project.
+We will create and initialize the new production environment using another template in a separate OpenShift project.
 
-In [OpenShift web console]({{ CONSOLE_URL}}), click `Create Project`, fill in the fields, and click `Create`:
+In [OpenShift web console]({{ CONSOLE_URL}}), click **Create Project**, fill in the fields, and click **Create**:
 
-* Name: `userXX-coolstore-prod`
-* Display Name: `USERXX Coolstore Monolith - Production`
+* Name: **userXX-coolstore-prod**
+* Display Name: **USERXX Coolstore Monolith - Production**
 * Description: _leave this field empty_
 
-> `NOTE`: YOU `MUST` USE `userXX-coolstore-prod` AS THE PROJECT NAME, as this name is referenced later
-on and you will experience failures if you do not name it `userXX-coolstore-prod`!
+> NOTE: YOU MUST USE userXX-coolstore-prod AS THE PROJECT NAME, as this name is referenced later on and you will experience failures if you do not name it userXX-coolstore-prod.
 
-This will create a new OpenShift project called `userXX-coolstore-prod` from which our production application will run.
+This will create a new OpenShift project called **userXX-coolstore-prod** from which our production application will run.
 
 ![create_dialog]({% image_path create_prod_dialog.png %}){:width="700px"}
 
@@ -47,7 +36,7 @@ This will create a new OpenShift project called `userXX-coolstore-prod` from whi
 
 ---
 
-In this case we'll use the production template to create the objects. Execute via CodeReady Workspaces `Terminal` window:
+In this case we'll use the production template to create the objects. Execute via CodeReady Workspaces Terminal window:
 
 `oc project userXX-coolstore-prod`
 
@@ -55,28 +44,25 @@ And finally deploy template:
 
 `oc new-app --template=coolstore-monolith-pipeline-build`
 
-We have to deploy `Jenkins Server` in the namespace because OpenShift 4 doesn't deploy a Jenkins server automatically when we use `Jenkins Pipeline` build strategy.
+We have to deploy **Jenkins Server** in the namespace because OpenShift 4 doesn't deploy a Jenkins server automatically when we use _Jenkins Pipeline_ build strategy.
 
 `oc new-app --template=jenkins-ephemeral -l app=jenkins -p JENKINS_SERVICE_NAME=jenkins -p DISABLE_ADMINISTRATIVE_MONITORS=true`
 
 `oc set resources dc/jenkins --limits=cpu=1,memory=2Gi --requests=cpu=1,memory=512Mi`
 
-This will use an OpenShift Template called `coolstore-monolith-pipeline-build` to construct the production application.
+This will use an OpenShift Template called **coolstore-monolith-pipeline-build** to construct the production application.
 As you probably guessed it will also include a Jenkins Pipeline to control the production application (more on this later!)
 
 Navigate to the Web Console to see your new app and the components using this link:
 
-* Coolstore Prod Project Status at `[OpenShift web console]({{ CONSOLE_URL}})`:
+* Coolstore Prod Project Status at [OpenShift web console]({{ CONSOLE_URL}}):
 
 ![Prod]({% image_path coolstore-prod-overview.png %})
 
-You can see the production database, and an application called _Jenkins_ which OpenShift uses
-to manage CI/CD pipeline deployments. There is no running production
-app just yet. The only running app is back in the _dev_ environment, where you used a binary
-build to run the app previously.
+You can see the production database, and an application called _Jenkins_ which OpenShift uses to manage CI/CD pipeline deployments. There is no running production
+app just yet. The only running app is back in the _dev_ environment, where you used a binary build to run the app previously.
 
-In the next step, we'll _promote_ the app from the _dev_ environment to the _production_
-environment using an OpenShift pipeline build. Let's get going!
+In the next step, we'll _promote_ the app from the _dev_ environment to the _production_ environment using an OpenShift pipeline build. Let's get going!
 
 #### Promoting Apps Across Environments with Pipelines
 
@@ -84,56 +70,35 @@ environment using an OpenShift pipeline build. Let's get going!
 
 ##### Continuous Delivery
 
-So far you have built and deployed the app manually to OpenShift in the _dev_ environment. Although
-it's convenient for local development, it's an error-prone way of delivering software when
-extended to test and production environments.
+So far you have built and deployed the app manually to OpenShift in the _dev_ environment. Although it's convenient for local development, it's an error-prone way of delivering software when extended to test and production environments.
 
-Continuous Delivery (CD) refers to a set of practices with the intention of automating 
-various aspects of delivery software. One of these practices is called delivery pipeline 
-which is an automated process to define the steps a change in code or configuration has 
-to go through in order to reach upper environments and eventually to production. 
+Continuous Delivery (CD) refers to a set of practices with the intention of automating various aspects of delivery software. One of these practices is called delivery pipeline which is an automated process to define the steps a change in code or configuration has to go through in order to reach upper environments and eventually to production. 
 
-OpenShift simplifies building CI/CD Pipelines by integrating
-the popular [Jenkins pipelines](https://jenkins.io/doc/book/pipeline/overview/) into
-the platform and enables defining truly complex workflows directly from within OpenShift.
+OpenShift simplifies building CI/CD Pipelines by integrating the popular [Jenkins pipelines](https://jenkins.io/doc/book/pipeline/overview/) into the platform and enables defining truly complex workflows directly from within OpenShift.
 
-The first step for any deployment pipeline is to store all code and configurations in 
-a source code repository. In this workshop, the source code and configurations are stored
-in a GitHub repository we've been using at [https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs].
-This repository has been copied locally to your environment and you've been using it ever since!
+The first step for any deployment pipeline is to store all code and configurations in a source code repository. In this workshop, the source code and configurations are stored in a GitHub repository we've been using at [https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs]. This repository has been copied locally to your environment and you've been using it ever since!
 
-You can see the changes you've personally made using `git --no-pager status` to show the code changes you've made using the Git command (part of the
-[Git source code management system](https://git-scm.com/)).
+You can see the changes you've personally made using **git --no-pager status** to show the code changes you've made using the Git command (part of the [Git source code management system](https://git-scm.com/)).
 
 ##### Pipelines
 
-OpenShift has built-in support for CI/CD pipelines by allowing developers to define
-a [Jenkins pipeline](https://jenkins.io/solutions/pipeline/) for execution by a Jenkins
+OpenShift has built-in support for CI/CD pipelines by allowing developers to define a [Jenkins pipeline](https://jenkins.io/solutions/pipeline/) for execution by a Jenkins
 automation engine, which is automatically provisioned on-demand by OpenShift when needed.
 
-The build can get started, monitored, and managed by OpenShift in
-the same way as any other build types e.g. S2I. Pipeline workflows are defined in
-a Jenkinsfile, either embedded directly in the build configuration, or supplied in
-a Git repository and referenced by the build configuration. They are written using the
+The build can get started, monitored, and managed by OpenShift in the same way as any other build types e.g. S2I. Pipeline workflows are defined in a Jenkinsfile, either embedded directly in the build configuration, or supplied in \a Git repository and referenced by the build configuration. They are written using the
 [Groovy scripting language](http://groovy-lang.org/).
 
-As part of the production environment template you used in the last step, a Pipeline build
-object was created. Ordinarily the pipeline would contain steps to build the project in the
-_dev_ environment, store the resulting image in the local repository, run the image and execute
-tests against it, then wait for human approval to _promote_ the resulting image to other environments
-like test or production.
+As part of the production environment template you used in the last step, a Pipeline build object was created. Ordinarily the pipeline would contain steps to build the project in the _dev_ environment, store the resulting image in the local repository, run the image and execute tests against it, then wait for human approval to _promote_ the resulting image to other environments like test or production.
 
 ####3. Inspect the Pipeline Definition
 
 ---
 
-Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the
-pipeline by navigating `Builds > Build Configs` and click on `monolith-pipeline`in [OpenShift web console]({{ CONSOLE_URL}}).
-Then, you will the details of `Jenkinsfile` on the right side:
+Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the pipeline by navigating _Builds > Build Configs_ and click on `monolith-pipeline`in [OpenShift web console]({{ CONSOLE_URL}}). Then, you will the details of _Jenkinsfile_ on the right side:
 
 ![monolith-pipeline]({% image_path coolstore-prod-monolith-bc.png %})
 
-You can also inspect this via the following command via CodeReady Workspaces `Terminal` window:
+You can also inspect this via the following command via CodeReady Workspaces Terminal window:
 
 `oc describe bc/monolith-pipeline`
 
@@ -174,94 +139,76 @@ Jenkinsfile contents:
   }
 ~~~
 
-> `NOTE:` You have to replace your username with `userXX` in Jenkinsfile via clicking on `YAML` tab. 
-For example, if your username is `user0`, it will be `user0-coolstore-dev` and `user0-coolstore-prod`. Don't forget to click on `Save`.
+> NOTE: You have to replace your username with **userXX** in Jenkinsfile via clicking on **YAML** tab. For example, if your username is user0, it will be user0-coolstore-dev and user0-coolstore-prod. Don't forget to click on **Save**.
 
 ![monolith-pipeline]({% image_path coolstore-prod-monolith-update-jenkins.png %})
 
-Pipeline syntax allows creating complex deployment scenarios with the possibility of defining
-checkpoint for manual interaction and approval process using
-[the large set of steps and plugins that Jenkins provides](https://jenkins.io/doc/pipeline/steps/) in
-order to adapt the pipeline to the process used in your team. You can see a few examples of
-advanced pipelines in the
-[OpenShift GitHub Repository](https://github.com/openshift/origin/tree/master/examples/jenkins/pipeline).
+Pipeline syntax allows creating complex deployment scenarios with the possibility of defining checkpoint for manual interaction and approval process using
+[the large set of steps and plugins that Jenkins provides](https://jenkins.io/doc/pipeline/steps/) in order to adapt the pipeline to the process used in your team. You can see a few examples of advanced pipelines in the [OpenShift GitHub Repository](https://github.com/openshift/origin/tree/master/examples/jenkins/pipeline).
 
-To simplify the pipeline in this workshop, we simulate the build and tests and skip any need for human input.
-Once the pipeline completes, it deploys the app from the _dev_ environment to our _production_
-environment using the above `openshiftTag()` method, which simply re-tags the image you already
-created using a tag which will trigger deployment in the production environment.
+To simplify the pipeline in this workshop, we simulate the build and tests and skip any need for human input. Once the pipeline completes, it deploys the app from the _dev_ environment to our _production_ environment using the above `openshiftTag()` method, which simply re-tags the image you already created using a tag which will trigger deployment in the production environment.
 
 ####4. Promote the dev image to production using the pipeline
 
 ---
 
-Before prmoting the dev image, you need to modify a `RoleBinding` to access the dev image by Jenkins.
-Go to overview page of `UserXX Coolstore Monolith Dev` project then naviage `Administration > Role Bindings`. Click on `ci_admin`:
+Before prmoting the dev image, you need to modify a **RoleBinding** to access the dev image by Jenkins. Go to overview page of _UserXX Coolstore Monolith Dev_ project then naviage _Administration > Role Bindings_. Click on **ci_admin**:
 
 ![Prod]({% image_path coolstore-dev-ci-admin.png %})
 
-Move to `YAML` tab and replace your username with `userXX` then click on `Save`:
+Move to **YAML** tab and replace your username with _userXX_ then click on **Save**:
 
 ![Prod]({% image_path coolstore-dev-ci-admin-save.png %})
 
 Let's invoke the build pipeline by using [OpenShift web console]({{ CONSOLE_URL}}). Open the production project in the web console:
 
-* Web Console - Coolstore Monolith Prod at `[OpenShift web console]({{ CONSOLE_URL}})`.
+* Web Console - Coolstore Monolith Prod at [OpenShift web console]({{ CONSOLE_URL}}).
 
-Next, navigate to `Builds > Build Configs > monolith-pipeline > Start Build`:
+Next, navigate to _Builds > Build Configs > monolith-pipeline > Start Build_:
 
 ![Prod]({% image_path pipe-start.png %})
 
-This will start the pipeline. `It will take a minute or two to start the pipeline`(future runs will not
-take as much time as the Jenkins infrastructure will already be warmed up). You can watch the progress of the pipeline:
+This will start the pipeline. _It will take a minute or two to start the pipeline_(future runs will not take as much time as the Jenkins infrastructure will already be warmed up). You can watch the progress of the pipeline:
 
 ![Prod]({% image_path pipe-prog.png %})
 
-Once the pipeline completes, return to the Prod Project Status at `[OpenShift web console]({{ CONSOLE_URL}})`
-
-and notice that the application is now deployed and running!
+Once the pipeline completes, return to the Prod Project Status at [OpenShift web console]({{ CONSOLE_URL}}) and notice that the application is now deployed and running!
 
 ![Prod]({% image_path pipe-done.png %})
 
 It may take a few moments for the container to deploy fully.
 
 #####Congratulations!
+
 You have successfully setup a development and production environment for your project and can use this workflow for future projects as well.
 
-In the next step, we'll add a human interaction element to the pipeline, so that you as a project
-lead can be in charge of approving changes.
+In the next step, we'll add a human interaction element to the pipeline, so that you as a project lead can be in charge of approving changes.
 
 ##### More Reading
 
 * [OpenShift Pipeline Documentation](https://docs.openshift.com/container-platform/4.1/builds/build-strategies.html#builds-strategy-pipeline-build_build-strategies)
 
-
 #### Adding Pipeline Approval Steps
 
 ---
 
-In previous steps, you used an OpenShift Pipeline to automate the process of building and
-deploying changes from the dev environment to production.
+In previous steps, you used an OpenShift Pipeline to automate the process of building and deploying changes from the dev environment to production.
 
-In this step, we'll add a final checkpoint to the pipeline which will require you as the project
-lead to approve the final push to production.
+In this step, we'll add a final checkpoint to the pipeline which will require you as the project lead to approve the final push to production.
 
 ####5. Edit the pipeline
 
 ---
 
-Ordinarily your pipeline definition would be checked into a source code management system like Git,
-and to change the pipeline you'd edit the _Jenkinsfile_ in the source base. For this workshop we'll
-just edit it directly to add the necessary changes. You can edit it with the `oc` command but we'll
-use the Web Console.
+Ordinarily your pipeline definition would be checked into a source code management system like Git, and to change the pipeline you'd edit the _Jenkinsfile_ in the source base. For this workshop we'll just edit it directly to add the necessary changes. You can edit it with the **oc** command but we'll use the Web Console.
 
-Go back to `Builds > Build Configs > monolith-pipeline` then click on `Edit Build Config`.
+Go back to _Builds > Build Configs > monolith-pipeline_ then click on _Edit Build Config_.
 
 ![Prod]({% image_path pipe-edit.png %})
 
-Click on `YAML` tab and add `a new stage` to the pipeline, just before the `Deploy to PROD` stage:
+Click on **YAML** tab and add _a new stage_ to the pipeline, just before the _Deploy to PROD_ stage:
 
-> `NOTE`: You will need to copy and paste the below code into the right place as shown in the below image.
+> NOTE: You will need to copy and paste the below code into the right place as shown in the below image.
 
 ~~~groovy
 stage ('Approve Go Live') {
@@ -277,19 +224,17 @@ Your final pipeline should look like:
 
 ![Prod]({% image_path pipe-edit2.png %})
 
-Click `Save`.
+Click **Save**.
 
 ####6. Make a simple change to the app
 
 ---
 
-With the approval step in place, let's simulate a new change from a developer who wants to change
-the color of the header in the coolstore back to the original (black) color.
+With the approval step in place, let's simulate a new change from a developer who wants to change the color of the header in the coolstore back to the original (black) color.
 
-First, open `src/main/webapp/app/css/coolstore.css` via CodeReady Workspace, which contains the CSS stylesheet for the
-CoolStore app.
+First, open _src/main/webapp/app/css/coolstore.css_ via CodeReady Workspace, which contains the CSS stylesheet for the CoolStore app.
 
-Add the following CSS to turn the header bar background to Red Hat red (`Copy` to add it at the bottom):
+Add the following CSS to turn the header bar background to Red Hat red (**Copy** to add it at the bottom):
 
 ~~~java
 
@@ -299,15 +244,15 @@ Add the following CSS to turn the header bar background to Red Hat red (`Copy` t
 
 ~~~
 
-Next, re-build the app once more via CodeReady Workspaces `Terminal`:
+Next, re-build the app once more via CodeReady Workspaces Terminal:
 
 `mvn clean package -Popenshift`
 
-And re-deploy it to the dev environment using a binary build just as we did before via CodeReady Workspaces `Terminal`:
+And re-deploy it to the dev environment using a binary build just as we did before via CodeReady Workspaces Terminal:
 
 `oc start-build -n userXX-coolstore-dev coolstore --from-file=deployments/ROOT.war`
 
-Now wait for it to complete the deployment via CodeReady Workspaces `Terminal`:
+Now wait for it to complete the deployment via CodeReady Workspaces Terminal:
 
 `oc -n userXX-coolstore-dev rollout status -w dc/coolstore`
 
@@ -329,20 +274,18 @@ We're happy with this change in dev, so let's promote the new change to prod, us
 
 ---
 
-Invoke the pipeline once more by navigating to `Builds > Build Configs > monolith-pipeline > Start Build`.
-The same pipeline progress will be shown, however before deploying to prod, you will see a prompt in the pipeline:
+Invoke the pipeline once more by navigating to _Builds > Build Configs > monolith-pipeline > Start Build_. The same pipeline progress will be shown, however before deploying to prod, you will see a prompt in the pipeline:
 
 ![Prod]({% image_path pipe-start2.png %}).
 
-Click on the link for `Input Required`. This will open a new tab and direct you to Jenkins itself, where you can login with
-the same credentials as OpenShift:
+Click on the link for **Input Required**. This will open a new tab and direct you to Jenkins itself, where you can login with the same credentials as OpenShift:
 
-* Username: `userXX`
-* Password: `openshift`
+* Username: **userXX**
+* Password: **openshift**
 
 Accept the browser certificate warning and the Jenkins/OpenShift permissions, and then you'll find yourself at the approval prompt:
 
-Click on `Console Output` on left menu then click on `Proceed`.
+Click on **Console Output** on left menu then click on `Proceed`.
 
 ![Prod]({% image_path pipe-jenkins-prompt.png %})
 
@@ -350,12 +293,11 @@ Click on `Console Output` on left menu then click on `Proceed`.
 
 ---
 
-Click `Proceed`, which will approve the change to be pushed to production. You could also have
-clicked `Abort` which would stop the pipeline immediately in case the change was unwanted or unapproved.
+Click **Proceed**, which will approve the change to be pushed to production. You could also have clicked **Abort** which would stop the pipeline immediately in case the change was unwanted or unapproved.
 
-Once you click `Proceed`, you will see the log file from Jenkins showing the final progress and deployment.
+Once you click _Proceed_, you will see the log file from Jenkins showing the final progress and deployment.
 
-Wait for the production deployment to complete via CodeReady Workspaces `Terminal`:
+Wait for the production deployment to complete via CodeReady Workspaces Terminal:
 
 `oc rollout -n coolstore-prod status dc/coolstore-prod`
 
@@ -369,38 +311,30 @@ Once it completes, verify that the production application has the new change (bl
 
 ---
 
-Manually triggering the deployment pipeline to run is useful but the real goes is to be able 
-to build and deploy every change in code or configuration at least to lower environments 
-(e.g. dev and test) and ideally all the way to production with some manual approvals in-place.
+Manually triggering the deployment pipeline to run is useful but the real goes is to be able to build and deploy every change in code or configuration at least to lower environments (e.g. dev and test) and ideally all the way to production with some manual approvals in-place.
 
-In order to automate triggering the pipeline, you can define a webhook on your Git repository 
-to notify OpenShift on every commit that is made to the Git repository and trigger a pipeline 
-execution.
+In order to automate triggering the pipeline, you can define a webhook on your Git repository to notify OpenShift on every commit that is made to the Git repository and trigger a pipeline execution.
 
-You can get see the webhook links in the [OpenShift web console]({{ CONSOLE_URL}}) by going to `Build >> Pipelines`, clicking 
-on the pipeline and going to the `Configurations` tab.
+You can get see the webhook links in the [OpenShift web console]({{ CONSOLE_URL}}) by going to _Builds > Build Configs > Webhooks_. You will find _secret variables_ in _YAML_ tab.
 
 Copy the Generic webhook url which you will need in the next steps.
 
-Go to your [Git repository]({{GIT_URL}}/userXX/cloud-native-workshop-v2m1-labs.git), then click on `Settings`.
+Go to your [Git repository]({{GIT_URL}}/userXX/cloud-native-workshop-v2m1-labs.git), then click on **Settings**.
 
 ![Repository Settings]({% image_path cd-gogs-settings-link.png %}){:width="900px"}
 
-On the left menu, click on `Webhooks` and then on `Add Webhook` button and then `Gogs`. 
+On the left menu, click on **Webhooks** and then on **Add Webhook** button and then **Gogs**. 
 
 Create a webhook with the following details:
 
-* `Payload URL`: paste the Generic webhook url you copied from the `monolith-pipeline`
-* `Content type`: `application/json`
+* Payload URL: paste the Generic webhook url you copied from the **monolith-pipeline**
+* Content type: **application/json**
 
-Click on `Add Webhook`. 
+Click on **Add Webhook**. 
 
 ![Repository Webhook]({% image_path cd-gogs-webhook-add.png %}){:width="660px"}
 
-All done. You can click on the newly defined webhook to see the list of *Recent Delivery*. 
-Clicking on the `Test Delivery` button allows you to manually trigger the webhook for 
-testing purposes. Click on it and verify that the `monolith-pipeline` start running 
-immediately.
+All done. You can click on the newly defined webhook to see the list of *Recent Delivery*.  Click on the **Test Delivery** button allows you to manually trigger the webhook for testing purposes. Click on it and verify that the _monolith-pipeline_ start running immediately.
 
 `Congratulations!` You have added a human approval step for all future developer changes. You now have two projects that can be visualized as:
 
@@ -410,12 +344,8 @@ immediately.
 
 ---
 
-In this lab, you learned how to use the OpenShift Container Platform as a developer to build,
-and deploy applications. You also learned how OpenShift makes your life easier as a developer,
-architect, and DevOps engineer.
+In this lab, you learned how to use the OpenShift Container Platform as a developer to build, and deploy applications. You also learned how OpenShift makes your life easier as a developer, architect, and DevOps engineer.
 
-You can use these techniques in future projects to modernize your existing applications and add
-a lot of functionality without major re-writes.
+You can use these techniques in future projects to modernize your existing applications and add a lot of functionality without major re-writes.
 
-The monolithic application we've been using so far works great, but is starting to show its age.
-Even small changes to one part of the app require many teams to be involved in the push to production.
+The monolithic application we've been using so far works great, but is starting to show its age. Even small changes to one part of the app require many teams to be involved in the push to production.
