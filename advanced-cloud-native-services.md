@@ -120,6 +120,14 @@ You can review the above resources in the [OpenShift web console]({{ CONSOLE_URL
 
 > NOTE: Don't worry about reading and understanding the output of oc describe. Just make sure the command doesn't report errors!
 
+If you haven't deployment in Module 1, you can deploy the coolstore easily via executing the following shell script in CodeReady Workspaces Terminal:
+
+`chmod +x /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/*.sh`
+
+Replace with your username before running this commands:
+
+`/projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-coolstore.sh userXX`
+
 Run these commands to inspect the elements via CodeReady Workspaces Terminal window:
 
 `oc get bc coolstore`
