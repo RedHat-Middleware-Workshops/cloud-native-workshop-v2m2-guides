@@ -24,9 +24,9 @@ Both Developers and Operators communicate with the OpenShift Platform via one of
 
 * **Command Line Interface** - The command line tool that we will be using as part of this training is called the *oc* tool. You used this briefly in the last lab. This tool is written in the Go programming language and is a single executable that is provided for Windows, OS X, and the Linux Operating Systems.
 * **Web Console** -  OpenShift also provides a feature rich Web Console that provides a friendly graphical interface for interacting with the platform. You can always access the Web Console using the link provided just above the Terminal window on the right:
-* **REST API** - Both the command line tool and the web console actually communicate to OpenShift via the same method, the REST API.  Having a robust API allows users to create their own scripts and automation depending on their specific requirements.  For detailed information about the REST API, check out the [official documentation](https://docs.openshift.org/latest/rest_api/index.html). You will not use the REST API directly in this workshop.
+* **REST API** - Both the command line tool and the web console actually communicate to OpenShift via the same method, the REST API.  Having a robust API allows users to create their own scripts and automation depending on their specific requirements.  For detailed information about the REST API, check out the [official documentation](https://docs.openshift.org/latest/rest_api/index.html){:target="_blank"}. You will not use the REST API directly in this workshop.
 
-During this workshop, you will be using both the command line tool and the web console.  However, it should be noted that there are plugins for several integrated development environments as well. For example, to use OpenShift from the Eclipse IDE, you would want to use the official [JBoss Tools](https://tools.jboss.org/features/openshift.html) plugin.
+During this workshop, you will be using both the command line tool and the web console.  However, it should be noted that there are plugins for several integrated development environments as well. For example, to use OpenShift from the Eclipse IDE, you would want to use the official [JBoss Tools](https://tools.jboss.org/features/openshift.html){:target="_blank"} plugin.
 
 Now that you know how to interact with OpenShift, let's focus on some core concepts that you as a developer will need to understand as you are building your applications!
 
@@ -43,7 +43,7 @@ application services and endpoints you (or your teams) are using for your work.
 
 ##### Containers
 
-The basic units of OpenShift applications are called containers (sometimes called Linux Containers). [Linux container technologies](https://access.redhat.com/articles/1353593) are lightweight mechanisms for isolating running processes so that they are limited to interacting with only their designated resources.
+The basic units of OpenShift applications are called containers (sometimes called Linux Containers). [Linux container technologies](https://access.redhat.com/articles/1353593){:target="_blank"} are lightweight mechanisms for isolating running processes so that they are limited to interacting with only their designated resources.
 
 Though you do not directly interact with the Docker CLI or service when using OpenShift Container Platform, understanding their capabilities and terminology is important for understanding their role in OpenShift Container Platform and how your applications function inside of containers.
 
@@ -95,7 +95,7 @@ Templates contain a collection of object definitions (BuildConfigs, DeploymentCo
 You will use several pre-defined templates to initialize different environments for the application. You've already used one in the previous lab to deploy the application
 into a _dev_ environment, and you'll use more in this lab to provision the _production_ environment as well.
 
-Consult the [OpenShift documentation](https://docs.openshift.com) for more details on these and other concepts.
+Consult the [OpenShift documentation](https://docs.openshift.com){:target="_blank"} for more details on these and other concepts.
 
 
 ####5. Verifying the Dev Environment
@@ -108,13 +108,13 @@ In the previous step or module 1 workshop, you created a new OpenShift project c
 
 Let's take a moment and review the OpenShift resources that are created for the Monolith:
 
-* Build Config: **coolstore** build config is the configuration for building the Monolith image from the source code or WAR file 
+* Build Config: **coolstore** build config is the configuration for building the Monolith image from the source code or WAR file
 * Image Stream: **coolstore** image stream is the virtual view of all coolstore container images built and pushed to the OpenShift integrated registry.
 * Deployment Config: **coolstore** deployment config deploys and redeploys the Coolstore container image whenever a new coolstore container image becomes available. Similarly, the **coolstore-postgresql** does the same for the database.
 * Service: **coolstore** and **coolstore-postgresql** service is an internal load balancer which identifies a set of pods (containers) in order to proxy the connections it receives to them. Backing pods can be added to or removed from a service arbitrarily while the service remains consistently available, enabling anything that depends on the service to refer to it at a consistent address (service name or IP).
 * Route: **www** route registers the service on the built-in external load-balancer and assigns a public DNS name to it so that it can be reached from outside OpenShift cluster.
 
-You can review the above resources in the [OpenShift web console]({{ CONSOLE_URL}}) or using the _oc get_ or _oc describe_ commands (oc describe gives more detailed info):
+You can review the above resources in the [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} or using the _oc get_ or _oc describe_ commands (oc describe gives more detailed info):
 
 > You can use short synonyms for long words, like bc instead of buildconfig, and is for imagestream, dc for deploymentconfig, svc for service, etc.
 
@@ -185,9 +185,9 @@ With our running project on OpenShift, in the next step we'll explore how you as
 
 ##### Access Your Development Environment
 
-You will be using Red Hat CodeReady Workspaces, an online IDE based on [Eclipe Che](https://www.eclipse.org/che/){:target="_blank"}. **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
+You will be using Red Hat CodeReady Workspaces, an online IDE based on [Eclipe Che](https://www.eclipse.org/che/){:target="_blank"}{:target="_blank"}. **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
 
-To get started, [access the Che instance]({{ ECLIPSE_CHE_URL }}) and log in using the username and password you've been assigned (e.g. `{{ CHE_USER_NAME }}/{{ CHE_USER_PASSWORD }}`):
+To get started, [access the Che instance]({{ ECLIPSE_CHE_URL }}){:target="_blank"} and log in using the username and password you've been assigned (e.g. `{{ CHE_USER_NAME }}/{{ CHE_USER_PASSWORD }}`):
 
 ![cdw]({% image_path che-login.png %})
 
@@ -212,14 +212,14 @@ In the project explorer pane, click on the `Import Projects...` and enter the fo
   * Check `Import recursively (for multi-module projects)`
   * Name: `cloud-native-workshop-v2m2-labs`
 
-`Tip`: You can find GIT URL when you click on {{GIT_URL}} then login with your credentials. 
+`Tip`: You can find GIT URL when you click on {{GIT_URL}} then login with your credentials.
 
 ![codeready-workspace-import]({% image_path codeready-workspace-import.png %}){:width="700px"}
 
 The projects are imported now into your workspace and is visible in the project explorer.
 
-CodeReady Workspaces is a full featured IDE and provides language specific capabilities for various project types. In order to 
-enable these capabilities, let's convert the imported project skeletons to a Maven projects. In the project explorer, right-click on each project and 
+CodeReady Workspaces is a full featured IDE and provides language specific capabilities for various project types. In order to
+enable these capabilities, let's convert the imported project skeletons to a Maven projects. In the project explorer, right-click on each project and
 then click on `Convert to Project` continuously.
 
 ![codeready-workspace-convert]({% image_path codeready-workspace-convert.png %}){:width="500px"}
@@ -236,7 +236,7 @@ Repeat the above for inventory and catalog projects.
 
 ##### Connnecting to Openshift
 
-When you access [OpenShift web console]({{ CONSOLE_URL}}) or the other route URL via HTTPS protocol, you will see `Your Connection is not secure` warning message.
+When you access [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} or the other route URL via HTTPS protocol, you will see `Your Connection is not secure` warning message.
 Because, OpenShift uses self-certification to create TLS termication route as default. For example, if you're using *Chrome Browser*, you will see the following screen.
 
 Click on `Advanced` then, you can access the HTTPS page when you click on `Proceed to...`!!!

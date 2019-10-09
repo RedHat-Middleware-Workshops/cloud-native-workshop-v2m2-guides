@@ -6,9 +6,9 @@ In this lab, you will debug the coolstore application using Java remote debuggin
 
 ---
 
-Remote debugging is a useful debugging technique for application development which allows looking into the code that is being executed somewhere else on a different machine and execute the code line-by-line to help investigate bugs and issues. Remote debugging is part of  Java SE standard debugging architecture which you can learn more about it in [Java SE docs](https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/architecture.html).
+Remote debugging is a useful debugging technique for application development which allows looking into the code that is being executed somewhere else on a different machine and execute the code line-by-line to help investigate bugs and issues. Remote debugging is part of  Java SE standard debugging architecture which you can learn more about it in [Java SE docs](https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/architecture.html){:target="_blank"}.
 
-Quarkus in development mode enables hot deployment with background compilation, which means that when you modify your Java files and/or your resource files and refresh your browser, these changes will automatically take effect. This works too for resource files like the configuration property file. 
+Quarkus in development mode enables hot deployment with background compilation, which means that when you modify your Java files and/or your resource files and refresh your browser, these changes will automatically take effect. This works too for resource files like the configuration property file.
 
 This will also listen for a debugger on port 5005. If your want to wait for the debugger to attach before running you can pass -Ddebug on the command line. If you don’t want the debugger at all you can use -Ddebug=false.
 
@@ -18,9 +18,9 @@ Enable remote debugging on Inventory by running the following inside the **inven
 
 `mvn compile quarkus:dev`
 
-> The default port for remoting debugging is **5005** but you can change the default port 
+> The default port for remoting debugging is **5005** but you can change the default port
 
-You are all set now to start debugging using the tools of you choice. 
+You are all set now to start debugging using the tools of you choice.
 
 Do not wait for the command to return! The fabric8 maven plugin keeps the forwarded port open so that you can start debugging remotely.
 
@@ -36,7 +36,7 @@ From the **Run** menu, click on **Edit Debug Configurations...**.
 
 ![Remote Debug]({% image_path debug-che-debug-config-1.png %})
 
-The window shows the debuggers available in CodeReady Workspace. Click on the plus sign near the 
+The window shows the debuggers available in CodeReady Workspace. Click on the plus sign near the
 Java debugger.
 
 ![Remote Debug]({% image_path debug-che-debug-config-2.png %})
@@ -54,7 +54,7 @@ You should see a confirmation that the remote debugger is successfully connected
 
 ![Remote Debug]({% image_path debug-che-debug-config-4.png %}){:width="700px"}
 
-Open _com.redhat.coolstore.InventoryResource_ and double-click on the editor sidebar on the line number of the first line of the _getAvailability()_ 
+Open _com.redhat.coolstore.InventoryResource_ and double-click on the editor sidebar on the line number of the first line of the _getAvailability()_
 method to add a breakpoint to that line. A start appears near the line to show a breakpoint is set.
 
 ![Add Breakpoint]({% image_path debug-che-breakpoint.png %})

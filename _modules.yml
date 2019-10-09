@@ -2,6 +2,8 @@ config:
     renderer: markdown
 
 modules:
+  workshop-environment:
+    name: Your Workshop Environment
   advanced-cloud-native-services:
     name: Advanced Cloud-Native Services
   implementing-cd:
