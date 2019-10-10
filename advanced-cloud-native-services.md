@@ -118,7 +118,7 @@ Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout
 
 In the project explorer pane, click on the `Import Projects...` and enter the following:
 
-> NOTE: If you've completed other modules already, then you can use _File > Import Project_ to import the project.
+> NOTE: If you've completed other modules already, then you can use _Workspace > Import Project_ menu to import the project.
 
   * Version Control System: `GIT`
   * URL: `{{GIT_URL}}/userXX/cloud-native-workshop-v2m2-labs.git`(IMPORTANT: replace userXX with your lab user)
@@ -151,7 +151,7 @@ Repeat the above for inventory and catalog projects.
 
 Although your Eclipse Che workspace is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. If you've completed other modules, you're probably already logged in, but let's login again: open a Terminal and issue the following command:
 
-```sh
+```
 oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true
 ```
 
@@ -164,7 +164,18 @@ You should see:
 
 ```
 Login successful.
-...
+
+You have access to the following projects and can switch between them with 'oc project <projectname>':
+
+  * default
+    istio-system
+    user9-bookinfo
+    user9-catalog
+    user9-cloudnative-pipeline
+    user9-cloudnativeapps
+    user9-inventory
+
+Using project "default".
 Welcome! See 'oc help' to get started.
 ```
 
@@ -173,6 +184,8 @@ If you've already completed Module 1 (Optimizing Existing Applications), then yo
 `sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-coolstore.sh userXX`
 
 > NOTE: Replace `userXX` with your actual username!
+
+Wait for the command to report `replication controller "coolstore-1" successfully rolled out`. If it appears to hang, just press `CTRL-C` and run `oc rollout status -w dc/coolstore` again until it reports success.
 
 #### Verifying the Dev Environment
 

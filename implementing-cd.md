@@ -101,9 +101,7 @@ Continuous Delivery (CD) refers to a set of practices with the intention of auto
 
 OpenShift simplifies building CI/CD Pipelines by integrating the popular [Jenkins pipelines](https://jenkins.io/doc/book/pipeline/overview/){:target="_blank"} into the platform and enables defining truly complex workflows directly from within OpenShift.
 
-The first step for any deployment pipeline is to store all code and configurations in a source code repository. In this workshop, the source code and configurations are stored in a GitHub repository we've been using at [https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs]. This repository has been copied locally to your environment and you've been using it ever since!
-
-You can see the changes you've personally made using **git --no-pager status** to show the code changes you've made using the Git command (part of the [Git source code management system](https://git-scm.com/){:target="_blank"}).
+The first step for any deployment pipeline is to store all code and configurations in a source code repository. In this workshop, the source code and configurations are stored in a [GitHub repository](https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs){:target="_blank"} we've been using. This repository has been copied locally to your environment and you've been using it ever since!
 
 ##### Pipelines
 
@@ -177,7 +175,7 @@ To simplify the pipeline in this workshop, we simulate the build and tests and s
 
 ---
 
-Before prmoting the dev image, you need to modify a **RoleBinding** to access the dev image by Jenkins. Go to overview page of _UserXX Coolstore Monolith Dev_ project then naviage _Administration > Role Bindings_. Click on **ci_admin**:
+Before prmoting the dev image, you need to modify a **RoleBinding** to access the dev image by Jenkins. Go to overview page of the `userXX-coolstore-dev` project then naviagate _Administration > Role Bindings_. Click on **ci_admin**:
 
 ![Prod]({% image_path coolstore-dev-ci-admin.png %})
 
@@ -257,7 +255,7 @@ Click **Save**.
 
 With the approval step in place, let's simulate a new change from a developer who wants to change the color of the header in the coolstore back to the original (black) color.
 
-First, open _src/main/webapp/app/css/coolstore.css_ via CodeReady Workspace, which contains the CSS stylesheet for the CoolStore app.
+First, open _monolith/src/main/webapp/app/css/coolstore.css_ via CodeReady Workspace, which contains the CSS stylesheet for the CoolStore app.
 
 Add the following CSS to turn the header bar background to Red Hat red (**Copy** to add it at the bottom):
 
@@ -271,24 +269,25 @@ Add the following CSS to turn the header bar background to Red Hat red (**Copy**
 
 Next, re-build the app once more via CodeReady Workspaces Terminal:
 
+`cd /projects/cloud-native-workshop-v2m2-labs/monolith`
+
 `mvn clean package -Popenshift`
 
 And re-deploy it to the dev environment using a binary build just as we did before via CodeReady Workspaces Terminal:
 
-`oc start-build -n userXX-coolstore-dev coolstore --from-file=deployments/ROOT.war`
+`oc start-build -n userXX-coolstore-dev coolstore --from-file=deployments/ROOT.war --follow`
 
 Now wait for it to complete the deployment via CodeReady Workspaces Terminal:
 
 `oc -n userXX-coolstore-dev rollout status -w dc/coolstore`
 
-And verify that the blue header is visible in the dev application:
+And verify that the blue header is visible in the dev application by navigating to the `userXX-coolstore-dev` project in the OpenShift Console, and then going to _Networking > Routes_ and clicking on the route URL. It should look like:
 
 * USERXX Coolstore Monolith - Dev at
 
 ![Prod]({% image_path nav-blue.png %})
 
-While the production application is still black:
-
+Then navigating to the `userXX-coolstore-prod` project in the OpenShift Console, and then going to _Networking > Routes_ and clicking on the route URL for the production app. It should still be black:
 * USERXX Coolstore Monolith - Prod at
 
 ![Prod]({% image_path pipe-orig.png %})
@@ -299,14 +298,14 @@ We're happy with this change in dev, so let's promote the new change to prod, us
 
 ---
 
-Invoke the pipeline once more by navigating to _Builds > Build Configs > monolith-pipeline > Start Build_. The same pipeline progress will be shown, however before deploying to prod, you will see a prompt in the pipeline:
+Invoke the pipeline once more by navigating to _Builds > Build Configs > monolith-pipeline > Rebuild_. The same pipeline progress will be shown, however before deploying to prod, you will see a prompt in the pipeline:
 
 ![Prod]({% image_path pipe-start2.png %}).
 
 Click on the link for **Input Required**. This will open a new tab and direct you to Jenkins itself, where you can login with the same credentials as OpenShift:
 
-* Username: **userXX**
-* Password: **openshift**
+* Username: `userXX`
+* Password: `r3dh4t1!`
 
 Accept the browser certificate warning and the Jenkins/OpenShift permissions, and then you'll find yourself at the approval prompt:
 
@@ -324,7 +323,7 @@ Once you click _Proceed_, you will see the log file from Jenkins showing the fin
 
 Wait for the production deployment to complete via CodeReady Workspaces Terminal:
 
-`oc rollout -n coolstore-prod status dc/coolstore-prod`
+`oc rollout -n userXX-coolstore-prod status -w dc/coolstore-prod`
 
 Once it completes, verify that the production application has the new change (blue header):
 
@@ -340,11 +339,16 @@ Manually triggering the deployment pipeline to run is useful but the real goes i
 
 In order to automate triggering the pipeline, you can define a webhook on your Git repository to notify OpenShift on every commit that is made to the Git repository and trigger a pipeline execution.
 
-You can get see the webhook links in the [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} by going to _Builds > Build Configs > Webhooks_. You will find _secret variables_ in _YAML_ tab.
+You can get see the webhook links in the [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} by going to _Builds > Build Configs > Webhooks_. Look for the _Generic secret_ value in the _YAML_ tab. Copy this down.
 
-Copy the Generic webhook url which you will need in the next steps.
+Then go back to the _Overview_ tab. At the bottom you'll find the _Generic_ webhook url which you will need (along with the secret) in the next steps.
 
-Go to your [Git repository]({{GIT_URL}}/userXX/cloud-native-workshop-v2m1-labs.git){:target="_blank"}, then click on **Settings**.
+Go to your Git repository at `{{ GIT_URL }}/userXX/cloud-native-workshop-v2m2-labs.git` (replace `userXX` with your username and open this URL in a new tab), Click **Sign In** and sign in with your credentials:
+
+* Username: `userXX` (replace with your username)
+* Password: `r3dh4t1!`
+
+ then click on **Settings**.
 
 ![Repository Settings]({% image_path cd-gogs-settings-link.png %}){:width="900px"}
 
@@ -352,14 +356,14 @@ On the left menu, click on **Webhooks** and then on **Add Webhook** button and t
 
 Create a webhook with the following details:
 
-* Payload URL: paste the Generic webhook url you copied from the **monolith-pipeline**
+* Payload URL: paste the Generic webhook url you copied from the **monolith-pipeline** (make sure to replace the `secret` value in the URL!)
 * Content type: **application/json**
 
 Click on **Add Webhook**.
 
 ![Repository Webhook]({% image_path cd-gogs-webhook-add.png %}){:width="660px"}
 
-All done. You can click on the newly defined webhook to see the list of *Recent Delivery*.  Click on the **Test Delivery** button allows you to manually trigger the webhook for testing purposes. Click on it and verify that the _monolith-pipeline_ start running immediately.
+All done. You can **click on the newly defined webhook** to see the list of *Recent Delivery*.  Click on the **Test Delivery** button allows you to manually trigger the webhook for testing purposes. Click on it and verify that the _monolith-pipeline_ starts running immediately (navigate to _Builds > Builds_ then you should see one running. Click on it to ensure the pipeline is executing, and optionally confirm the _Approve Go Live_ as before).
 
 `Congratulations!` You have added a human approval step for all future developer changes. You now have two projects that can be visualized as:
 
