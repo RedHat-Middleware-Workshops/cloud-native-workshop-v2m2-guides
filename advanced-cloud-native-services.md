@@ -201,7 +201,7 @@ coolstore-2-bpkkc              1/1       Running   0          4m
 coolstore-postgresql-1-jpcb8   1/1       Running   0          9m
 ~~~
 
-####6. Verify Database
+#### Verify Database
 
 ---
 
