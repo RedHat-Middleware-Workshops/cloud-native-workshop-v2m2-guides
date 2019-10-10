@@ -9,7 +9,7 @@ In this lab, you will go deeper into how to use the OpenShift Container Platform
 
 ---
 
-If you are not familiar with the OpenShift Container Platform, it's worth taking a few minutes to understand the basics of the platform as well as the environment that you will be using for this workshop. 
+If you are not familiar with the OpenShift Container Platform, it's worth taking a few minutes to understand the basics of the platform as well as the environment that you will be using for this workshop.
 
 The goal of OpenShift is to provide a great experience for both Developers and System Administrators to develop, deploy, and run containerized applications.  Developers should love using OpenShift because it enables them to take advantage of both containerized applications and orchestration without having the know the details.  Developers are free to focus on their code instead of spending time writing Dockerfiles and running docker builds.
 
@@ -118,6 +118,8 @@ Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout
 
 In the project explorer pane, click on the `Import Projects...` and enter the following:
 
+> NOTE: If you've completed other modules already, then you can use _File > Import Project_ to import the project.
+
   * Version Control System: `GIT`
   * URL: `{{GIT_URL}}/userXX/cloud-native-workshop-v2m2-labs.git`(IMPORTANT: replace userXX with your lab user)
   * Check `Import recursively (for multi-module projects)`
@@ -145,19 +147,38 @@ Repeat the above for inventory and catalog projects.
 
 ![codeready-workspace-terminal]({% image_path codeready-workspace-terminal.png %})
 
-If you haven't deployment in Module 1, you can deploy the coolstore easily via executing the following shell script in CodeReady Workspaces Terminal:
+#### Login to OpenShift CLI
 
-`chmod +x /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/*.sh`
+Although your Eclipse Che workspace is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. If you've completed other modules, you're probably already logged in, but let's login again: open a Terminal and issue the following command:
 
-Replace with your username before running this commands:
+```sh
+oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true
+```
 
-`/projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-coolstore.sh userXX`
+Enter your username and password assigned to you:
+
+* Username: `userXX`
+* Password: `r3dh4t1!`
+
+You should see:
+
+```
+Login successful.
+...
+Welcome! See 'oc help' to get started.
+```
+
+If you've already completed Module 1 (Optimizing Existing Applications), then you will already have the _CoolStore_ app deployed. **If this is the first module you are completing today, you need to deploy CoolStore monolith application by running this command in a CodeReady Workspaces Terminal:**
+
+`sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-coolstore.sh userXX`
+
+> NOTE: Replace `userXX` with your actual username!
 
 #### Verifying the Dev Environment
 
 ---
 
-In the previous step or module 1 workshop, you created a new OpenShift project called **userXX-coolstore-dev** which represents your developer personal project in which you deployed the CoolStore monolith.
+In the previous module, you created a new OpenShift project called **userXX-coolstore-dev** which represents your developer personal project in which you deployed the CoolStore monolith.
 
 ##### Verify Application
 
