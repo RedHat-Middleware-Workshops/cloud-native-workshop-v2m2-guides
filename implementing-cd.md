@@ -18,15 +18,40 @@ For simplicity in this scenario we will only use a _dev_ and _prod_ environment,
 
 ---
 
-We will create and initialize the new production environment using another template in a separate OpenShift project.
+First, open a new brower with the [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"}
 
-In [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"}, click **Create Project**, fill in the fields, and click **Create**:
+![openshift_login]({% image_path openshift_login.png %})
+
+Login using:
+
+* Username: `userXX`
+* Password: `r3dh4t1!`
+
+> **NOTE**: Use of self-signed certificates
+>
+> When you access the OpenShift web console]({{ CONSOLE_URL}}) or other URLs via _HTTPS_ protocol, you will see browser warnings
+> like `Your > Connection is not secure` since this workshop uses self-signed certificates (which you should not do in production!).
+> For example, if you're using **Chrome**, you will see the following screen.
+>
+> Click on `Advanced` then, you can access the HTTPS page when you click on `Proceed to...`!!!
+>
+> ![warning]({% image_path browser_warning.png %})
+>
+> Other browsers have similar procedures to accept the security exception.
+
+You will see the OpenShift landing page:
+
+![openshift_landing]({% image_path openshift_landing.png %})
+
+> The project displayed in the landing page depends on which labs you will run today. If you will develop `Service Mesh and Identity` then you will see pre-created projects as the above screeenshot.
+
+Click `Create Project`, fill in the fields, and click `Create`:
 
 * Name: **userXX-coolstore-prod**
 * Display Name: **USERXX Coolstore Monolith - Production**
 * Description: _leave this field empty_
 
-> NOTE: YOU MUST USE userXX-coolstore-prod AS THE PROJECT NAME, as this name is referenced later on and you will experience failures if you do not name it userXX-coolstore-prod.
+> NOTE: YOU `MUST` USE `userXX-coolstore-prod` AS THE PROJECT NAME, as this name is referenced later on and you will experience failures if you do not name it `userXX-coolstore-prod`.
 
 This will create a new OpenShift project called **userXX-coolstore-prod** from which our production application will run.
 

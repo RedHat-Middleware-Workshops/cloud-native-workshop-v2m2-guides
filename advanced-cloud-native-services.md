@@ -3,22 +3,15 @@
 If you complete the **Cloud Native Workshop - Module 1**, you learned how to take an existing application to the cloud with JBoss EAP and OpenShift,
 and you got a glimpse into the power of OpenShift for existing applications.
 
-In this lab, you will go deeper into how to use the OpenShift Container Platform as a developer to build
-and deploy applications. We'll focus on the core features of OpenShift as it relates to developers, and
-you'll learn typical workflows for a developer (develop, build, test, deploy, and repeat).
+In this lab, you will go deeper into how to use the OpenShift Container Platform as a developer to build and deploy applications. We'll focus on the core features of OpenShift as it relates to developers, and you'll learn typical workflows for a developer (develop, build, test, deploy, and repeat).
 
 #### Let's get started
 
 ---
 
-If you are not familiar with the OpenShift Container Platform, it's worth taking a few minutes to understand
-the basics of the platform as well as the environment that you will be using for this workshop.
+If you are not familiar with the OpenShift Container Platform, it's worth taking a few minutes to understand the basics of the platform as well as the environment that you will be using for this workshop. 
 
-The goal of OpenShift is to provide a great experience for both Developers and System Administrators to
-develop, deploy, and run containerized applications.  Developers should love using OpenShift because it
-enables them to take advantage of both containerized applications and orchestration without having the
-know the details.  Developers are free to focus on their code instead of spending time writing Dockerfiles
-and running docker builds.
+The goal of OpenShift is to provide a great experience for both Developers and System Administrators to develop, deploy, and run containerized applications.  Developers should love using OpenShift because it enables them to take advantage of both containerized applications and orchestration without having the know the details.  Developers are free to focus on their code instead of spending time writing Dockerfiles and running docker builds.
 
 Both Developers and Operators communicate with the OpenShift Platform via one of the following methods:
 
@@ -97,8 +90,70 @@ into a _dev_ environment, and you'll use more in this lab to provision the _prod
 
 Consult the [OpenShift documentation](https://docs.openshift.com){:target="_blank"} for more details on these and other concepts.
 
+#### Getting Ready for the labs
 
-####5. Verifying the Dev Environment
+---
+
+##### Access Your Development Environment
+
+You will be using Red Hat CodeReady Workspaces, an online IDE based on [Eclipe Che](https://www.eclipse.org/che/){:target="_blank"}{:target="_blank"}. **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
+
+To get started, [access the Che instance]({{ ECLIPSE_CHE_URL }}){:target="_blank"} and log in using the username and password you've been assigned (e.g. `{{ CHE_USER_NAME }}/{{ CHE_USER_PASSWORD }}`):
+
+![cdw]({% image_path che-login.png %})
+
+Once you log in, you'll be placed on your personal dashboard. We've pre-created workspaces for you to use. Click on the name of the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number). You can also click on the name of the workspace in the center, and then click on the green button that says "OPEN" on the top right hand side of the screen:
+
+![cdw]({% image_path che-precreated.png %})
+
+After a minute or two, you'll be placed in the workspace:
+
+![cdw]({% image_path che-workspace.png %})
+
+To gain extra screen space, click on the yellow arrow to hide the left menu (you won't need it):
+
+![cdw]({% image_path che-realestate.png %})
+
+Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout: a project/file browser on the left, a code editor on the right, and a terminal at the bottom. You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
+
+In the project explorer pane, click on the `Import Projects...` and enter the following:
+
+  * Version Control System: `GIT`
+  * URL: `{{GIT_URL}}/userXX/cloud-native-workshop-v2m2-labs.git`(IMPORTANT: replace userXX with your lab user)
+  * Check `Import recursively (for multi-module projects)`
+  * Name: `cloud-native-workshop-v2m2-labs`
+
+`Tip`: You can find GIT URL when you click on {{GIT_URL}} then login with your credentials.
+
+![codeready-workspace-import]({% image_path codeready-workspace-import.png %}){:width="700px"}
+
+The projects are imported now into your workspace and is visible in the project explorer.
+
+CodeReady Workspaces is a full featured IDE and provides language specific capabilities for various project types. In order to
+enable these capabilities, let's convert the imported project skeletons to a Maven projects. In the project explorer, right-click on each project and
+then click on `Convert to Project` continuously.
+
+![codeready-workspace-convert]({% image_path codeready-workspace-convert.png %}){:width="500px"}
+
+Choose `Maven` from the project configurations and then click on `Save`.
+
+![codeready-workspace-maven]({% image_path codeready-workspace-maven.png %}){:width="700px"}
+
+Repeat the above for inventory and catalog projects.
+
+> `NOTE`: the Terminal window in CodeReady Workspaces. For the rest of these labs, anytime you need to run a command in a terminal, you can use the CodeReady Workspaces Terminal window.
+
+![codeready-workspace-terminal]({% image_path codeready-workspace-terminal.png %})
+
+If you haven't deployment in Module 1, you can deploy the coolstore easily via executing the following shell script in CodeReady Workspaces Terminal:
+
+`chmod +x /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/*.sh`
+
+Replace with your username before running this commands:
+
+`/projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-coolstore.sh userXX`
+
+#### Verifying the Dev Environment
 
 ---
 
@@ -119,14 +174,6 @@ You can review the above resources in the [OpenShift web console]({{ CONSOLE_URL
 > You can use short synonyms for long words, like bc instead of buildconfig, and is for imagestream, dc for deploymentconfig, svc for service, etc.
 
 > NOTE: Don't worry about reading and understanding the output of oc describe. Just make sure the command doesn't report errors!
-
-If you haven't deployment in Module 1, you can deploy the coolstore easily via executing the following shell script in CodeReady Workspaces Terminal:
-
-`chmod +x /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/*.sh`
-
-Replace with your username before running this commands:
-
-`/projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-coolstore.sh userXX`
 
 Run these commands to inspect the elements via CodeReady Workspaces Terminal window:
 
@@ -186,67 +233,3 @@ You should see the following:
 Don't forget to exit the pod's shell with **exit**.
 
 With our running project on OpenShift, in the next step we'll explore how you as a developer can work with the running app to make changes and debug the application!
-
-#### Getting Ready for the labs
-
----
-
-##### Access Your Development Environment
-
-You will be using Red Hat CodeReady Workspaces, an online IDE based on [Eclipe Che](https://www.eclipse.org/che/){:target="_blank"}{:target="_blank"}. **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
-
-To get started, [access the Che instance]({{ ECLIPSE_CHE_URL }}){:target="_blank"} and log in using the username and password you've been assigned (e.g. `{{ CHE_USER_NAME }}/{{ CHE_USER_PASSWORD }}`):
-
-![cdw]({% image_path che-login.png %})
-
-Once you log in, you'll be placed on your personal dashboard. We've pre-created workspaces for you to use. Click on the name of the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number). You can also click on the name of the workspace in the center, and then click on the green button that says "OPEN" on the top right hand side of the screen:
-
-![cdw]({% image_path che-precreated.png %})
-
-After a minute or two, you'll be placed in the workspace:
-
-![cdw]({% image_path che-workspace.png %})
-
-To gain extra screen space, click on the yellow arrow to hide the left menu (you won't need it):
-
-![cdw]({% image_path che-realestate.png %})
-
-Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout: a project/file browser on the left, a code editor on the right, and a terminal at the bottom. You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
-
-In the project explorer pane, click on the `Import Projects...` and enter the following:
-
-  * Version Control System: `GIT`
-  * URL: `{{GIT_URL}}/userXX/cloud-native-workshop-v2m2-labs.git`(IMPORTANT: replace userXX with your lab user)
-  * Check `Import recursively (for multi-module projects)`
-  * Name: `cloud-native-workshop-v2m2-labs`
-
-`Tip`: You can find GIT URL when you click on {{GIT_URL}} then login with your credentials.
-
-![codeready-workspace-import]({% image_path codeready-workspace-import.png %}){:width="700px"}
-
-The projects are imported now into your workspace and is visible in the project explorer.
-
-CodeReady Workspaces is a full featured IDE and provides language specific capabilities for various project types. In order to
-enable these capabilities, let's convert the imported project skeletons to a Maven projects. In the project explorer, right-click on each project and
-then click on `Convert to Project` continuously.
-
-![codeready-workspace-convert]({% image_path codeready-workspace-convert.png %}){:width="500px"}
-
-Choose `Maven` from the project configurations and then click on `Save`.
-
-![codeready-workspace-maven]({% image_path codeready-workspace-maven.png %}){:width="700px"}
-
-Repeat the above for inventory and catalog projects.
-
-> `NOTE`: the Terminal window in CodeReady Workspaces. For the rest of these labs, anytime you need to run a command in a terminal, you can use the CodeReady Workspaces Terminal window.
-
-![codeready-workspace-terminal]({% image_path codeready-workspace-terminal.png %})
-
-##### Connnecting to Openshift
-
-When you access [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} or the other route URL via HTTPS protocol, you will see `Your Connection is not secure` warning message.
-Because, OpenShift uses self-certification to create TLS termication route as default. For example, if you're using *Chrome Browser*, you will see the following screen.
-
-Click on `Advanced` then, you can access the HTTPS page when you click on `Proceed to...`!!!
-
-![warning]({% image_path browser_warning.png %})
