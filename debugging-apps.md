@@ -46,7 +46,7 @@ Configure the remote debugger and click on the **Save** button:
 * Check **Connect to process on workspace machine**
 * Port: **5005**
 
-![Remote Debug]({% image_path debug-che-debug-config-3.png %}
+![Remote Debug]({% image_path debug-che-debug-config-3.png %})
 
 You can now click on _Save_ then_ _Debug_ button to make CodeReady Workspaces connect to the Inventory service running on OpenShift.
 
