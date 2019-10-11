@@ -18,13 +18,13 @@ Enable remote debugging on Inventory by running the following inside the **inven
 
 `mvn compile quarkus:dev`
 
-> The default port for remoting debugging is **5005** but you can change the default port
+> The default port for remoting debugging is **5005** but you can change the default port using `-Ddebug=port_num`
 
 You are all set now to start debugging using the tools of you choice.
 
-Do not wait for the command to return! The fabric8 maven plugin keeps the forwarded port open so that you can start debugging remotely.
+Do not wait for the command to return! The Quarkus maven plugin keeps the forwarded port open so that you can start debugging remotely.
 
-![Fabric8 Debug]({% image_path debug-che-quarkus.png %})
+![Quarkus Debug]({% image_path debug-che-quarkus.png %})
 
 ####2. Remote Debug with CodeReady Workspace
 
@@ -44,11 +44,11 @@ Java debugger.
 Configure the remote debugger and click on the **Save** button:
 
 * Check **Connect to process on workspace machine**
-* Port: **5005(())
+* Port: **5005**
 
 ![Remote Debug]({% image_path debug-che-debug-config-3.png %}
 
-You can now click on the _Debug_ button to make CodeReady Workspaces connect to the Inventory service running on OpenShift.
+You can now click on _Save_ then_ _Debug_ button to make CodeReady Workspaces connect to the Inventory service running on OpenShift.
 
 You should see a confirmation that the remote debugger is successfully connected.
 
@@ -59,13 +59,11 @@ method to add a breakpoint to that line. A start appears near the line to show a
 
 ![Add Breakpoint]({% image_path debug-che-breakpoint.png %})
 
-Open a new Terminal window and use **curl** to invoke the Inventory API with the suspect product id in order to pause the code execution at the defined breakpoint.
-
 Note that you can use the the following icons to switch between debug and terminal windows.
 
 ![Icons]({% image_path debug-che-window-guide.png %})
 
-Invoke the endpoint URL of the Inventory service using **curl** command:
+Invoke the endpoint URL of the Inventory service using **curl** command in a separate Terminal:
 
 `curl http://localhost:8080/services/inventory/165613 ; echo`
 
@@ -77,15 +75,15 @@ Click on the _Step Over_ icon to execute one line and retrieve the inventory obj
 
 ![Step Over]({% image_path debug-che-step-over.png %}){:width="700px"}
 
-Click on the the plus icon in the _Variables_ panel to add the _inventory_ variable to the list of watch variables.
+The _Variables_ panel allows you to see (and change) local variables.
 
 ![Debug]({% image_path debug-che-breakpoint-values.png %})
 
-This would allow you to see the value of _inventory_ variable during execution.
+This would allow you to see for example value of _itemId_ variable passed into the method during execution.
 
 ![Watch Variables]({% image_path debug-che-variables.png %})
 
-Look at the **Variables** window. The retrieved inventory object is _serialPersistentFields_!
+Look at the **Variables** window. You can see the value of _itemId_ along with the Stream variables used to retrieve the inventory.
 
 The product id(_165613_) is a unique value to retrieve certain data from the Inventory database. If you might have unexpected result or errors in development, this debugging feature will help you find the root cause quickly then you will eventually fix the issue.
 
@@ -97,8 +95,10 @@ Click on the _Resume_ icon to continue the code execution and then on the stop i
 [{"id":3,"itemId":"165613","link":"http://maps.google.com/?q=Seoul","location":"Seoul","quantity":256}]
 ~~~
 
+> If you wait too long, the `curl` command may timeout and you won't get any output. You can repeat the process to see it again.
+
 ![Icons]({% image_path debug-che-window-result.png %})
 
-> NOTE: Make sure to stop Quarkus development mode via `Close` the terminal.
+> NOTE: Make sure to stop Quarkus development mode by closing the terminal with the running app.
 
 #####Congratulations!

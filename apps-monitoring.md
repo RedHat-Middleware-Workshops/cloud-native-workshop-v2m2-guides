@@ -9,7 +9,7 @@ In this lab, you will monitor coolstore applications using [Jaeger](https://www.
 
 ![logo]({% image_path quarkus-jaeger-prometheus.png %}){:width="900px"}
 
-Jaeger is an open source distributed tracing tool for monitoring and troubleshooting microservices-based distributed systems, including:
+**Jaeger** is an open source distributed tracing tool for monitoring and troubleshooting microservices-based distributed systems, including:
 
  * Distributed context propagation
  * Distributed transaction monitoring
@@ -17,7 +17,7 @@ Jaeger is an open source distributed tracing tool for monitoring and troubleshoo
  * Service dependency analysis
  * Performance and latency optimization
 
-Also, Prometheus is an open source systems monitoring and alerting tool that fits in recording any numeric time series, including:
+**Prometheus** is an open source systems monitoring and alerting tool that fits in recording any numeric time series, including:
 
  * Multi-dimensional time series data by metric name and key/value pairs
  * No reliance on distributed storage
@@ -31,7 +31,7 @@ Also, Prometheus is an open source systems monitoring and alerting tool that fit
 
 In this step, we will deploy our new monitoring tools for our CoolStore application, so create a separate project to house it and keep it separate from our monolith and our other microservices we already created previously.
 
-Create a new project for the _Monitoring_ tools:
+In the [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"}, create a new project for the _Monitoring_ tools:
 
 Click **Create Project**, fill in the fields, and click **Create**:
 
@@ -78,27 +78,26 @@ When you navigate the **Project Status** page in OpenShift console, you will see
 
 ---
 
-Once you deployed Jaeger to OpenShift, you will see the route that generated automatically.
+Once you deployed Jaeger to OpenShift, navigate to _Networking > Routes_ and you will see that the route was that generated automatically.
 
 ![jaeger_route]({% image_path jaeger-route.png %})
 
-Click on the route URL(i.e. _https://jaeger-query-user0-monitoring.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com_) then there is no _Service_ and _Operation_ at this moment.
+Click on the route URL for `jaeger-query`. This is the UI for Jaeger, but currently we have no apps being monitored so it's rather useless. Don't worry! We will utilize tracing data in the next step.
 
 ![jaeger_ui]({% image_path jaeger-ui.png %})
-
-> Don't worry! We will utilize tracing data later.
 
 ####5. Utilizing Opentracing with Inventory(Quarkus)
 
 ---
 
-We have a catalog service on Spring Boot that calls inventory service on Quarkus as the cloud-native application. These applications would be
-better to trace using Jaeger rather than monolith coolstore for considering distributed networking system.
+We have a catalog service written with Spring Boot that calls the inventory service written with Quarkus as part of our cloud-native application. These applications are easy to trace using Jaeger.
 
-In this step, we will add Qurakus extensions to the Inventory application for using **smallrye-opentracing** and we'll use the Quarkus Maven Plugin.
+In this step, we will add Qurakus extensions to the Inventory application for using **smallrye-opentracing**.
 Copy the following commands to add the tracing extension via CodeReady Workspaces Terminal:
 
-Go to _inventory_ directory:
+Go to _inventory_ directory and add the extension with these commands:
+
+`cd /projects/cloud-native-workshop-v2m2-labs/inventory`
 
 `mvn quarkus:add-extension -Dextensions="opentracing"`
 
@@ -128,7 +127,7 @@ Open `src/main/resources/application.properties` file and add the following conf
 
 > You need to replace **userXX** with your username in the configuration.
 
-~~~java
+~~~
 # Jaeger configuration
 quarkus.jaeger.service-name=inventory
 quarkus.jaeger.sampler-type=const
@@ -136,12 +135,12 @@ quarkus.jaeger.sampler-param=1
 quarkus.jaeger.endpoint=http://jaeger-collector.userXX-monitoring:14268/api/traces
 ~~~
 
-You can also specify the configuration using **jvm.args** that Jaeger supplys the properties as [environment variables](https://www.jaegertracing.io/docs/1.12/client-features/){:target="_blank"}.
+You can also specify the configuration using environment variables or JVM properties. See [Jaeger Features](https://www.jaegertracing.io/docs/1.12/client-features/){:target="_blank"}.
 
-If the _quarkus.jaeger.service-name_ property (or JAEGER_SERVICE_NAME environment variable) is not provided then a "no-op" tracer will be configured,
-resulting in no tracing data being reported to the backend.
+> If the `quarkus.jaeger.service-name` property (or `JAEGER_SERVICE_NAME` environment variable) is not provided then a "no-op" tracer will be configured,
+> resulting in no tracing data being reported to the backend.
 
-Currently the tracer can only be configured to report spans directly to the collector via HTTP, using the _quarkus.jaeger.endpoint_ property (or JAEGER_ENDPOINT environment variable). Support for using the Jaeger agent, via UDP, will be available in a future version.
+Currently the tracer can only be configured to report spans directly to the collector via HTTP, using the `quarkus.jaeger.endpoint` property (or `JAEGER_ENDPOINT` environment variable). Support for using the Jaeger agent, via UDP, will be available in a future version.
 
 >NOTE: there is no tracing specific code included in the application. By default, requests sent to this endpoint will be traced without any code changes being required. It is also possible to enhance the tracing information. For more information on this, please see the [MicroProfile OpenTracing specification](https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc){:target="_blank"}.
 
@@ -172,7 +171,7 @@ And wait for the result as below:
 In order to trace networking and data transaction, we will call the Inventory service via **curl** commands via CodeReady Workspaces Terminal:
 Be sure to use your route URL of Inventory.
 
-`curl http://YOUR_INVENTORY_ROUTE_URL/services/inventory/165613 ; echo`
+`curl http://$(oc get route inventory-quarkus -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/services/inventory/165613 ; echo`
 
 Go to _Workloads > Pods_ in the left menu and click on **inventory-quarkus-xxxxxx**.
 
@@ -188,10 +187,10 @@ Click on **Logs** tab and you will see that tracer is initialized after you call
 
 Now, reload the Jaeger UI then you will find that 2 services are created as here:
 
- * Inventory
- * Jaeger-query
+ * inventory
+ * jaeger-query
 
-Click on **Find Traces** and observe the first trace in the graph:
+Select the `inventory` service and then click on **Find Traces** and observe the first trace in the graph:
 
 ![jaeger_ui]({% image_path jaeger-reload.png %})
 
@@ -199,7 +198,7 @@ If you click on **Span** and you will see a logical unit of work in Jaeger that 
 
 ![jaeger_ui]({% image_path jaeger-span.png %})
 
-Let's make more traces!! Open a new web browser to access _CoolStore Inventory Page_(i.e. http://inventory-quarkus-inventory.apps.seoul-7b68.openshiftworkshop.com):
+Let's make more traces! Open a new web browser to access _CoolStore Inventory Page_ using its route (on _Networking > Routes_ in the OpenShift Console):
 
 ![jaeger_ui]({% image_path jaeger-coolstore.png %})
 
@@ -298,7 +297,7 @@ You will see the landing page of Grafana as shown:
 
 ---
 
-Before we create monitoring dashboard, we need to add a data source. Go to the cog on the side menu that will show you the configuration menu. If the side menu is not visible click the Grafana icon in the upper left corner.
+Before we create a monitoring dashboard, we need to add a data source. Go to the cog on the side menu that will show you the configuration menu. If the side menu is not visible click the Grafana icon in the upper left corner.
 
 ![Grafana]({% image_path grafana-sidemenu-datasource.png %}){:width="600px"}
 
@@ -310,13 +309,16 @@ Click Add data source and select **Prometheus** as data source type.
 
 ![Grafana]({% image_path grafana-datasource-types.png %})
 
-Next, input the following variables to configure the dashboard. Make sure to replace _HTTP URL_ with your _Prometheus Route URL_.
+Next, input the following variables to configure the dashboard. Make sure to replace the default HTTP URL with your _Prometheus Route URL_ which should be `http://prometheus.userXX-monitoring:9090` (replace `userXX with your username).
+
 Click on **Save & Test** then you will see the _Data source is working_ message.
 
 * Name: CloudNativeApps
-* HTTP URL: http://YOUR_PROMETHEUS_ROUTE_URL
+* HTTP URL: http://prometheus.userXX-monitoring:9090
 
 ![Grafana]({% image_path granfan-setting.png %})
+
+Now Granana is set up to pull collected metrics from Prometheus as they are collected from the application(s) you are monitoring. We'll use this later.
 
 ###11. Utilize metrics specification for Inverntory(Quarkus)
 
@@ -340,12 +342,12 @@ Let's add a few annotations to make sure that our desired metrics are calculated
 
 The metrics that we will gather are these:
 
- * performedChecksAll: A counter of how many getAll() have been performed.
- * checksTimerAll: A measure of how long it takes to perform the getAll().
- * performedChecksAvail: A counter of how many getAvailability() have been performed.
- * checksTimerAvail: A measure of how long it takes to perform the getAvailability().
+ * `performedChecksAll`: A counter of how many times `getAll()` has been performed.
+ * `checksTimerAll`: A measure of how long it takes to perform the `getAll()` method
+ * `performedChecksAvail`: A counter of how many times `getAvailability()` is called
+ * `checksTimerAvail`: A measure of how long it takes to perform the getAvailability() method
 
-Open **InventoryResource** file in _src/main/java/com/redhat/coolstore_ and add _@Counted, @Timed_ annotations to _getAll(), getAvailability(@PathParam String itemId)_ methods:
+Open **InventoryResource** file in `src/main/java/com/redhat/coolstore` and replace the two methods `getAll()` and `getAvailability()` with the below code which adds several annotations for custom metrics (`@Counted`, `@Timed_`):
 
 ~~~java
     @GET
@@ -366,7 +368,7 @@ Open **InventoryResource** file in _src/main/java/com/redhat/coolstore_ and add 
     }
 ~~~
 
-Add import Microprofile Metrics classes as below:
+Add the necessary imports at the top:
 
 ~~~java
 import org.eclipse.microprofile.metrics.MetricUnits;
@@ -384,7 +386,7 @@ Repackage the inventory application via clicking on **Package for OpenShift** in
 
 Or you can run a maven plugin command directly in Terminal:
 
-`mvn clean package -DskipTests`
+`mvn clean package -DskipTests` (make sure you're in the `inventory` directory)
 
 Start and watch the build, which will take about a minute to complete:
 
@@ -396,14 +398,20 @@ Finally, make sure it's actually done rolling out:
 
 Go to the _userXX-monitoring_ project in [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} and then on the left sidebar, _Workloads > Config Maps_.
 
+Now we will reconfigure Prometheus so that it knows about our application.
+
 ![prometheus]({% image_path prometheus-quarkus-configmap.png %})
 
-Click on **Create Config Maps** button to create a config map with the following info:
+Make sure you're in the `userXX-monitoring` project in OpenShift, and click on **Create Config Maps** button to create a config map. You'll copy and paste the below code into the field.
 
-> You need to replace userXX-monitoring, YOUR_PROMETHEUS_ROUTE_URL and YOUR_INVENTORY_ROUTE_URL except http:// align with your environment.
+> In the below `ConfigMap` code, you need to replace `userXX-monitoring` with your username prefix (e.g. `user9-monitoring`), **and** replace
+> `YOUR_PROMETHEUS_ROUTE` and `YOUR_INVENTORY_ROUTE` with values from your environment, so that Prometheus knows where to scrape metrics from.
+> The values you need can be discovered by running the following commands in the Terminal:
+>
+> * Prometheus Route: `oc get route prometheus -n userxx-monitoring -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %}`
+> * Inventory Route: `oc get route inventory-quarkus -n userxx-inventory -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %}`
 
- * Prometheus Route URL example: _prometheus-user0-monitoring.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com_
- * Inventory Route URL example: _inventory-quarkus-user0-inventory.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com_
+Paste in this code and then replace the values as shown in the image below:
 
 ~~~yaml
 apiVersion: v1
@@ -458,100 +466,66 @@ data:
 
 ![prometheus]({% image_path prometheus-quarkus-configmap-detail.png %})
 
-Config maps hold key-value pairs and in the above command an _prometheus-config_ config map is created with _prometheus.yml_ as the key and the above content as the value. Whenever a config map is injected into a container, it would appear as a file with the same name as the key, at specified path on the filesystem.
+Config maps hold key-value pairs and in the above command a `prometheus-config` config map is created with `prometheus.yml` as the key and the above content as the value. Whenever a config map is injected into a container, it would appear as a file with the same name as the key, at specified path on the filesystem.
 
-You can see the content of the config map in the [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} or by using _oc describe cm prometheus-config -n userXX-monitoring_ command via CodeReady Workspaces Terminal.
+Confirm you created the config map using the terminal command:
 
-Modify the _Prometheus deployment config_ so that it injects the _prometheus.yml_ configuration you just created as a config map into the Prometheus container. Go to _Workloads > Deployment Configs_ in _userXX-monitoring_ project page and click on **prometheus** deployment:
+`oc describe cm prometheus-config -n userXX-monitoring` (replace `userXX` with your username)
 
-![prometheus]({% image_path prometheus-dc.png %})
+Next, we need to _mount_ this ConfigMap in the filesystem of the Prometheus container so that it can read it. Run this command to alter the Prometheus deployment to mount it (replace `userXX` with your username)
 
-Move to **YAML** tab menu and add the _prometheus-config_ in _spec.volumes_ and _spec.containers.volumeMounts_ sections.
+`oc set volume -n userXX-monitoring dc/prometheus --add -t configmap --configmap-name=prometheus-config -m /etc/prometheus/prometheus.yml --sub-path=prometheus.yml`
 
- * **spec.volumes** section:
+This will trigger a new deployment. Wait for it with:
 
- ~~~yaml
- volumes:
-  - name: prometheus-1
-    emptyDir: {}
-  - configMap:
-      defaultMode: 420
-      name: prometheus-config
-    name: volume-tcjnf
- ~~~
-
- * **spec.containers.volumeMounts** section:
-
-~~~yaml
-volumeMounts:
-  - name: prometheus-1
-    mountPath: /prometheus
-  - name: volume-tcjnf
-    mountPath: /etc/prometheus
-~~~
-
-![prometheus]({% image_path prometheus-configuration-tab.png %})
-
-You can also use **oc set volume** command for this:
-
-`oc set volume dc/prometheus --add --configmap-name=prometheus-config --mount-path=/etc/prometheus -n userxx-monitoring`
+`oc rollout status -w dc/prometheus -n userXX-monitoring` (replace `userXX` with your username)
 
 ###13. Generate some values for the metrics
 
 ---
 
-Open a web browser to access the inventory route URL for invoking _getAll()_ method in Inventory service.
+Let's write a loop to call our inventory service multiple times. First, get the URL to it (replace `userXX` with your username):
+`INV_URL=$(oc get route inventory-quarkus -n userxx-inventory -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})`
 
-Next, call _getAvailability(@PathParam String itemId)_ method as well via the following **curl** command with your Inventory's route URL:
+Next, run this in the same Terminal:
 
-`for i in {1..50}; do curl http://YOUR_INVENTORY_ROUTE_URL/services/inventory/329199 ; date ; sleep 1; done`
+`for i in {1..50}; do curl http://${INV_URL}/services/inventory/329199 ; echo ; date ; sleep 1; done`
 
-Let's review the generated metrics. We have 3 ways to view the metircs such as _1)using CURL, 2)using Prometheus Web UI, and 3)using Grafana Dashboards_.
+This will continually access the inventory project and cause it to generate metrics.
 
-**1)** Execute **curl -H"Accept: application/json" http://YOUR_INVENTORY_ROUTE_URL/metrics/application** via CodeReady Workspaces Terminal. You should use your own route URL of the Inventory service abd You will receive a similar response as here:
+Let's review the generated metrics. We have 3 ways to view the metrics:
 
-~~~shell
-{
-  "com.redhat.coolstore.InventoryResource.performedChecksAll" : 291,
-  "com.redhat.coolstore.InventoryResource.performedChecksAvail" : 1565,
-  "com.redhat.coolstore.InventoryResource.checksTimerAvail" : {
-    "p50": 0.826921,
-    "p75": 0.995018,
-    "p95": 1.151974,
-    "p98": 1.245133,
-    "p99": 1.319448,
-    "p999": 57.101168,
-    "min": 0.414609,
-    "mean": 1.0356057126214142,
-    "max": 64.367892,
-    "stddev": 3.0846163605968893,
-    "count": 1565,
-    "meanRate": 1.188115433328135,
-    "oneMinRate": 1.6294141302009826E-4,
-    "fiveMinRate": 0.38480021619008725,
-    "fifteenMinRate": 0.7264577289402652
-  },
-  "com.redhat.coolstore.InventoryResource.checksTimerAll" : {
-    "p50": 1.308033,
-    "p75": 1.418407,
-    "p95": 1.606427,
-    "p98": 1.68953,
-    "p99": 1.70755,
-    "p999": 1.70755,
-    "min": 0.534711,
-    "mean": 1.324642559612213,
-    "max": 1357.387543,
-    "stddev": 0.1674978928932415,
-    "count": 291,
-    "meanRate": 0.22092094182355232,
-    "oneMinRate": 0.20160825649767997,
-    "fiveMinRate": 0.20633505627674062,
-    "fifteenMinRate": 0.21085120335191826
-  }
-}
+* `curl` commands
+* Prometheus Web UI
+* Grafana Dashboards
+
+Let's look at it with `curl` in a separate terminal:
+
+`INV_URL=$(oc get route inventory-quarkus -n userxx-inventory -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})`
+
+and then
+
+`curl $INV_URL/metrics/application`
+
+You should something like:
+
+~~~
+# TYPE application_com_redhat_coolstore_InventoryResource_checksTimerAll_stddev_seconds gauge
+application_com_redhat_coolstore_InventoryResource_checksTimerAll_stddev_seconds 1.497008378628945E-4
+# HELP application_com_redhat_coolstore_InventoryResource_checksTimerAll_seconds A measure of how long it takes to perform the getAll().
+# TYPE application_com_redhat_coolstore_InventoryResource_checksTimerAll_seconds summary
+application_com_redhat_coolstore_InventoryResource_checksTimerAll_seconds_count 3107.0
+application_com_redhat_coolstore_InventoryResource_checksTimerAll_seconds{quantile="0.5"} 0.001503754
+application_com_redhat_coolstore_InventoryResource_checksTimerAll_seconds{quantile="0.75"} 0.001594015
+application_com_redhat_coolstore_InventoryResource_checksTimerAll_seconds{quantile="0.95"} 0.001782487
+application_com_redhat_coolstore_InventoryResource_checksTimerAll_seconds{quantile="0.98"} 0.001871631
+application_com_redhat_coolstore_InventoryResource_checksTimerAll_seconds{quantile="0.99"} 0.001887301
+application_com_redhat_coolstore_InventoryResource_checksTimerAll_seconds{quantile="0.999"} 0.001952198
 ~~~
 
-**2)** Open the **Prometheus Web UI** via a web brower and input(or select) _scrape_duration_seconds_ in query box. Click on **Execute** then you will see _quarkus job_ in the metrics:
+This shows the raw metrics the application is collecting.
+
+Now let's use Prometheus. Open the **Prometheus Web UI** via a web brower and input `scrape_duration_seconds` in the query box. This is a metric from Prometheus itself indicating how long it takes to scrape metrics. Click on **Execute** then you will see _quarkus job_ in the metrics:
 
 ![metrics_prometheus]({% image_path prometheus-metrics-console.png %})
 
@@ -559,7 +533,11 @@ Switch to **Graph** tab:
 
 ![metrics_prometheus]({% image_path prometheus-metrics-graph.png %})
 
-**3)** Open the **Grafana Web UI** via a web brower and create a new _Dashboard_ to review the metrics.
+You can play with the values for time and see different data across different time ranges for this metric.
+
+Now let's use Grafana.
+
+**3)** Open the **Grafana Web UI** (visit _Networking > Routes_ in the `userXX-monitoring project in the OpenShift console) via a web brower and create a new _Dashboard_ to review the metrics.
 
 ![metrics_grafana]({% image_path grafana-create-dashboard.png %})
 
@@ -606,7 +584,9 @@ Go to _Catalog_ project directory and open _pom.xml_ to add the following _Prome
 
 ![metrics_grafana]({% image_path catalog-prometheus-dependency.png %})
 
-Next, create **MonitoringConfig.java** class in _src/main/java/com/redhat/coolstore/_ and copy the following codes into _MonitoringConfig.java_:
+Next, let's create a new class to configure our metrics for Spring.
+
+In the `catalog` project in CodeReady, open the empty `src/main/java/com/redhat/coolstore/MonitoringConfig.java` class and add the following code to it:
 
 ~~~java
 package com.redhat.coolstore;
@@ -645,89 +625,90 @@ class MonitoringConfig {
 
 ---
 
-Build and deploy the Catalog project using the following command, which will use the maven plugin to deploy via CodeReady Workspaces Terminal:
+Build and deploy the Catalog project using the following command, which will rebuild and redeploy to OpenShift:
 
-`oc project userxx-catalog`
+`cd /projects/cloud-native-workshop-v2m2-labs/catalog`
 
-`mvn package fabric8:deploy -Popenshift -DskipTests`
+and then
 
-The build and deploy may take a minute or two. Wait for it to complete. You should see a _BUILD SUCCESS_ at the end of the build output.
+`mvn clean package spring-boot:repackage -DskipTests`
 
-After the maven build finishes it will take less than a minute for the application to become available. To verify that everything is started, run the following command and wait for it complete successfully:
+The build and deploy may take a minute or two. Wait for it to complete. You should see a **BUILD SUCCESS** at the
+end of the build output.
 
-![catalog_deploy_success]({% image_path catalog_deploy_success.png %})
+And then re-build the container image, which will take about a minute to complete:
 
-You can also check if the deployment is complete via CodeReady Workspaces Terminal:
+`oc start-build -n userNN-catalog catalog-springboot --from-file target/catalog-1.0.0-SNAPSHOT.jar --follow` (replace `userNN` with your username!)
 
-`oc rollout status -w dc/catalog -n userXX-catalog`
+Once the build is done, it will automatically start a new deployment. Wait for it to complete:
 
-Let's _collect metrics_. Open a web browser with the following URL after replacing with your _Catalog route URL_:
+`oc rollout status -w dc/catalog-springboot`
 
-`http://catalog-userXX-catalog.apps.seoul-7b68.openshiftworkshop.com/prometheus`
+Wait for that command to report replication controller "catalog-springboot-XX" successfully rolled out before continuing.
+
+> NOTE: Even if the rollout command reports success the application may not be ready yet and the reason for that is that we currently don't have any liveness check configured, but we will add that in the next steps.
+
+Let's acess the metrics from the catalog service. Access them via `curl` with these commands:
+
+`CAT_URL=$(oc get route catalog-springboot -n userXX-catalog -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})`
+
+and then:
+
+`curl $CAT_URL/prometheus`
 
 You will see a similar output as here:
 
-~~~shell
+~~~
 # HELP jvm_gc_collection_seconds Time spent in a given JVM garbage collector in seconds.
 # TYPE jvm_gc_collection_seconds summary
-jvm_gc_collection_seconds_count{gc="PS Scavenge",} 52.0
-jvm_gc_collection_seconds_sum{gc="PS Scavenge",} 1.147
-jvm_gc_collection_seconds_count{gc="PS MarkSweep",} 2.0
-jvm_gc_collection_seconds_sum{gc="PS MarkSweep",} 0.504
-# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
-# TYPE process_cpu_seconds_total counter
-process_cpu_seconds_total 26.38
-# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
-# TYPE process_start_time_seconds gauge
-process_start_time_seconds 1.560957605855E9
-# HELP process_open_fds Number of open file descriptors.
-# TYPE process_open_fds gauge
-process_open_fds 47.0
-# HELP process_max_fds Maximum number of open file descriptors.
-# TYPE process_max_fds gauge
-process_max_fds 1048576.0
-# HELP process_virtual_memory_bytes Virtual memory size in bytes.
-# TYPE process_virtual_memory_bytes gauge
-process_virtual_memory_bytes 4.748623872E9
-# HELP process_resident_memory_bytes Resident memory size in bytes.
-# TYPE process_resident_memory_bytes gauge
-process_resident_memory_bytes 2.91467264E8
-# HELP jvm_memory_pool_allocated_bytes_total Total bytes allocated in a given JVM memory pool. Only updated after GC, not continuously.
-# TYPE jvm_memory_pool_allocated_bytes_total counter
-jvm_memory_pool_allocated_bytes_total{pool="Code Cache",} 1.84624E7
-jvm_memory_pool_allocated_bytes_total{pool="PS Eden Space",} 2.070413312E9
-jvm_memory_pool_allocated_bytes_total{pool="PS Old Gen",} 4.1407848E7
-jvm_memory_pool_allocated_bytes_total{pool="PS Survivor Space",} 5595280.0
-jvm_memory_pool_allocated_bytes_total{pool="Compressed Class Space",} 7020064.0
-jvm_memory_pool_allocated_bytes_total{pool="Metaspace",} 5.8175456E7
+jvm_gc_collection_seconds_count{gc="PS Scavenge",} 6.0
+jvm_gc_collection_seconds_sum{gc="PS Scavenge",} 0.125
+jvm_gc_collection_seconds_count{gc="PS MarkSweep",} 7.0
+jvm_gc_collection_seconds_sum{gc="PS MarkSweep",} 1.017
 # HELP jvm_classes_loaded The number of classes that are currently loaded in the JVM
 # TYPE jvm_classes_loaded gauge
-jvm_classes_loaded 10770.0
+jvm_classes_loaded 9238.0
 # HELP jvm_classes_loaded_total The total number of classes that have been loaded since the JVM has started execution
 # TYPE jvm_classes_loaded_total counter
-jvm_classes_loaded_total 10770.0
+jvm_classes_loaded_total 9238.0
+# HELP jvm_classes_unloaded_total The total number of classes that have been unloaded since the JVM has started execution
+# TYPE jvm_classes_unloaded_total counter
+jvm_classes_unloaded_total 0.0
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 16.45
 ...
 ~~~
+
+This is the raw output from the application that Prometheus will periodically read ("scrape").
 
 ####16. Add Catalog(Spring Boot) Job
 
 ---
 
-Edit _prometheus-config_ configmap in _userXX-monitoring_ project with the following contents:
+You'll need the catalog route once again, which you can discover using this in the Terminal:
 
-~~~java
+`oc get route catalog-springboot -n userXX-catalog -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %}; echo`
+
+Navigate to your `userXX-monitoring` project in OpenShift console, and go to `Workloads > Config Maps > prometheus_config`. Click on the _YAML_ tab.
+
+Edit to add the following contents below the existing `job_name` elements (and with the same indentation):
+
+> Replace `YOUR_CATALOG_ROUTE` with the route emitted from the above `oc get route` command!
+
+~~~yaml
   - job_name: 'spring-boot'
     metrics_path: '/prometheus'
 
     static_configs:
-    - targets:  ['YOUR_CATALOG_ROUTE_URL']
+    - targets:  ['YOUR_CATALOG_ROUTE']
 ~~~
 
 Click on **Save**.
 
 ![prometheus]({% image_path prometheus-quarkus-configmap-detail-sb.png %})
 
-Redeploy _Workloads > Deployment Configs_ in the left menu and click on **Start Rollout**:
+OpenShift does not automatically redeploy whenever ConfigMaps are changed, so let's force a redeployment. Select the `userXX-catalog` project in the OpenShift console, navigate to  _Workloads > Deployment Configs > prometheus_  and select **Start Rollout** from the _Actions_ menu:
 
 ![prometheus]({% image_path prometheus-redeploy.png %})
 
@@ -735,7 +716,7 @@ Redeploy _Workloads > Deployment Configs_ in the left menu and click on **Start 
 
 ---
 
-**1)** Open the Prometheus Web UI via a web brower and input(or select) _scrape_duration_seconds_ in query box. Click on **Execute** then you will see _quarkus job_ in the metrics:
+**1)** Open the Prometheus Web UI via a web brower and input(or select) `scrape_duration_seconds` in the query box. Click on **Execute** then you will see _quarkus job_ in the metrics:
 
 ![metrics_prometheus]({% image_path prometheus-metrics-console-final.png %})
 
@@ -743,7 +724,7 @@ Switch to **Graph** tab:
 
 ![metrics_prometheus]({% image_path prometheus-metrics-graph-final.png %})
 
-**2)** Open the Grafana Web UI via a web brower and click on **Query Inspector** then you will see _inventory-quarkus_ and _catalog-sprinb-boot_ metrics:
+**2)** Open the Grafana Web UI via a web brower and access your existing Dashboard. Try to add a new Query with some of the application metrics.
 
 ![metrics_grafana]({% image_path grafana-add-query-complete.png %})
 
@@ -751,4 +732,4 @@ Switch to **Graph** tab:
 
 ---
 
-In this lab, you learned how to monior the cloud-nativa application using Jaeger, Prometheus, and Grafana. You also learned how Quarkus makes your observation tasks easier as a developer and operator. You can use these techniques in future projects to observe your distributed cloud-native applications and container platfrom.
+In this lab, you learned how to monitor cloud-nativa applications using Jaeger, Prometheus, and Grafana. You also learned how Quarkus makes your observation tasks easier as a developer and operator. You can use these techniques in future projects to observe your distributed cloud-native applications.
