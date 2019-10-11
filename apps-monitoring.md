@@ -200,6 +200,8 @@ If you click on **Span** and you will see a logical unit of work in Jaeger that 
 
 Let's make more traces! Open a new web browser to access _CoolStore Inventory Page_ using its route (on _Networking > Routes_ in the OpenShift Console):
 
+> If you do not see the `inventory` route listed, be sure you've chosen the `userXX-inventory` project in the Project selector dropdown!
+
 ![jaeger_ui]({% image_path jaeger-coolstore.png %})
 
 Go back to _Jaeger UI_ then click on _Find Traces_. You will see dozens of traces because the Inventory page continues to calling the endpoint of Inventory service in every 2 seconds like we called via **curl** command:
