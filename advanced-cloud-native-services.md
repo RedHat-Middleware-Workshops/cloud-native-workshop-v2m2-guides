@@ -151,9 +151,7 @@ Repeat the above for inventory and catalog projects.
 
 Although your Eclipse Che workspace is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. If you've completed other modules, you're probably already logged in, but let's login again: open a Terminal and issue the following command:
 
-```
-oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true
-```
+`oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true`
 
 Enter your username and password assigned to you:
 
@@ -162,7 +160,7 @@ Enter your username and password assigned to you:
 
 You should see like:
 
-```
+~~~shell
 Login successful.
 
 You have access to the following projects and can switch between them with 'oc project <projectname>':
@@ -177,14 +175,16 @@ You have access to the following projects and can switch between them with 'oc p
 
 Using project "default".
 Welcome! See 'oc help' to get started.
-```
+~~~
 
 #### If this is the first module you are doing today
 
 If you've already completed Module 1 (Optimizing Existing Applications), then you will already have the _CoolStore_ app deployed. **If this is the first module you are completing today, you need to deploy CoolStore monolith application by running this command in a CodeReady Workspaces Terminal:**
 
 `sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-coolstore.sh userXX`
+
 `sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-inventory.sh userXX`
+
 `sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-catalog.sh userXX`
 
 > NOTE: Replace `userXX` with your actual username!
