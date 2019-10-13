@@ -160,7 +160,7 @@ Enter your username and password assigned to you:
 * Username: `userXX`
 * Password: `r3dh4t1!`
 
-You should see:
+You should see like:
 
 ```
 Login successful.
@@ -169,15 +169,16 @@ You have access to the following projects and can switch between them with 'oc p
 
   * default
     istio-system
-    user9-bookinfo
-    user9-catalog
-    user9-cloudnative-pipeline
-    user9-cloudnativeapps
-    user9-inventory
+    user0-bookinfo
+    user0-catalog
+    user0-cloudnative-pipeline
+    user0-cloudnativeapps
+    user0-inventory
 
 Using project "default".
 Welcome! See 'oc help' to get started.
 ```
+
 #### If this is the first module you are doing today
 
 If you've already completed Module 1 (Optimizing Existing Applications), then you will already have the _CoolStore_ app deployed. **If this is the first module you are completing today, you need to deploy CoolStore monolith application by running this command in a CodeReady Workspaces Terminal:**
