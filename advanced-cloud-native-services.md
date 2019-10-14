@@ -219,6 +219,10 @@ You can review the above resources in the [OpenShift web console]({{ CONSOLE_URL
 
 > NOTE: Don't worry about reading and understanding the output of oc describe. Just make sure the command doesn't report errors!
 
+Set the current project to _coolstore_ and replace your username with **userXX**:
+
+`oc project userXX-coolstore-dev`
+
 Run these commands to inspect the elements via CodeReady Workspaces Terminal window:
 
 `oc get bc coolstore`
