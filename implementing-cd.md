@@ -234,13 +234,13 @@ Click on **YAML** tab and add _a new stage_ to the pipeline, just before the _De
 > NOTE: You will need to copy and paste the below code into the right place as shown in the below image.
 
 ~~~groovy
-stage ('Approve Go Live') {
-  steps {
-    timeout(time:30, unit:'MINUTES') {
-      input message:'Go Live in Production (switch to new version)?'
-    }
-  }
-}
+            stage ('Approve Go Live') {
+              steps {
+                timeout(time:30, unit:'MINUTES') {
+                  input message:'Go Live in Production (switch to new version)?'
+                }
+              }
+            }
 ~~~
 
 Your final pipeline should look like:

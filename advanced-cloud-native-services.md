@@ -187,11 +187,11 @@ If you've already completed Module 1 (Optimizing Existing Applications), then yo
 
 **If this is the first module you are completing today, you need to deploy CoolStore monolith application by running this command in a CodeReady Workspaces Terminal:**
 
-`sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-coolstore.sh userXX`
-
 `sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-inventory.sh userXX`
 
 `sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-catalog.sh userXX`
+
+`sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-coolstore.sh userXX`
 
 > NOTE: Replace `userXX` with your actual username!
 
