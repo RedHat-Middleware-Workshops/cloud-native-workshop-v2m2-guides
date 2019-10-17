@@ -99,6 +99,6 @@ Click on the _Resume_ icon to continue the code execution and then on the stop i
 
 ![Icons]({% image_path debug-che-window-result.png %})
 
-> NOTE: Make sure to stop Quarkus development mode by closing the terminal with the running app.
+> `NOTE`: Make sure to stop Quarkus development mode via `Close` terminal. Next, you need to open a new Terminal in CodeReady Workspaces then change the directory once again via `cd` command that you executed previously.
 
 #####Congratulations!
