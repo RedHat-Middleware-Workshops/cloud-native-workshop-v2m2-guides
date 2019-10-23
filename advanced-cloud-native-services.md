@@ -92,6 +92,10 @@ Consult the [OpenShift documentation](https://docs.openshift.com){:target="_blan
 
 #### Getting Ready for the labs
 
+> **NOTE**
+>
+> If you've already completed the **Optimizing Existing Applications** module then you will simply need to import the code for this module. Skip down to the **Import Projects** section.
+
 ---
 
 ##### If this is the first module you are doing today
@@ -136,8 +140,15 @@ Click on the **Import Projects...** in **Workspace** menu and enter the followin
 The projects are imported now into your workspace and is visible in the project explorer.
 
 CodeReady Workspaces is a full featured IDE and provides language specific capabilities for various project types. In order to
-enable these capabilities, let's convert the imported project skeletons to a Maven projects. In the project explorer, right-click on each project and
+enable these capabilities, let's convert the imported project skeletons to a Maven projects. In the project explorer, right-click on each project (`monolith`, `inventory` and `catalog`) and
 then click on `Convert to Project` continuously.
+
+> **NOTE**
+>
+> If you do not see the `Convert to Project` then your projects are already converted, and you should see a small icon next to each project:
+> ![codeready-workspace-convert]({% image_path maven-icon.png %}){:width="600px"}
+
+If not, then convert them:
 
 ![codeready-workspace-convert]({% image_path codeready-workspace-convert.png %}){:width="500px"}
 
@@ -145,7 +156,7 @@ Choose `Maven` from the project configurations and then click on `Save`.
 
 ![codeready-workspace-maven]({% image_path codeready-workspace-maven.png %}){:width="700px"}
 
-Repeat the above for inventory and catalog projects.
+Repeat the above for all 3 projects (`monolith, `inventory` and `catalog` projects.)
 
 > `NOTE`: the Terminal window in CodeReady Workspaces. For the rest of these labs, anytime you need to run a command in a terminal, you can use the CodeReady Workspaces Terminal window.
 
@@ -183,7 +194,7 @@ Welcome! See 'oc help' to get started.
 
 ##### If this is the first module you are doing today
 
-If you've already completed Module 1 (Optimizing Existing Applications), then you will already have the _CoolStore_ app deployed. 
+If you've already completed Module 1 (Optimizing Existing Applications), then you will already have the _CoolStore_ app deployed.
 
 **If this is the first module you are completing today, you need to deploy CoolStore monolith application by running this command in a CodeReady Workspaces Terminal:**
 
