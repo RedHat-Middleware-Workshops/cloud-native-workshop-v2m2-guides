@@ -14,7 +14,7 @@ This will also listen for a debugger on port 5005. If your want to wait for the 
 
 An easier approach would be to use the Quarkus maven plugin to enable remote debugging on the Inventory pod. It also forwards the default remote debugging port, 5005, from the Inventory pod to your workstation so simplify connectivity.
 
-Enable remote debugging on Inventory by running the following inside the **inventory** directory in the CodeReady Workspaces Terminal window:
+Enable remote debugging on Inventory by running the following inside the **inventory** directory (_/projects/cloud-native-workshop-v2m2-labs/inventory_) in the CodeReady Workspaces Terminal window:
 
 `mvn compile quarkus:dev`
 
@@ -48,14 +48,14 @@ Configure the remote debugger and click on the **Save** button:
 
 ![Remote Debug]({% image_path debug-che-debug-config-3.png %})
 
-You can now click on _Save_ then_ _Debug_ button to make CodeReady Workspaces connect to the Inventory service running on OpenShift.
+You can now click on _Save_ then the _Debug_ button to make CodeReady Workspaces connect to the Inventory service running on OpenShift.
 
 You should see a confirmation that the remote debugger is successfully connected.
 
 ![Remote Debug]({% image_path debug-che-debug-config-4.png %}){:width="700px"}
 
-Open _com.redhat.coolstore.InventoryResource_ and double-click on the editor sidebar on the line number of the first line of the _getAvailability()_
-method to add a breakpoint to that line. A start appears near the line to show a breakpoint is set.
+Open _com.redhat.coolstore.InventoryResource_ and single-click on the editor sidebar on the line number of the first line of the _getAvailability()_
+method to add a breakpoint to that line.
 
 ![Add Breakpoint]({% image_path debug-che-breakpoint.png %})
 
