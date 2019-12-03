@@ -69,7 +69,7 @@ And finally deploy template:
 
 `oc new-app --template=coolstore-monolith-pipeline-build`
 
-We have to deploy **Jenkins Server** in the namespace because OpenShift 4 doesn't deploy a Jenkins server automatically when we use _Jenkins Pipeline_ build strategy.
+We have to deploy a **Jenkins Server** in the namespace because OpenShift 4 doesn't deploy a Jenkins server automatically when we use _Jenkins Pipeline_ build strategy.
 
 `oc new-app --template=jenkins-ephemeral -l app=jenkins -p JENKINS_SERVICE_NAME=jenkins -p DISABLE_ADMINISTRATIVE_MONITORS=true`
 
@@ -117,7 +117,7 @@ As part of the production environment template you used in the last step, a Pipe
 
 ---
 
-Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the pipeline by navigating _Builds > Build Configs_ and click on `monolith-pipeline`in [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"}. Then, you will the details of _Jenkinsfile_ on the right side:
+Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the pipeline by navigating _Builds > Build Configs_ and click on `monolith-pipeline` in the [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"}. Then, you will see the details of _Jenkinsfile_ on the right side:
 
 ![monolith-pipeline]({% image_path coolstore-prod-monolith-bc.png %})
 
@@ -166,16 +166,18 @@ Jenkinsfile contents:
 
 ![monolith-pipeline]({% image_path coolstore-prod-monolith-update-jenkins.png %})
 
-Pipeline syntax allows creating complex deployment scenarios with the possibility of defining checkpoint for manual interaction and approval process using
-[the large set of steps and plugins that Jenkins provides](https://jenkins.io/doc/pipeline/steps/) in order to adapt the pipeline to the process used in your team. You can see a few examples of advanced pipelines in the [OpenShift GitHub Repository](https://github.com/openshift/origin/tree/master/examples/jenkins/pipeline){:target="_blank"}.
+The pipeline syntax allows creating complex deployment scenarios with the possibility of defining checkpoints for manual interaction and approval processes using
+[the large set of steps and plugins that Jenkins provides](https://jenkins.io/doc/pipeline/steps/) in order to adapt the pipeline to the processes used in your team. You can see a few examples of advanced pipelines in the [OpenShift GitHub Repository](https://github.com/openshift/origin/tree/master/examples/jenkins/pipeline){:target="_blank"}.
 
-To simplify the pipeline in this workshop, we simulate the build and tests and skip any need for human input. Once the pipeline completes, it deploys the app from the _dev_ environment to our _production_ environment using the above `openshiftTag()` method, which simply re-tags the image you already created using a tag which will trigger deployment in the production environment.
+To simplify the pipeline in this workshop, we simulate the build and tests and skip any need for human input. Once the pipeline completes, it deploys the app from the _dev_ environment to our _production_ environment using the above `tag()` method within the `openshift` object, which simply re-tags the image you already created using a tag which will trigger deployment in the production environment.
 
 ####4. Promote the dev image to production using the pipeline
 
 ---
 
-Before prmoting the dev image, you need to modify a **RoleBinding** to access the dev image by Jenkins. Go to overview page of the `userXX-coolstore-dev` project then naviagate _Administration > Role Bindings_. Click on **ci_admin**:
+Before promoting the dev image, you need to modify a **RoleBinding** to access the dev image by Jenkins. This allows the Jenkins service account in the **userXX-coolstore-prod** project to access the image within the **userXX-coolstore-dev** project.
+
+Go to overview page of the `userXX-coolstore-dev` project, then navigate to _Administration > Role Bindings_. Click on **ci_admin**:
 
 ![Prod]({% image_path coolstore-dev-ci-admin.png %})
 
@@ -183,15 +185,13 @@ Move to **YAML** tab and replace your username with _userXX_ then click on **Sav
 
 ![Prod]({% image_path coolstore-dev-ci-admin-save.png %})
 
-Let's invoke the build pipeline by using [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"}. Open the production project in the web console:
+Let's invoke the build pipeline by using [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"}. Open the production project in the web console.
 
-* Web Console - Coolstore Monolith Prod at [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"}.
-
-Next, navigate to _Builds > Build Configs > monolith-pipeline > Start Build_:
+Next, navigate to _Builds > Build Configs > monolith-pipeline_, click the small menu at the far right, and click _Start Build_:
 
 ![Prod]({% image_path pipe-start.png %})
 
-This will start the pipeline. _It will take a minute or two to start the pipeline_(future runs will not take as much time as the Jenkins infrastructure will already be warmed up). You can watch the progress of the pipeline:
+This will start the pipeline. _It will take a minute or two to start the pipeline!_ Future runs will not take as much time as the Jenkins infrastructure will already be warmed up. You can watch the progress of the pipeline:
 
 ![Prod]({% image_path pipe-prog.png %})
 
@@ -253,11 +253,11 @@ Click **Save**.
 
 ---
 
-With the approval step in place, let's simulate a new change from a developer who wants to change the color of the header in the coolstore back to the original (black) color.
+With the approval step in place, let's simulate a new change from a developer who wants to change the color of the header in the coolstore to a blue background color.
 
 First, open _monolith/src/main/webapp/app/css/coolstore.css_ via CodeReady Workspace, which contains the CSS stylesheet for the CoolStore app.
 
-Add the following CSS to turn the header bar background to Red Hat red (**Copy** to add it at the bottom):
+Add the following CSS to turn the header bar background to blue (**Copy** to add it at the bottom):
 
 ~~~java
 
@@ -266,6 +266,16 @@ Add the following CSS to turn the header bar background to Red Hat red (**Copy**
 }
 
 ~~~
+
+Now we need to update the catalog endpoint in the monolith application. Copy the route URL of catalog service using following **oc** command in CodeReady Workspaces Terminal. Replace your username with **userXX**:
+
+`echo "http://$(oc get route -n userXX-catalog | grep catalog | awk '{print $2}')"`
+
+In the **monolith** project (within the root **cloud-native-workshop-v2m2-labs** project), open `catalog.js` in `src/main/webapp/app/services` and add a line as shown in the image to define the value of `baseUrl`.
+
+`baseUrl="http://REPLACEURL/services/products";`
+
+> Replace `REPLACEURL` with the URL emitted from the previous `echo` command
 
 Next, re-build the app once more via CodeReady Workspaces Terminal:
 
@@ -281,14 +291,13 @@ Now wait for it to complete the deployment via CodeReady Workspaces Terminal:
 
 `oc -n userXX-coolstore-dev rollout status -w dc/coolstore`
 
-And verify that the blue header is visible in the dev application by navigating to the `userXX-coolstore-dev` project in the OpenShift Console, and then going to _Networking > Routes_ and clicking on the route URL. It should look like:
+And verify that the blue header is visible in the dev application by navigating to the `userXX-coolstore-dev` project in the OpenShift Console, and then going to _Networking > Routes_ and clicking on the route URL. It should look like the following:
 
-* USERXX Coolstore Monolith - Dev at
+> If it doesn't, you may need to do a hard browser refresh. Try holding the shift key while clicking the browser refresh button.
 
-![Prod]({% image_path nav-blue.png %})
+![Dev]({% image_path nav-blue.png %})
 
 Then navigating to the `userXX-coolstore-prod` project in the OpenShift Console, and then going to _Networking > Routes_ and clicking on the route URL for the production app. It should still be black:
-* USERXX Coolstore Monolith - Prod at
 
 ![Prod]({% image_path pipe-orig.png %})
 
@@ -327,19 +336,19 @@ Wait for the production deployment to complete via CodeReady Workspaces Terminal
 
 Once it completes, verify that the production application has the new change (blue header):
 
-* Coolstore - Prod at
-
 ![Prod]({% image_path nav-blue.png %})
+
+> If it doesn't, you may need to do a hard browser refresh. Try holding the shift key while clicking the browser refresh button.
 
 ####9. Run the Pipeline on Every Code Change
 
 ---
 
-Manually triggering the deployment pipeline to run is useful but the real goes is to be able to build and deploy every change in code or configuration at least to lower environments (e.g. dev and test) and ideally all the way to production with some manual approvals in-place.
+Manually triggering the deployment pipeline to run is useful but it would be better to run the pipeline automatically on every change in code or configuration, at least to lower environments (e.g. dev and test) and ideally all the way to production with some manual approvals in-place.
 
 In order to automate triggering the pipeline, you can define a webhook on your Git repository to notify OpenShift on every commit that is made to the Git repository and trigger a pipeline execution.
 
-You can get see the webhook links in the [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} by going to _Builds > Build Configs > Webhooks_. Look for the _Generic secret_ value in the _YAML_ tab. Copy this down.
+You can get see the webhook links in the [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} by going to _Builds > Build Configs > monolith-pipeline_. Look for the _Generic secret_ value in the _YAML_ tab. Copy this down.
 
 Then go back to the _Overview_ tab. At the bottom you'll find the _Generic_ webhook url which you will need (along with the secret) in the next steps.
 
