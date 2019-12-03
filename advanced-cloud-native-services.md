@@ -226,7 +226,7 @@ Let's take a moment and review the OpenShift resources that are created for the 
 
 You can review the above resources in the [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} or using the _oc get_ or _oc describe_ commands (oc describe gives more detailed info):
 
-> You can use short synonyms for long words, like `bc` instead of `buildconfig`, `is` for `imagestream`, `dc` for `deploymentconfig`, `svc` for `service`, etc.
+> You can use short synonyms for long words, like **bc** instead of **buildconfig**, **is** for **imagestream**, **dc** for **deploymentconfig**, **svc** for **service**, etc.
 
 > NOTE: Don't worry about reading and understanding the output of oc describe. Just make sure the command doesn't report errors!
 
