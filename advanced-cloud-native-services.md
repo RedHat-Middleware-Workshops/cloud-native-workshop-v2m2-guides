@@ -129,7 +129,7 @@ Click on the **Import Projects...** in **Workspace** menu and enter the followin
 > NOTE: If you've completed other modules already, then you can use _Workspace > Import Project_ menu to import the project.
 
   * Version Control System: `GIT`
-  * URL: `{{GIT_URL}}/userXX/cloud-native-workshop-v2m2-labs.git`(IMPORTANT: replace userXX with your lab user)
+  * URL: `https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs.git`
   * Check `Import recursively (for multi-module projects)`
   * Name: `cloud-native-workshop-v2m2-labs`
 
@@ -156,9 +156,9 @@ Choose `Maven` from the project configurations and then click on `Save`.
 
 ![codeready-workspace-maven]({% image_path codeready-workspace-maven.png %}){:width="700px"}
 
-Repeat the above for all 3 projects (`monolith, `inventory` and `catalog` projects.)
+Repeat the above for all 3 projects (`monolith`, `inventory` and `catalog` projects.)
 
-> `NOTE`: the Terminal window in CodeReady Workspaces. For the rest of these labs, anytime you need to run a command in a terminal, you can use the CodeReady Workspaces Terminal window.
+> `NOTE`: For the rest of these labs, anytime you need to run a command in a terminal, you can use the CodeReady Workspaces Terminal window.
 
 ![codeready-workspace-terminal]({% image_path codeready-workspace-terminal.png %})
 
@@ -226,7 +226,7 @@ Let's take a moment and review the OpenShift resources that are created for the 
 
 You can review the above resources in the [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} or using the _oc get_ or _oc describe_ commands (oc describe gives more detailed info):
 
-> You can use short synonyms for long words, like bc instead of buildconfig, and is for imagestream, dc for deploymentconfig, svc for service, etc.
+> You can use short synonyms for long words, like **bc** instead of **buildconfig**, **is** for **imagestream**, **dc** for **deploymentconfig**, **svc** for **service**, etc.
 
 > NOTE: Don't worry about reading and understanding the output of oc describe. Just make sure the command doesn't report errors!
 
