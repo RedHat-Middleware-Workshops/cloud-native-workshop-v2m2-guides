@@ -80,7 +80,7 @@ As you probably guessed it will also include a Jenkins Pipeline to control the p
 
 Navigate to the Web Console to see your new app and the components using this link:
 
-* Coolstore Prod Project Status at [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"}:
+* Coolstore Prod Project Topology at [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"}:
 
 ![Prod]({% image_path coolstore-prod-overview.png %})
 
@@ -109,6 +109,7 @@ OpenShift has built-in support for CI/CD pipelines by allowing developers to def
 automation engine, which is automatically provisioned on-demand by OpenShift when needed.
 
 The build can get started, monitored, and managed by OpenShift in the same way as any other build types e.g. S2I. Pipeline workflows are defined in a Jenkinsfile, either embedded directly in the build configuration, or supplied in \a Git repository and referenced by the build configuration. They are written using the
+
 [Groovy scripting language](http://groovy-lang.org/).
 
 As part of the production environment template you used in the last step, a Pipeline build object was created. Ordinarily the pipeline would contain steps to build the project in the _dev_ environment, store the resulting image in the local repository, run the image and execute tests against it, then wait for human approval to _promote_ the resulting image to other environments like test or production.
@@ -117,7 +118,7 @@ As part of the production environment template you used in the last step, a Pipe
 
 ---
 
-Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the pipeline by navigating _Builds > Build Configs_ and click on `monolith-pipeline` in the [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"}. Then, you will see the details of _Jenkinsfile_ on the right side:
+Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the pipeline by navigating _Builds_ and click on `monolith-pipeline` in the [Developer Console]({{ CONSOLE_URL}}){:target="_blank"}. Then, you will see the details of _Jenkinsfile_ on the right side:
 
 ![monolith-pipeline]({% image_path coolstore-prod-monolith-bc.png %})
 
@@ -128,6 +129,7 @@ You can also inspect this via the following command via CodeReady Workspaces Ter
 You can see the Jenkinsfile definition of the pipeline in the output:
 
 ~~~shell
+...
 Jenkinsfile contents:
   pipeline {
     agent {
@@ -160,6 +162,7 @@ Jenkinsfile contents:
       }
     }
   }
+...
 ~~~
 
 > NOTE: You have to replace your username with **userXX** in Jenkinsfile via clicking on **YAML** tab. For example, if your username is user0, it will be user0-coolstore-dev and user0-coolstore-prod. Don't forget to click on **Save**.
@@ -186,7 +189,7 @@ Move to **YAML** tab and replace your username with _userXX_ then click on **Sav
 
 Let's invoke the build pipeline by using [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"}. Open the production project in the web console.
 
-Next, navigate to _Builds > Build Configs > monolith-pipeline_, click the small menu at the far right, and click _Start Build_:
+Next, navigate to _Developer > Builds > monolith-pipeline_, click the small menu at the far right, and click _Start Build_:
 
 ![Prod]({% image_path pipe-start.png %})
 
@@ -194,7 +197,7 @@ This will start the pipeline. _It will take a minute or two to start the pipelin
 
 ![Prod]({% image_path pipe-prog.png %})
 
-Once the pipeline completes, return to the Prod Project Status at [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} and notice that the application is now deployed and running!
+Once the pipeline completes, return to the Prod Project Topology at [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} and notice that the application is now deployed and running!
 
 ![Prod]({% image_path pipe-done.png %})
 
@@ -208,7 +211,7 @@ In the next step, we'll add a human interaction element to the pipeline, so that
 
 ##### More Reading
 
-* [OpenShift Pipeline Documentation](https://docs.openshift.com/container-platform/4.1/builds/build-strategies.html#builds-strategy-pipeline-build_build-strategies){:target="_blank"}
+* [OpenShift Pipeline Documentation](https://docs.openshift.com/container-platform/latest/builds/build-strategies.html#builds-strategy-pipeline-build_build-strategies){:target="_blank"}
 
 #### Adding Pipeline Approval Steps
 
@@ -224,11 +227,7 @@ In this step, we'll add a final checkpoint to the pipeline which will require yo
 
 Ordinarily your pipeline definition would be checked into a source code management system like Git, and to change the pipeline you'd edit the _Jenkinsfile_ in the source base. For this workshop we'll just edit it directly to add the necessary changes. You can edit it with the **oc** command but we'll use the Web Console.
 
-Go back to _Builds > Build Configs > monolith-pipeline_ then click on _Edit Build Config_.
-
-![Prod]({% image_path pipe-edit.png %})
-
-Click on **YAML** tab and add _a new stage_ to the pipeline, just before the _Deploy to PROD_ stage:
+Go back to _Developer Console > Builds > monolith-pipeline_ then click on **YAML** tab. Add _a new stage_ to the pipeline, just before the _Deploy to PROD_ stage:
 
 > NOTE: You will need to copy and paste the below code into the right place as shown in the below image.
 
@@ -306,7 +305,7 @@ We're happy with this change in dev, so let's promote the new change to prod, us
 
 ---
 
-Invoke the pipeline once more by navigating to _Builds > Build Configs > monolith-pipeline > Rebuild_. The same pipeline progress will be shown, however before deploying to prod, you will see a prompt in the pipeline:
+Invoke the pipeline once more by navigating to _Developer Console > Builds > Start Build_. The same pipeline progress will be shown, however before deploying to prod, you will see a prompt in the pipeline:
 
 ![Prod]({% image_path pipe-start2.png %}).
 
@@ -338,38 +337,6 @@ Once it completes, verify that the production application has the new change (bl
 ![Prod]({% image_path nav-blue.png %})
 
 > If it doesn't, you may need to do a hard browser refresh. Try holding the shift key while clicking the browser refresh button.
-
-####9. Run the Pipeline on Every Code Change
-
----
-
-Manually triggering the deployment pipeline to run is useful but it would be better to run the pipeline automatically on every change in code or configuration, at least to lower environments (e.g. dev and test) and ideally all the way to production with some manual approvals in-place.
-
-In order to automate triggering the pipeline, you can define a webhook on your Git repository to notify OpenShift on every commit that is made to the Git repository and trigger a pipeline execution.
-
-You can get see the webhook links in the [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} by going to _Builds > Build Configs > monolith-pipeline_. Look for the _Generic secret_ value in the _YAML_ tab. Copy this down.
-
-Then go back to the _Overview_ tab. At the bottom you'll find the _Generic_ webhook url which you will need (along with the secret) in the next steps.
-
-Go to your Git repository at `{{ GIT_URL }}/userXX/cloud-native-workshop-v2m2-labs.git` (replace `userXX` with your username and open this URL in a new tab), Click **Sign In** and sign in with your credentials:
-
-* Username: `userXX` (replace with your username)
-* Password: `r3dh4t1!`
-
- then click on **Settings**.
-
-![Repository Settings]({% image_path cd-gogs-settings-link.png %}){:width="900px"}
-
-On the left menu, click on **Webhooks** and then on **Add Webhook** button and then **Gogs**.
-
-Create a webhook with the following details:
-
-* Payload URL: paste the Generic webhook url you copied from the **monolith-pipeline** (make sure to replace the `secret` value in the URL!)
-* Content type: **application/json**
-
-Click on **Add Webhook**.
-
-![Repository Webhook]({% image_path cd-gogs-webhook-add.png %}){:width="660px"}
 
 All done. You can **click on the newly defined webhook** to see the list of *Recent Delivery*.  Click on the **Test Delivery** button allows you to manually trigger the webhook for testing purposes. Click on it and verify that the _monolith-pipeline_ starts running immediately (navigate to _Builds > Builds_ then you should see one running. Click on it to ensure the pipeline is executing, and optionally confirm the _Approve Go Live_ as before).
 

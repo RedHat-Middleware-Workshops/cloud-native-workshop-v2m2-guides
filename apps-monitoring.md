@@ -61,7 +61,7 @@ You can also check if the deployment is complete via CodeReady Workspaces Termin
 
 > deployment jaeger successfully rolled out
 
-When you navigate the **Project Status** page in OpenShift console, you will see as below:
+When you navigate the **Topology** page in OpenShift console, you will see as below:
 
 ![jaeger_deployments]({% image_path jaeger-deployment.png %})
 
@@ -113,7 +113,7 @@ If builds successfully (you will see _BUILD SUCCESS_), you will see _smallrye-op
 
 Before getting started with this step, confirm your **jaeger-collector** service in _userXX-monitoring_ project via **oc** command in CodeReady Workspaces Terminal:
 
-`oc get svc -n userXX-monitoring | grep jaeger`
+`oc get svc | grep jaeger`
 
 ~~~shell
 jaeger-agent       ClusterIP      None             <none>                                                                         5775/UDP,6831/UDP,6832/UDP,5778/TCP   4d3h
@@ -154,11 +154,13 @@ Repackage the inventory application via clicking on **Package for OpenShift** in
 
 Start and watch the build, which will take about a minute to complete:
 
-`oc start-build inventory-quarkus --from-file target/*-runner.jar --follow -n userXX-inventory`
+`oc project userXX-inventory`
+
+`oc start-build inventory-quarkus --from-file target/*-runner.jar --follow`
 
 You should see a **Push successful** at the end of the build output and it. To verify that deployment is started and completed automatically, run the following command via CodeReady Workspaces Terminal :
 
-`oc rollout status -w dc/inventory-quarkus -n userXX-inventory`
+`oc rollout status -w dc/inventory-quarkus`
 
 And wait for the result as below:
 
@@ -171,6 +173,11 @@ And wait for the result as below:
 In order to trace networking and data transaction, we will call the Inventory service via **curl** commands via CodeReady Workspaces Terminal:
 Be sure to use your route URL of Inventory.
 
+
+`export URL="http://$(oc get route | grep inventory-quarkus | awk '{print $2}')"`
+
+`curl $URL/services/inventory/165613 ; echo`
+
 `curl http://$(oc get route inventory-quarkus -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/services/inventory/165613 ; echo`
 
 Go to _Workloads > Pods_ in the left menu and click on **inventory-quarkus-xxxxxx**.
@@ -180,7 +187,9 @@ Go to _Workloads > Pods_ in the left menu and click on **inventory-quarkus-xxxxx
 Click on **Logs** tab and you will see that tracer is initialized after you call the Inventory service at the first time.
 
 ~~~shell
-2019-08-05 12:12:17,574 INFO [io.jae.Configuration] (executor-thread-1) Initialized tracer=JaegerTracer(version=Java-0.34.0, serviceName=inventory, reporter=RemoteReporter(sender=HttpSender(), closeEnqueueTimeout=1000), sampler=ConstSampler(decision=true, tags={sampler.type=const, sampler.param=true}), tags={hostname=inventory-quarkus-4-kc4t6, jaeger.version=Java-0.34.0, ip=10.131.8.48}, zipkinSharedRpcSpan=false, expandExceptionLogs=false, useTraceId128Bit=false)
+...
+2020-01-13 04:53:21,796 INFO  [io.jae.Configuration] (executor-thread-1) Initialized tracer=JaegerTracer(version=Java-0.34.0, serviceName=inventory, reporter=RemoteReporter(sender=HttpSender(), closeEnqueueTimeout=1000), sampler=ConstSampler(decision=true, tags={sampler.type=const, sampler.param=true}), tags={hostname=inventory-quarkus-2-bfnrl, jaeger.version=Java-0.34.0, ip=10.131.0.143}, zipkinSharedRpcSpan=false, expandExceptionLogs=false, useTraceId128Bit=false)
+...
 ~~~
 
 ![jaeger_ui]({% image_path jaeger-init.png %})
