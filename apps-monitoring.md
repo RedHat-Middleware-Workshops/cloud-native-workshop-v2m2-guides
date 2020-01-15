@@ -710,7 +710,7 @@ Click on **Save**.
 
 ![prometheus]({% image_path prometheus-quarkus-configmap-detail-sb.png %})
 
-OpenShift does not automatically redeploy whenever ConfigMaps are changed, so let's force a redeployment. Select the `userXX-catalog` project in the OpenShift console, navigate to  _Workloads > Deployment Configs > prometheus_  and select **Start Rollout** from the _Actions_ menu:
+OpenShift does not automatically redeploy whenever ConfigMaps are changed, so let's force a redeployment. Select the `userXX-monitoring` project in the OpenShift console, navigate to  _Workloads > Deployment Configs > prometheus_  and select **Start Rollout** from the _Actions_ menu:
 
 ![prometheus]({% image_path prometheus-redeploy.png %})
 
