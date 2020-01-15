@@ -178,8 +178,6 @@ Be sure to use your route URL of Inventory.
 
 `curl $URL/services/inventory/165613 ; echo`
 
-`curl http://$(oc get route inventory-quarkus -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/services/inventory/165613 ; echo`
-
 Go to _Workloads > Pods_ in the left menu and click on **inventory-quarkus-xxxxxx**.
 
 ![codeready-workspace-maven]({% image_path quarkus-jaeger-pod.png %})
@@ -227,7 +225,7 @@ OpenShift Container Platform ships with a pre-configured and self-updating monit
 
 However, we will deploy custom **Prometheus** to scrape services metrics of Inventory and Catalog applications. Then we will visualize the metrics data via custom **Grafana** dashboards deployment.
 
-Go to _Project Status_ page in _userXX-monitoring_ project and click on **Deploy Image** under _Add_ on the right top menu:
+Go to _Developer Console_ page in _userXX-monitoring_ project and click on **Container Image** under _+Add_ on the left menu:
 
 ![Prometheus]({% image_path add-to-project.png %})
 
@@ -235,57 +233,29 @@ Select **Image Name** and input _prom/prometheus_ to search the Prometheus conta
 
 ![Prometheus]({% image_path search-prometheus-image.png %})
 
-Once you find the image correctly as the above page, click on **Deploy**. It takes 1 ~ 2 mins to deploy a pod.
+Once you find the image correctly as the above page, click on **Create**. It takes 1 ~ 2 mins to deploy a pod.
 
 ![Prometheus]({% image_path prometheus-deploy-done.png %})
 
-Create the route to access Prometheus web UI. Navigate _Networking > Routes_ on the left menu and click on **Create Route**.
+Now, you have the route URL(i.e. http://prometheus-user0-monitoring.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com) as below and click on the URL to make sure if you can access the Prometheus web UI.
 
-![Prometheus]({% image_path prometheus-create-route.png %})
-
-Input the following variables and keep the rest of all default variables. Click on **Create**.
-
- * Name: **prometheus**
- * Service: **prometheus**
- * Target Port: **9090 -> 9090 (TCP)**
-
-![Prometheus]({% image_path prometheus-route-detail.png %})
-
-Now, you have the route URL(i.e. _http://prometheus-user0-monitoring.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com_) as below and click on the URL to make sure if you can access the _Prometheus web UI_.
-
-![Prometheus]({% image_path prometheus-route-link.png %})
-
-You will see the landing page of Prometheus as shown:
+When you go to _Prometheus DC > Resources > Route URL_, you will see the landing page of Prometheus as shown:
 
 ![Prometheus]({% image_path prometheus-webui.png %})
 
-Let's deploy **Grafana Dashboards** to OpenShift. Go to _Project Status_ page in _userXX-monitoring_ project and click on **Deploy Image** under _Add_ menu:
+Let's deploy **Grafana Dashboards** to OpenShift. Click on **Continer Image** under _+Add_ menu:
 
-![Grafana]({% image_path add-to-project-grafana.png %})
+![Grafana]({% image_path add-to-project.png %})
 
 Select **Image Name** and input _grafana/grafana_ to search the Prometheus container image via clicking on _Search_ icon.
 
 ![Grafana]({% image_path search-grafana-image.png %})
 
-Once you find the image correctly as the above screenshot, click on **Deploy**. It takes 1 ~ 2 mins to deploy a pod.
+Once you find the image correctly as the above screenshot, click on **Create**. It takes 1 ~ 2 mins to deploy a pod.
 
 ![Grafana]({% image_path grafana-deploy-done.png %})
 
-Create the route to access Grafana web UI. Navigate _Networking > Routes_ on the left menu and click on **Create Route**.
-
-![Grafana]({% image_path grafana-create-route.png %})
-
-Input the following variables and keep the rest of all default variables. Click on `Create`.
-
- * Name: **grafana**
- * Service: **grafana**
- * Target Port: **3000 -> 3000 (TCP)**
-
-![Grafana]({% image_path grafana-route-detail.png %})
-
-Now, you have the route URL(i.e. _http://grafana-user0-monitoring.apps.cluster-seoul-a30e.seoul-a30e.openshiftworkshop.com_) and click on the URL to make sure if you can access the Grafana web UI.
-
-![Grafana]({% image_path grafana-route-link.png %})
+When you go to _Grafana DC > Resources > Route URL_, you will see the landing page of Grafana as shown:
 
 You will see the landing page of Prometheus as shown:
 
@@ -401,11 +371,13 @@ Or you can run a maven plugin command directly in Terminal:
 
 Start and watch the build, which will take about a minute to complete:
 
-`oc start-build inventory-quarkus --from-file target/*-runner.jar --follow -n userxx-inventory`
+`oc project userxx-inventory`
+
+`oc start-build inventory-quarkus --from-file target/*-runner.jar --follow`
 
 Finally, make sure it's actually done rolling out:
 
-`oc rollout status -w dc/inventory-quarkus -n userxx-inventory`
+`oc rollout status -w dc/inventory-quarkus`
 
 Go to the _userXX-monitoring_ project in [OpenShift web console]({{ CONSOLE_URL}}){:target="_blank"} and then on the left sidebar, _Workloads > Config Maps_.
 
@@ -413,14 +385,14 @@ Now we will reconfigure Prometheus so that it knows about our application.
 
 ![prometheus]({% image_path prometheus-quarkus-configmap.png %})
 
-Make sure you're in the `userXX-monitoring` project in OpenShift, and click on **Create Config Maps** button to create a config map. You'll copy and paste the below code into the field.
+Make sure you're in the **userXX-monitoring** project in OpenShift, and click on **Create Config Maps** button to create a config map. You'll copy and paste the below code into the field.
 
-> In the below `ConfigMap` code, you need to replace `userXX-monitoring` with your username prefix (e.g. `user9-monitoring`), **and** replace
-> `YOUR_PROMETHEUS_ROUTE` and `YOUR_INVENTORY_ROUTE` with values from your environment, so that Prometheus knows where to scrape metrics from.
+> In the below **ConfigMap** code, you need to replace **userXX-monitoring** with your username prefix (e.g. _user0-monitoring_), and replace
+> **YOUR_PROMETHEUS_ROUTE** and **YOUR_INVENTORY_ROUTE** with values from your environment, so that Prometheus knows where to scrape metrics from.
 > The values you need can be discovered by running the following commands in the Terminal:
 >
-> * Prometheus Route: `oc get route prometheus -n userxx-monitoring -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %}`
-> * Inventory Route: `oc get route inventory-quarkus -n userxx-inventory -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %}`
+> * Prometheus Route: `oc get route prometheus -n userXX-monitoring -o=go-template --template='{{ .spec.host }}' ; echo`
+> * Inventory Route: `oc get route inventory-quarkus -n userXX-inventory -o=go-template --template='{{ .spec.host }}' ; echo`
 
 Paste in this code and then replace the values as shown in the image below:
 
@@ -477,26 +449,31 @@ data:
 
 ![prometheus]({% image_path prometheus-quarkus-configmap-detail.png %})
 
-Config maps hold key-value pairs and in the above command a `prometheus-config` config map is created with `prometheus.yml` as the key and the above content as the value. Whenever a config map is injected into a container, it would appear as a file with the same name as the key, at specified path on the filesystem.
+Config maps hold key-value pairs and in the above command a **prometheus-config** config map is created with **prometheus.yml** as the key and the above content as the value. Whenever a config map is injected into a container, it would appear as a file with the same name as the key, at specified path on the filesystem.
 
 Confirm you created the config map using the terminal command:
 
-`oc describe cm prometheus-config -n userXX-monitoring` (replace `userXX` with your username)
+`oc project userXX-monitoring` (replace **userXX** with your username)
 
-Next, we need to _mount_ this ConfigMap in the filesystem of the Prometheus container so that it can read it. Run this command to alter the Prometheus deployment to mount it (replace `userXX` with your username)
+`oc describe cm prometheus-config` 
 
-`oc set volume -n userXX-monitoring dc/prometheus --add -t configmap --configmap-name=prometheus-config -m /etc/prometheus/prometheus.yml --sub-path=prometheus.yml`
+Next, we need to _mount_ this ConfigMap in the filesystem of the Prometheus container so that it can read it. Run this command to alter the Prometheus deployment to mount it:
+
+`oc set volume dc/prometheus --add -t configmap --configmap-name=prometheus-config -m /etc/prometheus/prometheus.yml --sub-path=prometheus.yml`
 
 This will trigger a new deployment. Wait for it with:
 
-`oc rollout status -w dc/prometheus -n userXX-monitoring` (replace `userXX` with your username)
+`oc rollout status -w dc/prometheus`
 
 ###13. Generate some values for the metrics
 
 ---
 
-Let's write a loop to call our inventory service multiple times. First, get the URL to it (replace `userXX` with your username):
-`INV_URL=$(oc get route inventory-quarkus -n userxx-inventory -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})`
+Let's write a loop to call our inventory service multiple times. First, get the URL to it:
+
+`oc project userXX-inventory` (replace `userXX` with your username)
+
+`INV_URL=$(oc get route inventory-quarkus -o=go-template --template='{{ .spec.host }}')`
 
 Next, run this in the same Terminal:
 
@@ -512,7 +489,7 @@ Let's review the generated metrics. We have 3 ways to view the metrics:
 
 Let's look at it with `curl` in a separate terminal:
 
-`INV_URL=$(oc get route inventory-quarkus -n userxx-inventory -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})`
+`INV_URL=$(oc get route inventory-quarkus -o=go-template --template='{{ .spec.host }}')`
 
 and then
 
@@ -573,63 +550,27 @@ In this step, we will learn how to export metrics to _Prometheus_ from _Spring B
 Go to _Catalog_ project directory and open _pom.xml_ to add the following _Prometheus dependencies_:
 
 ~~~xml
-<!-- Prometheus dependency  -->
-<dependency>
-    <groupId>io.prometheus</groupId>
-    <artifactId>simpleclient_spring_boot</artifactId>
-    <version>0.6.0</version>
-</dependency>
-
-<dependency>
-    <groupId>io.prometheus</groupId>
-    <artifactId>simpleclient_hotspot</artifactId>
-    <version>0.6.0</version>
-</dependency>
-
-<dependency>
-    <groupId>io.prometheus</groupId>
-    <artifactId>simpleclient_servlet</artifactId>
-    <version>0.6.0</version>
-</dependency>
+        <!-- Prometheus dependencies  -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
 ~~~
 
 ![metrics_grafana]({% image_path catalog-prometheus-dependency.png %})
 
-Next, let's create a new class to configure our metrics for Spring.
-
-In the `catalog` project in CodeReady, open the empty `src/main/java/com/redhat/coolstore/MonitoringConfig.java` class and add the following code to it:
+Next, let's enable the actuator and prometheus endpoints to be exposed. Add the following configuration in _application.properties_:
 
 ~~~java
-package com.redhat.coolstore;
-
-import io.prometheus.client.exporter.MetricsServlet;
-import io.prometheus.client.hotspot.DefaultExports;
-import io.prometheus.client.spring.boot.SpringBootMetricsCollector;
-import org.springframework.boot.actuate.endpoint.PublicMetrics;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import java.util.Collection;
-
-@Configuration
-class MonitoringConfig {
-
-    @Bean
-    SpringBootMetricsCollector springBootMetricsCollector(Collection<PublicMetrics> publicMetrics) {
-
-        SpringBootMetricsCollector springBootMetricsCollector = new SpringBootMetricsCollector(publicMetrics);
-        springBootMetricsCollector.register();
-
-        return springBootMetricsCollector;
-    }
-
-    @Bean
-    ServletRegistrationBean servletRegistrationBean() {
-        DefaultExports.initialize();
-        return new ServletRegistrationBean(new MetricsServlet(), "/prometheus");
-    }
-}
+# Metrics
+management.endpoint.metrics.enabled=true
+management.endpoints.web.exposure.include=*
+management.endpoint.prometheus.enabled=true
+management.metrics.export.prometheus.enabled=true
 ~~~
 
 ####15. Re-Build and Re-Deploy to OpenShift
@@ -644,12 +585,13 @@ and then
 
 `mvn clean package spring-boot:repackage -DskipTests`
 
-The build and deploy may take a minute or two. Wait for it to complete. You should see a **BUILD SUCCESS** at the
-end of the build output.
+The build and deploy may take a minute or two. Wait for it to complete. You should see a **BUILD SUCCESS** at the end of the build output.
 
 And then re-build the container image, which will take about a minute to complete:
 
-`oc start-build -n userNN-catalog catalog-springboot --from-file target/catalog-1.0.0-SNAPSHOT.jar --follow` (replace `userNN` with your username!)
+`oc project userXX-catalog` (replace `userXX` with your username)
+
+`oc start-build catalog-springboot --from-file target/catalog-1.0.0-SNAPSHOT.jar --follow` (replace `userNN` with your username!)
 
 Once the build is done, it will automatically start a new deployment. Wait for it to complete:
 
@@ -661,33 +603,35 @@ Wait for that command to report replication controller "catalog-springboot-XX" s
 
 Let's acess the metrics from the catalog service. Access them via `curl` with these commands:
 
-`CAT_URL=$(oc get route catalog-springboot -n userXX-catalog -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})`
+`CAT_URL=$(oc get route catalog-springboot -o=go-template --template='{{ .spec.host }}')`
 
 and then:
 
-`curl $CAT_URL/prometheus`
+`curl $CAT_URL/actuator/prometheus`
 
 You will see a similar output as here:
 
 ~~~
-# HELP jvm_gc_collection_seconds Time spent in a given JVM garbage collector in seconds.
-# TYPE jvm_gc_collection_seconds summary
-jvm_gc_collection_seconds_count{gc="PS Scavenge",} 6.0
-jvm_gc_collection_seconds_sum{gc="PS Scavenge",} 0.125
-jvm_gc_collection_seconds_count{gc="PS MarkSweep",} 7.0
-jvm_gc_collection_seconds_sum{gc="PS MarkSweep",} 1.017
-# HELP jvm_classes_loaded The number of classes that are currently loaded in the JVM
-# TYPE jvm_classes_loaded gauge
-jvm_classes_loaded 9238.0
-# HELP jvm_classes_loaded_total The total number of classes that have been loaded since the JVM has started execution
-# TYPE jvm_classes_loaded_total counter
-jvm_classes_loaded_total 9238.0
-# HELP jvm_classes_unloaded_total The total number of classes that have been unloaded since the JVM has started execution
-# TYPE jvm_classes_unloaded_total counter
-jvm_classes_unloaded_total 0.0
-# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
-# TYPE process_cpu_seconds_total counter
-process_cpu_seconds_total 16.45
+...
+# HELP jvm_threads_states_threads The current number of threads having NEW state
+# TYPE jvm_threads_states_threads gauge
+jvm_threads_states_threads{state="runnable",} 7.0
+jvm_threads_states_threads{state="blocked",} 0.0
+jvm_threads_states_threads{state="waiting",} 14.0
+jvm_threads_states_threads{state="timed-waiting",} 5.0
+jvm_threads_states_threads{state="new",} 0.0
+jvm_threads_states_threads{state="terminated",} 0.0
+# HELP jvm_buffer_memory_used_bytes An estimate of the memory that the Java virtual machine is using for this buffer pool
+# TYPE jvm_buffer_memory_used_bytes gauge
+jvm_buffer_memory_used_bytes{id="direct",} 40960.0
+jvm_buffer_memory_used_bytes{id="mapped",} 0.0
+# HELP jvm_buffer_total_capacity_bytes An estimate of the total capacity of the buffers in this pool
+# TYPE jvm_buffer_total_capacity_bytes gauge
+jvm_buffer_total_capacity_bytes{id="direct",} 40960.0
+jvm_buffer_total_capacity_bytes{id="mapped",} 0.0
+# HELP tomcat_global_received_bytes_total
+# TYPE tomcat_global_received_bytes_total counter
+tomcat_global_received_bytes_total{name="http-nio-8080",} 0.0
 ...
 ~~~
 
@@ -699,27 +643,27 @@ This is the raw output from the application that Prometheus will periodically re
 
 You'll need the catalog route once again, which you can discover using this in the Terminal:
 
-`oc get route catalog-springboot -n userXX-catalog -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %}; echo`
+`echo $CAT_URL`
 
 Navigate to your `userXX-monitoring` project in OpenShift console, and go to `Workloads > Config Maps > prometheus_config`. Click on the _YAML_ tab.
 
 Edit to add the following contents below the existing `job_name` elements (and with the same indentation):
 
-> Replace `YOUR_CATALOG_ROUTE` with the route emitted from the above `oc get route` command!
+> Replace `YOUR_CATALOG_ROUTE` with the route emitted from the above `echo` command!
 
 ~~~yaml
-  - job_name: 'spring-boot'
-    metrics_path: '/prometheus'
+      - job_name: 'spring-boot'
+        metrics_path: '/prometheus'
 
-    static_configs:
-    - targets:  ['YOUR_CATALOG_ROUTE']
+        static_configs:
+        - targets:  ['YOUR_CATALOG_ROUTE']
 ~~~
 
 Click on **Save**.
 
 ![prometheus]({% image_path prometheus-quarkus-configmap-detail-sb.png %})
 
-OpenShift does not automatically redeploy whenever ConfigMaps are changed, so let's force a redeployment. Select the `userXX-catalog` project in the OpenShift console, navigate to  _Workloads > Deployment Configs > prometheus_  and select **Start Rollout** from the _Actions_ menu:
+OpenShift does not automatically redeploy whenever ConfigMaps are changed, so let's force a redeployment. Select the `userXX-catalog` project in the OpenShift console, navigate to  _Developer Console > Topology > DC prometheus_  and select **Start Rollout** from the _Actions_ menu:
 
 ![prometheus]({% image_path prometheus-redeploy.png %})
 
