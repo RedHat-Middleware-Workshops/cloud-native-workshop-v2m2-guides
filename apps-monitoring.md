@@ -318,7 +318,7 @@ Click on **Save & Test** then you will see the _Data source is working_ message.
 * Name: CloudNativeApps
 * HTTP URL: http://prometheus.userXX-monitoring:9090
 
-![Grafana]({% image_path granfan-setting.png %})
+![Grafana]({% image_path grafana-setting.png %})
 
 Now Granana is set up to pull collected metrics from Prometheus as they are collected from the application(s) you are monitoring. We'll use this later.
 
