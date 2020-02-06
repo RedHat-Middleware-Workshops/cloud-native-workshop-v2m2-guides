@@ -671,7 +671,7 @@ OpenShift does not automatically redeploy whenever ConfigMaps are changed, so le
 
 ---
 
-**1)** Open the Prometheus Web UI via a web brower and input(or select) `scrape_duration_seconds` in the query box. Click on **Execute** then you will see _quarkus job_ in the metrics:
+**1)** Open the Prometheus Web UI via a web brower and input(or select) `scrape_duration_seconds` in the query box. Click on **Execute** then you will see _spring-boot job_ in the metrics:
 
 ![metrics_prometheus]({% image_path prometheus-metrics-console-final.png %})
 
