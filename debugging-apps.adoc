@@ -1,0 +1,143 @@
+= Lab2 - Debugging Applications
+:experimental:
+
+In this lab, you will debug the coolstore microservice application using Java remote debugging and look into line-by-line code execution as the
+code runs on Quarkus.
+
+==== 1. Enable Remote Debugging
+
+Remote debugging is a useful debugging technique for application development which allows looking into the code that is being
+executed somewhere else on a different machine and execute the code line-by-line to help investigate bugs and issues. Remote
+debugging is part of Java SE standard debugging architecture which you can learn more about it in
+https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/architecture.html[Java SE docs]\{:target="_blank"}.
+
+Quarkus in development mode enables "Live Coding" with background compilation, which means that when you modify your Java files
+and/or your resource files and refresh your browser, these changes will automatically take effect. This works too for resource
+files like the configuration properties files and even `pom.xml` changes.
+
+When run in Developer Mode (i.e. `mvn quarkus:dev`), Quarkus will also listen for debugging sessions on port `5005` (by default). If your want to wait for the debugger to attach before running you can pass
+`-Ddebug` on the command line. If you don’t want the debugger at all you can use `-Ddebug=false`.
+
+Start up the Inventory microservice locally, in development mode, using this command in a CodeReady Terminal:
+Enable remote debugging on Inventory by running the following command in the CodeReady Workspaces Terminal window:
+
+[source,sh,role="copypaste"]
+----
+mvn clean compile quarkus:dev -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
+----
+
+[NOTE]
+====
+Close any popups about port 5005 or 8080 when the app starts up
+====
+
+You are all set now to start debugging using the tools of you choice.
+
+Do not wait for the command to return! The Quarkus maven plugin keeps the forwarded port open so that you can start debugging remotely.
+
+image::debug-che-quarkus.png[Quarkus Debug, 700]
+
+==== 2. Add a bug
+
+Let's add a new endpoint that has a bug we will fix using the debugger.
+
+Go back to the _Explorer_ view, and under the `cloud-native-workshop-v2m2-labs` project, open the `inventory/com/red/coolstore/InventoryResource.java` class. Add a new method which has an off-by-one error:
+
+[source,java,role="copypaste"]
+----
+    @GET
+    @Path("/lastletter/{itemId}")
+    @Produces("application/text-plain")
+    public String lastLetter(@PathParam("itemId") String itemId) {
+        Inventory item = Inventory.find("itemId", itemId).firstResult();
+        String location = item.location;
+        int len = location.length();
+        String lastLetter = location.substring(len);
+        return lastLetter;
+    }
+----
+
+This method retrieves the location of inventory, and outputs the last letter in the name of the location. After adding this method, try it out with item `165613`, which has inventory in `Seoul` and we'd expect the last letter `l` to be output. Open another Terminal and run the command:
+
+[source,sh,role="copypaste"]
+----
+curl http://localhost:8080/services/inventory/lastletter/165613
+----
+
+You don't see the letter `l` do you? You should see:
+
+image::debug-che-quarkus-lastletter.png[Quarkus Debug, 700]
+
+There's no `l`! You can probably spot the error, but let's walk through the debugger.
+
+==== 2. Debug with CodeReady Workspaces
+
+Click on the Debug icon on the left, select _Attach to App_ in the drop-down, and click the green _Start Debugging_ Icon:
+
+image::debug-che-quarkus-attach.png[Quarkus Debug, 700]
+
+You should see a list of Threads in the debug console.
+
+Go back to the _Explorer_ view. In the new method you added, add a breakpoint by clicking to the left of the first line in that method to cause a red dot to appear, as shown:
+
+image::debug-che-breakpoint.png[Add Breakpoint, 700]
+
+Open a new Terminal and invoke the new method using the same `curl` command:
+
+[source,sh,role="copypaste"]
+----
+curl http://localhost:8080/services/inventory/lastletter/165613
+----
+
+This command will appear to hang, while the debugger intercepts the call. Switch back to the Debugger view to see the state:
+
+image::debug-che-breakpoint-hit.png[Add Breakpoint, 700]
+
+Click on the _Step Over_ icon to execute one line and retrieve the inventory object for the given product id from the database and see the yellow cursor advance one line.
+
+Expand the _Local Variables_ in the lower left, to see the variables for `itemId` passed to the method and `item` element retrieved from the database.
+
+image::debug-che-step-over.png[Step Over, 900]
+
+Step over 2 more times, and note the value of `location` is `Seoul` and `len` is set to the length of `Seoul` which is `5`.
+
+image::debug-che-step-over2.png[Step Over, 600]
+
+One more step-over, and you can clearly see that `lastLetter` is blank (empty string). It's an off-by-one error!
+
+image::debug-che-error.png[Step Over, 800]
+
+Click the Continue button to let the method finish and return the empty value to `curl`:
+
+image::debug-che-continue.png[Step Over, 600]
+
+==== 3. Fix and Confirm
+
+The off-by-one error can be fixed simply by fixing the call to `substring()`. Fix the bug by changing the line with `substring()` to read:
+
+[source,java,role="copypaste"]
+----
+        String lastLetter = location.substring(len - 1);
+----
+
+Execute the command again:
+
+[source,sh,role="copypaste"]
+----
+curl http://localhost:8080/services/inventory/lastletter/165613
+----
+
+The debugger will again catch the execution. Step through with the debugger as you did previously and confirm the value of `lastLetter` is `l` and is properly returned when the method is finished:
+
+image::debug-che-final.png[Step Over, 900]
+
+image::debug-che-final2.png[Step Over, 1000]
+
+[NOTE]
+====
+Click on the _Stop Debugger_ (red box) to disconnect the debugger, then stop the app by typing kbd:[CTRL-C] in the Terminal in which the app runs.
+====
+
+==== Congratulations!
+
+Quarkus apps are just like any other Java app, so debugging is straightforward and supported by many IDEs and CLIs out there. Combined with Live Reload and CodeReady Workspaces, it makes development quick and (relatively) painless!

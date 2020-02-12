@@ -1,0 +1,233 @@
+= Advanced Cloud-Native Services
+:experimental:
+
+If you completed the *Cloud Native Workshop - Module 1*, you learned how to take an existing application to the cloud with JBoss
+EAP and OpenShift, and you got a glimpse into the power of OpenShift for modernizing existing applications with microservices. If you did not, or you started but didn't finish, there are scripts below you can run to catch up.
+
+In this lab, you will go deeper into how to use the OpenShift Container Platform as a developer to build and deploy applications.
+We’ll focus on the core features of OpenShift as it relates to developers, and you’ll learn typical workflows for a developer
+(develop, build, test, deploy, and repeat).
+
+=== Getting Ready for the labs
+
+[WARNING]
+====
+If you’ve already completed the *Optimizing Existing Applications* module then you will simply need to import the code for this
+module. Skip down to the *Import Projects* section.
+====
+
+==== If this is the first module you are doing today
+
+You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipse
+Che, window=_blank]. *Changes to files are auto-saved every few seconds*, so you don’t need to explicitly save changes.
+
+To get started, {{ ECLIPSE_CHE_URL }}[access the Che instance, window=_blank] and log in using the username
+and password you’ve been assigned (e.g. `{{ USER_ID }}/{{ CHE_USER_PASSWORD }}`):
+
+image::che-login.png[cdw, 700]
+
+Once you log in, you’ll be placed on your personal dashboard. Click on the name of
+the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number). You can also
+click on the name of the workspace in the center, and then click on the green button that says _Open_ on the top right hand side
+of the screen.
+
+After a minute or two, you’ll be placed in the workspace:
+
+image::che-workspace.png[cdw, 900]
+
+This IDE is based on Eclipse Che (which is in turn based on MicroSoft VS Code editor).
+
+You can see icons on the left for navigating between project explorer, search, version control (e.g. Git), debugging, and other plugins.  You’ll use these during the course of this workshop. Feel free to click on them and see what they do:
+
+image::crw-icons.png[cdw, 400]
+
+[NOTE]
+====
+If things get weird or your browser appears, you can simply reload the browser tab to refresh the view.
+====
+
+Many features of CodeReady Workspaces are accessed via *Commands*. You can see a few of the commands listed with links on the home page (e.g. _New File.._, _Git Clone.._, and others).
+
+If you ever need to run commands that you don't see in a menu, you can press kbd:[F1] to open the command window, or the more traditional kbd:[Control+SHIFT+P] (or kbd:[Command+SHIFT+P] on Mac OS X).
+
+==== Import Projects
+
+Let's import the project source code for this lab. Click on **Git Clone..** (or type kbd:[F1], enter 'git' and click on the auto-completed _Git Clone.._ )
+
+image::che-workspace-gitclone.png[cdw, 900]
+
+When prompted at the top, enter the following value for **Repository URL**:
+
+[source,none,role="copypaste"]
+----
+https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs.git
+----
+
+image::crw-clone-repo.png[crw,900]
+
+Next, select `/projects` in the drop-down menu for destination directory:
+
+image::crw-clone-dest.png[crw,900]
+
+And click *Select Repository Location*.
+
+Once imported, choose **Add to existing workspace** when prompted.
+
+The project is imported into your workspace and is visible in the project explorer:
+
+image::crw-clone-explorer.png[crw,900]
+
+[NOTE]
+====
+The Terminal window in CodeReady Workspaces. You can open a terminal window for any of the containers running in your Developer workspace. For the rest of these labs, anytime you need to run a command in a
+terminal, you can use the **>_ New Terminal** command on the right:
+
+image::codeready-workspace-terminal.png[codeready-workspace-terminal, 700]
+====
+
+=== Login to OpenShift CLI
+
+Although your Eclipse Che workspace is running on the Kubernetes cluster, it’s running with a default restricted _Service Account_
+that prevents you from creating most resource types. If you’ve completed other modules, you’re probably already logged in, but
+let’s login again: open a Terminal and issue the following command:
+
+[source,sh,role="copypaste"]
+----
+oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true
+----
+
+Enter your username and password assigned to you:
+
+* Username: `{{ USER_ID }}`
+* Password: `{{ OPENSHIFT_USER_PASSWORD }}`
+
+You should see something like this (the project names may be different):
+
+[source,none]
+----
+Login successful.
+
+You have access to the following projects and can switch between them with 'oc project <projectname>':
+
+  * istio-system
+    knative-serving
+    user6-bookinfo
+    user6-catalog
+    user6-cloudnative-pipeline
+    user6-cloudnativeapps
+    user6-inventory
+
+Using project "istio-system".
+Welcome! See 'oc help' to get started.
+----
+
+==== If this is the first module you are doing today OR if you didn't complete module 1!
+
+If you’ve already completed Module 1 (Optimizing Existing Applications), then you will already have the _CoolStore_ app and the `inventory` and `catalog` microservices deployed.
+
+*If this is the first module you are completing today, OR you didn't quite complete module 1, you need to deploy applications from the previous module by running the following commands in a CodeReady Workspaces Terminal:*
+
+These commands reset and re-play all the steps from module 1 and should take 4-5 minutes to finish.
+
+[source, sh, role="copypaste"]
+----
+sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-inventory.sh {{ USER_ID }}
+sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-catalog.sh {{ USER_ID }}
+sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-coolstore.sh {{ USER_ID }}
+----
+
+Wait for the commands to complete. If you see any errors, contact an instructor!
+
+=== Verifying the Dev Environment
+
+In the previous module, you created a new OpenShift project called *{{ USER_ID }}-coolstore-dev* which represents your developer personal
+project in which you deployed the CoolStore monolith.
+
+==== Verify Application
+
+Let’s take a moment and review the OpenShift resources that are created for the Monolith:
+
+* Build Config: *coolstore* build config is the configuration for building the Monolith image from the source code or WAR file.
+* Image Stream: *coolstore* image stream is the virtual view of all coolstore container images built and pushed to the OpenShift
+integrated registry.
+* Deployment Config: *coolstore* deployment config deploys and redeploys the Coolstore container image whenever a new coolstore
+container image becomes available. Similarly, the *coolstore-postgresql* does the same for the database.
+* Service: *coolstore* and *coolstore-postgresql* service is an internal load balancer which identifies a set of pods (containers)
+in order to proxy the connections it receives to them. Anything that depends on the service can to refer to it at a consistent address
+(service name or IP).
+* Route: *www* route registers the service on the built-in external load-balancer and assigns a public DNS name to it so that it
+can be reached from outside OpenShift cluster.
+
+[NOTE]
+====
+When referring to Kubernetes or OpenShift object types in `oc` commands, you can use short synonyms for long words, like *bc* instead of *buildconfig*, *is* for *imagestream*, *dc* for
+*deploymentconfig*, *svc* for *service*, etc.
+
+Don’t worry about reading and understanding the output of oc describe. Just make sure the command doesn’t report errors!
+====
+
+Run these commands to inspect the elements via CodeReady Workspaces Terminal window:
+
+[source,sh,role="copypaste"]
+----
+oc project {{ USER_ID }}-coolstore-dev
+oc get bc coolstore
+oc get is coolstore
+oc get dc coolstore
+oc get svc coolstore
+oc describe route www
+----
+
+You should get a valid value for each, and no errors!
+
+Visit the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-dev[Topology View, window=_blank] to see the coolstore app (and its database). The *Topology* view in the _Developer_ perspective of the OpenShift web console provides a visual representation of all the applications
+within a project, their build status, and the components and services associated with them. You'll visit this often:
+
+image::coolstore-dev-topology.png[crw,700]
+
+Verify that you can access the monolith by clicking on the route link (the arrow) to access the running monolith:
+
+image::route_link.png[route_link]
+
+The coolstore web interface should look like:
+
+image::coolstore_web.png[route_link, 600]
+
+
+=== Verify Database
+
+You can log into the running Postgres container using the following via CodeReady Workspaces Terminal window:
+
+[source,sh,role="copypaste"]
+----
+oc rsh dc/coolstore-postgresql
+----
+
+Once logged in, use the following command to execute an SQL statement to show some content from the database and then exit:
+
+[source,sh,role="copypaste"]
+----
+psql -U $POSTGRESQL_USER $POSTGRESQL_DATABASE -c 'select name,price from PRODUCT_CATALOG;' | cat; exit
+----
+
+You should see the following:
+
+----
+          name          | price
+------------------------+-------
+ Red Fedora             | 34.99
+ Forge Laptop Sticker   |   8.5
+ Solid Performance Polo |  17.8
+ Ogio Caliber Polo      | 28.75
+ 16 oz. Vortex Tumbler  |     6
+ Pebble Smart Watch     |    24
+ Oculus Rift            |   106
+ Lytro Camera           |  44.3
+ Atari 2600 Joystick    |   240
+(9 rows)
+----
+
+This shows the content of the monolith's database.
+
+With our running project on OpenShift, in the next step we’ll explore how you as a developer can work with the running app to make
+changes and debug the application!

@@ -1,0 +1,342 @@
+= Lab1 - Automating Deployments Using Pipelines
+:experimental:
+
+In the previous scenarios, you deployed the Coolstore monolith using an OpenShift Template into the *{{USER_ID}}-coolstore-dev*
+Project. The template created the necessary objects (BuildConfig, DeploymentConfig, ImageStreams, Services, and Routes) and gave
+you as a Developer a playground in which to run the app, make changes and debug.
+
+In this step, we are now going to setup a separate production environment and explore some best practices and techniques for
+developers and DevOps teams for getting code from the developer *(that’s YOU!)* to production with less downtime and greater
+consistency.
+
+=== Production vs. Development
+
+The existing *{{USER_ID}}-coolstore-dev* project is used as a developer environment for building new versions of the app after code
+changes and deploying them to the development environment.
+
+In a real project on OpenShift, _dev_, _test_ and _production_ environments would typically use different OpenShift projects and
+perhaps even different OpenShift clusters.
+
+For simplicity in this scenario we will only use a _dev_ and _prod_ environment, and no test/QA environment.
+
+==== 1. Create the production environment
+
+Back in the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-dev[Topology View, window=_blank], click on the project drop-down and select *Create Project*.
+
+image::create_project.png[create_dialog, 600]
+
+Fill in the fields, and click `Create`:
+
+* Name: *{{USER_ID}}-coolstore-prod*
+* Display Name: *{{USER_ID}} Coolstore Monolith - Production*
+* Description: _leave this field empty_
+
+[WARNING]
+====
+YOU `MUST` USE `{{USER_ID}}-coolstore-prod` AS THE PROJECT NAME, as this name is referenced later on and you will experience
+failures if you do not name it `{{USER_ID}}-coolstore-prod`.
+====
+
+This will create a new OpenShift project called *{{USER_ID}}-coolstore-prod* from which our production application will run.
+
+==== 2. Add the production elements
+
+In this case we’ll use the production template to create the objects.
+
+We've pre-installed an application _template_ for use. Click the *+Add* and then *From Catalog* item:
+
+image::from_catalog.png[create_new, 700]
+
+In the search box, type in `coolstore` and choose _Coolstore Monolith using binary build_ and then click *Instantiate Template*.
+
+image::from_catalog_prod.png[create_new, 700]
+
+Fill in the following fields:
+
+* *Namespace*: `{{ USER_ID }}-coolstore-prod` (this should already be selected)
+* *User ID*: `{{ USER_ID }}`
+
+image::from_catalog_prod_details.png[create_new, 700]
+
+Keep the other values as-is and scroll down and click *Create*.
+
+Go to the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Topology View, window=_blank] to see the elements that were deployed.
+
+The *Topology* view in the _Developer_ perspective of the web console provides a visual representation of all the applications
+within a project, their build status, and the components and services associated with them.
+
+image::coolstore_topology.png[create_new, 700]
+
+You can see the _postgres_ database running (with a dark blue circle), and the coolstore monolith, which has not yet been deployed or started. In previous labs we deployed manually from a binary build of our app in our developer project. In this lab we will use a _CI/CD pipeline_ to build and deploy automatically go our production environment.
+
+We will use a *Jenkins Server* in our project and  use a _Jenkins Pipeline_ build strategy.
+
+Click *+Add*, type in `jenkins` in the search box, and choose the FIRST *Jenkins (ephemeral)* item:
+
+image::from_catalog_jenkins.png[create_new, 700]
+
+Click *Instantiate Template* and change the following fields, leaving other fields alone:
+
+* *Namespace*: `{{ USER_ID }}-coolstore-prod` (this should already be selected)
+* *Memory Limit*: `2Gi`
+* *Disable memory intensive administrative monitors*: `true`
+
+// `oc set resources dc/jenkins --limits=cpu=1,memory=2Gi --requests=cpu=1,memory=512Mi`
+
+Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Topology View, window=_blank] you can see the production database, and an application called Jenkins which OpenShift uses to manage CI/CD pipeline
+deployments.
+
+image::coolstore_prod_jenkins.png[create_new, 700]
+
+There is no running production app just yet. The only running app is back in the _dev_ environment, where you used a
+binary build to run the app previously.
+
+In the next step, we’ll _promote_ the app from the _dev_ environment to the _production_ environment using an OpenShift pipeline
+build. Let’s get going!
+
+=== Promoting Apps Across Environments with Pipelines
+
+==== Continuous Delivery
+
+So far you have built and deployed the app manually to OpenShift in the _dev_ environment. Although it’s convenient for local
+development, it’s an error-prone way of delivering software when extended to test and production environments.
+
+Continuous Delivery (CD) refers to a set of practices with the intention of automating various aspects of delivery software. One
+of these practices is called delivery pipeline which is an automated process to define the steps a change in code or configuration
+has to go through in order to reach upper environments and eventually to production.
+
+OpenShift simplifies building CI/CD Pipelines by integrating the popular https://jenkins.io/doc/book/pipeline/overview/[Jenkins
+pipelines, window=_blank] into the platform and enables defining truly complex workflows directly from within OpenShift. OpenShift 4 also introduces https://www.openshift.com/learn/topics/pipelines[Tekton Pipelines, window=_blank], an evolution of CI/CD for Kubernetes, which you might be exploring in a later module if it's on the agenda for today.
+
+The first step for any deployment pipeline is to store all code and configurations in a source code repository. In this workshop,
+the source code and configurations are stored in a
+https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs[GitHub repository, window=_blank] we’ve been
+using.
+
+==== Jenkins Pipelines
+
+OpenShift has built-in support for Jenkins CI/CD pipelines by allowing developers to define a
+https://jenkins.io/solutions/pipeline/[Jenkins pipeline, window=_blank] for execution by a Jenkins automation engine.
+
+The build can get started, monitored, and managed by OpenShift in the same way as any other build types e.g. S2I. Pipeline
+workflows are defined in a `Jenkinsfile`, either embedded directly in the build configuration, or supplied in Git repository and
+referenced by the build configuration. They are written using the
+
+http://groovy-lang.org/[Groovy scripting language].
+
+As part of the production environment template you used in the last step, a Pipeline build object was created. Ordinarily the
+pipeline would contain steps to build the project in the _dev_ environment, store the resulting image in the local repository, run
+the image and execute tests against it, then wait for human approval to _promote_ the resulting image to other environments like
+test or production.
+
+==== 3. Inspect the Pipeline Definition
+
+Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the pipeline by navigating to the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs[Build Config page, window=_blank]
+and click on `monolith-pipeline`:
+
+image::prod_bc.png[create_new, 700]
+
+Then, you will
+see the details of _Jenkinsfile_ on the right side:
+
+image::coolstore-prod-monolith-bc.png[monolith-pipeline, 700]
+
+You can also inspect this via the following command via CodeReady Workspaces Terminal window:
+
+[source,sh,role="copypaste"]
+----
+oc describe bc/monolith-pipeline -n {{USER_ID}}-coolstore-prod
+----
+
+The pipeline syntax allows creating complex deployment scenarios with the possibility of defining checkpoints for manual
+interaction and approval processes using https://jenkins.io/doc/pipeline/steps/[the large set of steps and plugins that Jenkins
+provides] in order to adapt the pipeline to the processes used in your team.
+
+To simplify the pipeline in this workshop, we simulate the build and tests and skip any need for human input. Once the pipeline
+completes, it deploys the app from the _dev_ environment to our _production_ environment using the above `tag()` method within
+the `openshift` object, which simply re-tags the image you already created using a tag which will trigger deployment in the
+production environment.
+
+==== 4. Promote the dev image to production using the pipeline
+
+Let’s invoke the build pipeline.
+
+On the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs/monolith-pipeline[Pipeline Details Page, window=_blank], select _Actions > Start Build_:
+
+image::pipe-start.png[Prod, 700]
+
+This will start the pipeline. _It will take a minute or two to start the pipeline!_ Future runs will not take as much time as the
+Jenkins infrastructure will already be warmed up. You can watch the progress of the pipeline:
+
+image::pipe-prog.png[Prod, 700]
+
+Once the pipeline completes, return to the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Topology View, window=_blank] and notice that the application is now deployed and running!
+
+image::pipe-done.png[Prod, 700]
+
+It may take a few moments for the container to deploy fully.
+
+==== Congratulations!
+
+You have successfully setup a development and production environment for your project and can use this workflow for future
+projects as well.
+
+In the next step, we’ll add a human interaction element to the pipeline, so that you as a project lead can be in charge of
+approving changes.
+
+=== Adding Pipeline Approval Steps
+
+In previous steps, you used an OpenShift Pipeline to automate the process of building and deploying changes from the dev
+environment to production.
+
+In this step, we’ll add a final checkpoint to the pipeline which will require you as the project lead to approve the final push to
+production.
+
+==== 5. Edit the pipeline
+
+Ordinarily your pipeline definition would be checked into a source code management system like Git, and to change the pipeline
+you’d edit the _Jenkinsfile_ in the source base. For this workshop we’ll just edit it directly to add the necessary changes. You
+can edit it with the *oc* command but we’ll use the Web Console.
+
+Back on the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs/monolith-pipeline[Pipeline Details Page, window=_blank] click on the *YAML* tab. Add _a new stage_ to the pipeline, just
+before the _Deploy to PROD_ stage:
+
+[NOTE]
+----
+You will need to copy and paste the below code into the right place as shown in the below image.
+----
+
+[source,groovy, role="copypaste"]
+----
+            stage ('Approve Go Live') {
+              steps {
+                timeout(time:30, unit:'MINUTES') {
+                  input message:'Go Live in Production (switch to new version)?'
+                }
+              }
+            }
+----
+
+Your final pipeline should look like:
+
+image::pipe-edit2.png[Prod, 700]
+
+Click *Save*.
+
+==== 6. Make a simple change to the app
+
+With the approval step in place, let’s simulate a new change from a developer who wants to change the color of the header in the
+coolstore to a blue background color.
+
+First, in CodeReady, in the `cloud-native-workshop-v2m2-labs` project, open _monolith/src/main/webapp/app/css/coolstore.css_, which contains the CSS stylesheet for the
+CoolStore app.
+
+Add the following CSS to turn the header bar background to Blue (*Copy* to add it at the bottom):
+
+[source,css, role="copypaste"]
+----
+.navbar-header {
+    background: blue
+}
+----
+
+Now we need to update the catalog endpoint in the monolith application. Run the following commands in a Terminal to update the baseUrl to the proper value with your username:
+
+[source,sh,role="copypaste"]
+----
+JSPATH="$CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/monolith/src/main/webapp/app/services/catalog.js"
+CATALOGHOST=$(oc get route -n {{ USER_ID}}-catalog catalog-springboot -o jsonpath={% raw %}"{.spec.host}"{% endraw %})
+sed -i 's/REPLACEURL/'$CATALOGHOST'/' "$JSPATH"
+----
+
+Next, re-build the app once more via CodeReady Workspaces Terminal:
+
+[source,sh,role="copypaste"]
+----
+mvn clean package -Popenshift -DskipTests -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/monolith
+----
+
+And re-deploy it to the dev environment using a binary build just as we did before via CodeReady Workspaces Terminal:
+
+[source,sh,role="copypaste"]
+----
+oc start-build -n {{USER_ID}}-coolstore-dev coolstore --from-file=$CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/monolith/deployments/ROOT.war --follow
+----
+Wait for it to complete the deployment via CodeReady Workspaces Terminal:
+
+[source,sh,role="copypaste"]
+----
+oc -n {{USER_ID}}-coolstore-dev rollout status -w dc/coolstore
+----
+
+And verify that the blue header is visible in the dev application by navigating to the http://www-{{USER_ID}}-coolstore-dev.{{ ROUTE_SUBDOMAIN}}[Coolstore Dev Web frontend, window=_blank]. It should look like the following:
+
+[WARNING]
+====
+If it doesn’t, you may need to do a hard browser refresh. Try holding the shift key while clicking the browser refresh button, or opening a separate "Private Browser" session to access the UI.
+====
+
+image::nav-blue.png[Dev, 700]
+
+Confirm the http://www-{{USER_ID}}-coolstore-prod.{{ ROUTE_SUBDOMAIN}}[Coolstore Prod Web frontend, window=_blank] is still using the original black header:
+
+image::pipe-orig.png[Prod, 700]
+
+We’re happy with this change in dev, so let’s promote the new change to prod, using the new approval step!
+
+==== 7. Run the pipeline again
+
+Invoke the pipeline once more by navigating to the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs/monolith-pipeline[Pipeline Details Page, window=_blank], select _Actions > Start Build_.
+
+The same pipeline progress will be
+shown, however before deploying to prod, you will see a prompt in the pipeline:
+
+image::pipe-start2.png[Prod, 700]
+
+Click on the link for *Input Required*. This will open a new tab and direct you to Jenkins itself, where you can login with the
+same credentials as OpenShift:
+
+* Username: `{{USER_ID}}`
+* Password: `{{OPENSHIFT_USER_PASSWORD}}`
+
+Accept the browser certificate warning and the Jenkins/OpenShift permissions, and then you’ll find yourself at the approval
+prompt:
+
+Click on *Console Output* on left menu then click on `Proceed`.
+
+image::pipe-jenkins-prompt.png[Prod, 700]
+
+=== 8. Approve the change to go live
+
+Click *Proceed*, which will approve the change to be pushed to production. You could also have clicked *Abort* which would stop
+the pipeline immediately in case the change was unwanted or unapproved.
+
+Once you click _Proceed_, you will see the log file from Jenkins showing the final progress and deployment.
+
+On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Production Topology View, window=_blank], wait for the production deployment to complete (and you get all blue circles!).
+
+Once it completes, verify that the http://www-{{USER_ID}}-coolstore-prod.{{ ROUTE_SUBDOMAIN}}[Coolstore Prod Web frontend, window=_blank] has the new change (blue header):
+
+image::nav-blue.png[Prod, 700]
+
+[WARNING]
+====
+If it doesn’t, you may need to do a hard browser refresh. Try holding the shift key while clicking the browser refresh button.
+====
+
+Congratulations! You have added a human approval step for all future developer changes. You now have two projects that can be
+visualized as:
+
+image::goal.png[Prod, 700]
+
+=== Summary
+
+
+In this lab, you learned how to use the OpenShift Container Platform as a developer to build, and deploy applications. You also
+learned how OpenShift makes your life easier as a developer, architect, and DevOps engineer.
+
+You can use these techniques in future projects to modernize your existing applications and add a lot of functionality without
+major re-writes.
+
+The monolithic application we’ve been using so far works great, but is starting to show its age. Even small changes to one part of
+the app require many teams to be involved in the push to production.
