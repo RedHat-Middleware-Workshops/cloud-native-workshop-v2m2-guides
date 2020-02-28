@@ -21,7 +21,7 @@ For simplicity in this scenario we will only use a _dev_ and _prod_ environment,
 
 ==== 1. Create the production environment
 
-Back in the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-dev[Topology View, window=_blank], click on the project drop-down and select *Create Project*.
+Back in the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-dev[Topology View^], click on the project drop-down and select *Create Project*.
 
 image::create_project.png[create_dialog, 600]
 
@@ -60,7 +60,7 @@ image::from_catalog_prod_details.png[create_new, 700]
 
 Keep the other values as-is and scroll down and click *Create*.
 
-Go to the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Topology View, window=_blank] to see the elements that were deployed.
+Go to the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Topology View^] to see the elements that were deployed.
 
 The *Topology* view in the _Developer_ perspective of the web console provides a visual representation of all the applications
 within a project, their build status, and the components and services associated with them.
@@ -83,7 +83,7 @@ Click *Instantiate Template* and change the following fields, leaving other fiel
 
 // `oc set resources dc/jenkins --limits=cpu=1,memory=2Gi --requests=cpu=1,memory=512Mi`
 
-Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Topology View, window=_blank] you can see the production database, and an application called Jenkins which OpenShift uses to manage CI/CD pipeline
+Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Topology View^] you can see the production database, and an application called Jenkins which OpenShift uses to manage CI/CD pipeline
 deployments.
 
 image::coolstore_prod_jenkins.png[create_new, 700]
@@ -106,17 +106,17 @@ of these practices is called delivery pipeline which is an automated process to 
 has to go through in order to reach upper environments and eventually to production.
 
 OpenShift simplifies building CI/CD Pipelines by integrating the popular https://jenkins.io/doc/book/pipeline/overview/[Jenkins
-pipelines, window=_blank] into the platform and enables defining truly complex workflows directly from within OpenShift. OpenShift 4 also introduces https://www.openshift.com/learn/topics/pipelines[Tekton Pipelines, window=_blank], an evolution of CI/CD for Kubernetes, which you might be exploring in a later module if it's on the agenda for today.
+pipelines^] into the platform and enables defining truly complex workflows directly from within OpenShift. OpenShift 4 also introduces https://www.openshift.com/learn/topics/pipelines[Tekton Pipelines^], an evolution of CI/CD for Kubernetes, which you might be exploring in a later module if it's on the agenda for today.
 
 The first step for any deployment pipeline is to store all code and configurations in a source code repository. In this workshop,
 the source code and configurations are stored in a
-https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs[GitHub repository, window=_blank] we’ve been
+https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs[GitHub repository^] we’ve been
 using.
 
 ==== Jenkins Pipelines
 
 OpenShift has built-in support for Jenkins CI/CD pipelines by allowing developers to define a
-https://jenkins.io/solutions/pipeline/[Jenkins pipeline, window=_blank] for execution by a Jenkins automation engine.
+https://jenkins.io/solutions/pipeline/[Jenkins pipeline^] for execution by a Jenkins automation engine.
 
 The build can get started, monitored, and managed by OpenShift in the same way as any other build types e.g. S2I. Pipeline
 workflows are defined in a `Jenkinsfile`, either embedded directly in the build configuration, or supplied in Git repository and
@@ -131,7 +131,7 @@ test or production.
 
 ==== 3. Inspect the Pipeline Definition
 
-Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the pipeline by navigating to the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs[Build Config page, window=_blank]
+Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect the contents of the pipeline by navigating to the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs[Build Config page^]
 and click on `monolith-pipeline`:
 
 image::prod_bc.png[create_new, 700]
@@ -161,7 +161,7 @@ production environment.
 
 Let’s invoke the build pipeline.
 
-On the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs/monolith-pipeline[Pipeline Details Page, window=_blank], select _Actions > Start Build_:
+On the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs/monolith-pipeline[Pipeline Details Page^], select _Actions > Start Build_:
 
 image::pipe-start.png[Prod, 700]
 
@@ -170,7 +170,7 @@ Jenkins infrastructure will already be warmed up. You can watch the progress of 
 
 image::pipe-prog.png[Prod, 700]
 
-Once the pipeline completes, return to the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Topology View, window=_blank] and notice that the application is now deployed and running!
+Once the pipeline completes, return to the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Topology View^] and notice that the application is now deployed and running!
 
 image::pipe-done.png[Prod, 700]
 
@@ -198,7 +198,7 @@ Ordinarily your pipeline definition would be checked into a source code manageme
 you’d edit the _Jenkinsfile_ in the source base. For this workshop we’ll just edit it directly to add the necessary changes. You
 can edit it with the *oc* command but we’ll use the Web Console.
 
-Back on the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs/monolith-pipeline[Pipeline Details Page, window=_blank] click on the *YAML* tab. Add _a new stage_ to the pipeline, just
+Back on the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs/monolith-pipeline[Pipeline Details Page^] click on the *YAML* tab. Add _a new stage_ to the pipeline, just
 before the _Deploy to PROD_ stage:
 
 [NOTE]
@@ -269,7 +269,7 @@ Wait for it to complete the deployment via CodeReady Workspaces Terminal:
 oc -n {{USER_ID}}-coolstore-dev rollout status -w dc/coolstore
 ----
 
-And verify that the blue header is visible in the dev application by navigating to the http://www-{{USER_ID}}-coolstore-dev.{{ ROUTE_SUBDOMAIN}}[Coolstore Dev Web frontend, window=_blank]. It should look like the following:
+And verify that the blue header is visible in the dev application by navigating to the http://www-{{USER_ID}}-coolstore-dev.{{ ROUTE_SUBDOMAIN}}[Coolstore Dev Web frontend^]. It should look like the following:
 
 [WARNING]
 ====
@@ -278,7 +278,7 @@ If it doesn’t, you may need to do a hard browser refresh. Try holding the shif
 
 image::nav-blue.png[Dev, 700]
 
-Confirm the http://www-{{USER_ID}}-coolstore-prod.{{ ROUTE_SUBDOMAIN}}[Coolstore Prod Web frontend, window=_blank] is still using the original black header:
+Confirm the http://www-{{USER_ID}}-coolstore-prod.{{ ROUTE_SUBDOMAIN}}[Coolstore Prod Web frontend^] is still using the original black header:
 
 image::pipe-orig.png[Prod, 700]
 
@@ -286,7 +286,7 @@ We’re happy with this change in dev, so let’s promote the new change to prod
 
 ==== 7. Run the pipeline again
 
-Invoke the pipeline once more by navigating to the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs/monolith-pipeline[Pipeline Details Page, window=_blank], select _Actions > Start Build_.
+Invoke the pipeline once more by navigating to the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs/monolith-pipeline[Pipeline Details Page^], select _Actions > Start Build_.
 
 The same pipeline progress will be
 shown, however before deploying to prod, you will see a prompt in the pipeline:
@@ -313,9 +313,9 @@ the pipeline immediately in case the change was unwanted or unapproved.
 
 Once you click _Proceed_, you will see the log file from Jenkins showing the final progress and deployment.
 
-On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Production Topology View, window=_blank], wait for the production deployment to complete (and you get all blue circles!).
+On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Production Topology View^], wait for the production deployment to complete (and you get all blue circles!).
 
-Once it completes, verify that the http://www-{{USER_ID}}-coolstore-prod.{{ ROUTE_SUBDOMAIN}}[Coolstore Prod Web frontend, window=_blank] has the new change (blue header):
+Once it completes, verify that the http://www-{{USER_ID}}-coolstore-prod.{{ ROUTE_SUBDOMAIN}}[Coolstore Prod Web frontend^] has the new change (blue header):
 
 image::nav-blue.png[Prod, 700]
 

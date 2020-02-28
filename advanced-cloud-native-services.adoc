@@ -19,9 +19,9 @@ module. Skip down to the *Import Projects* section.
 ==== If this is the first module you are doing today
 
 You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipse
-Che, window=_blank]. *Changes to files are auto-saved every few seconds*, so you don’t need to explicitly save changes.
+Che^]. *Changes to files are auto-saved every few seconds*, so you don’t need to explicitly save changes.
 
-To get started, {{ ECLIPSE_CHE_URL }}[access the Che instance, window=_blank] and log in using the username
+To get started, {{ ECLIPSE_CHE_URL }}[access the Che instance^] and log in using the username
 and password you’ve been assigned (e.g. `{{ USER_ID }}/{{ CHE_USER_PASSWORD }}`):
 
 image::che-login.png[cdw, 700]
@@ -180,7 +180,7 @@ oc describe route www
 
 You should get a valid value for each, and no errors!
 
-Visit the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-dev[Topology View, window=_blank] to see the coolstore app (and its database). The *Topology* view in the _Developer_ perspective of the OpenShift web console provides a visual representation of all the applications
+Visit the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-dev[Topology View^] to see the coolstore app (and its database). The *Topology* view in the _Developer_ perspective of the OpenShift web console provides a visual representation of all the applications
 within a project, their build status, and the components and services associated with them. You'll visit this often:
 
 image::coolstore-dev-topology.png[crw,700]

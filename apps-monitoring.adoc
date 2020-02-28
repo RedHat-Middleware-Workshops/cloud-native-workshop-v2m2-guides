@@ -8,7 +8,7 @@ You will now begin observing applications in term of a distributed transaction, 
 applications are developed quickly, a distributed architecture in production gets ultimately complex in two areas: networking and
 observability. Later on we’ll explore how you can better manage and monitor the application using service mesh.
 
-In this lab, you will monitor coolstore applications using https://www.jaegertracing.io/[Jaeger, window=_blank] and https://prometheus.io/[Prometheus, window=_blank].
+In this lab, you will monitor coolstore applications using https://www.jaegertracing.io/[Jaeger^] and https://prometheus.io/[Prometheus^].
 
 image::quarkus-jaeger-prometheus.png[logo, 700]
 
@@ -34,7 +34,7 @@ including:
 In this step, we will deploy our new monitoring tools for our CoolStore application, so create a separate project to house it and
 keep it separate from our monolith and our other microservices we already created previously.
 
-Back in the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-dev[Topology View, window=_blank], click on the Project drop-down and select _Create Project_.
+Back in the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-dev[Topology View^], click on the Project drop-down and select _Create Project_.
 
 image::create_project.png[create_dialog, 700]
 
@@ -52,19 +52,19 @@ In the new project, click `+Add`, select _From Catalog_:
 
 image::add_catalog.png[create_dialog, 700]
 
-Type in `jaeger` in the search box, and choose *Jaeger (all-in-one)*. We will use this template for our lab, but in production you'd probably want to use the other option which uses the https://operatorhub.io/operator/jaeger[Jaeger Operator for OpenShift, window=_blank].
+Type in `jaeger` in the search box, and choose *Jaeger (all-in-one)*. We will use this template for our lab, but in production you'd probably want to use the other option which uses the https://operatorhub.io/operator/jaeger[Jaeger Operator for OpenShift^].
 
 image::add_catalog_jaeger.png[create_dialog, 700]
 
 Click *Instantiate Template*, leave the values unchanged, and click *Create*.
 
-In the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Topology View, window=_blank] you can see Jaeger deploying:
+In the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Topology View^] you can see Jaeger deploying:
 
 image::jaeger_top.png[create_dialog, 700]
 
 ==== 4. Observe Jaeger UI
 
-Open the http://jaeger-query-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN}}[Jaeger UI, window=_blank].
+Open the http://jaeger-query-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN}}[Jaeger UI^].
 
 This is the UI for Jaeger, but currently we have no apps being monitored so it’s
 rather useless. Don’t worry! We will utilize tracing data in the next step.
@@ -95,14 +95,14 @@ and `BUILD SUCCESS`. This ensures that the extension's dependencies are added to
 
 [NOTE]
 ====
-NOTE: There are many https://quarkus.io/extensions/[more extensions, window=_blank] for Quarkus for popular frameworks like
-https://vertx.io/[Vert.x, window=_blank], http://camel.apache.org/[Apache Camel, window=_blank],
-http://infinispan.org/[Infinispan, window=_blank], Spring DI compatibility (e.g. `@Autowired`), and more.
+NOTE: There are many https://quarkus.io/extensions/[more extensions^] for Quarkus for popular frameworks like
+https://vertx.io/[Vert.x^], http://camel.apache.org/[Apache Camel^],
+http://infinispan.org/[Infinispan^], Spring DI compatibility (e.g. `@Autowired`), and more.
 ====
 
 ==== 6. Create the configuration
 
-Before getting started with this step, confirm the *jaeger-collector* service by visiting the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Topology View, window=_blank], and click on the _jaeger_ deployment and select the _Resources_ tab to view the services exposed by Jaeger:
+Before getting started with this step, confirm the *jaeger-collector* service by visiting the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Topology View^], and click on the _jaeger_ deployment and select the _Resources_ tab to view the services exposed by Jaeger:
 
 image::jaeger-services.png[create_dialog, 700]
 
@@ -120,7 +120,7 @@ quarkus.jaeger.endpoint=http://jaeger-collector.{{ USER_ID }}-monitoring:14268/a
 ----
 
 You can also specify the configuration using environment variables or JVM properties. See
-https://www.jaegertracing.io/docs/1.12/client-features/[Jaeger Features, window=_blank].
+https://www.jaegertracing.io/docs/1.12/client-features/[Jaeger Features^].
 
 [NOTE]
 ====
@@ -133,7 +133,7 @@ tracer will be configured, resulting in no tracing data being reported to the ba
 NOTE: there is no tracing specific code included in the application. By default, RESTful requests sent to the app will be traced
 without *any* code changes being required thanks to MicroProfile Tracing. It is also possible to enhance the tracing information and manually trace other methods and classes. For more information on this,
 please see the
-https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[MicroProfile OpenTracing specification, window=_blank].
+https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[MicroProfile OpenTracing specification^].
 ====
 
 ==== 7. Re-Deploy to OpenShift
@@ -145,7 +145,7 @@ Repackage and re-deploy the inventory application via the Terminal:
 mvn package -DskipTests -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory && \
 oc start-build -n {{USER_ID}}-inventory inventory-quarkus --from-file $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory/target/*-runner.jar --follow
 ----
-In the console and on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-inventory[Inventory Topology View, window=_blank], wait for the re-build and re-deployment to complete.
+In the console and on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-inventory[Inventory Topology View^], wait for the re-build and re-deployment to complete.
 
 ==== 8. Observing Jaeger Tracing
 
@@ -163,7 +163,7 @@ for i in $(seq 1 10) ; do
 done
 ----
 
-Now, reload the http://jaeger-query-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN}}[Jaeger UI, window=_blank] and you will find that a new `inventory` service appears alongside the service for Jaeger itself:
+Now, reload the http://jaeger-query-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN}}[Jaeger UI^] and you will find that a new `inventory` service appears alongside the service for Jaeger itself:
 
 image::jaeger-2-services.png[jaeger_ui, 700]
 
@@ -190,7 +190,7 @@ image::monitoring-diagram.png[Prometheus, 700]
 However, we will deploy custom *Prometheus* to scrape services metrics of Inventory and Catalog applications. Then we will
 visualize the metrics data via custom *Grafana* dashboards deployment.
 
-On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View, window=_blank], click on `+Add`, and choose "Container Image"
+On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], click on `+Add`, and choose "Container Image"
 
 image::add-to-project.png[Prometheus, 800]
 
@@ -215,7 +215,7 @@ image::prometheus-webui.png[Prometheus, 700]
 
 ==== Deploy Grafana
 
-Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View, window=_blank], click on `+Add`, and choose "Container Image", and fill in the fields:
+Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], click on `+Add`, and choose "Container Image", and fill in the fields:
 
 * *Image Name*: `grafana/grafana`
 * *Application*: `Unassigned`
@@ -337,7 +337,7 @@ mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-l
 oc start-build -n {{ USER_ID }}-inventory inventory-quarkus --from-file $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory/target/*-runner.jar --follow
 ----
 
-You should get `BUILD SUCCESS` and then the application should be re-deployed. Watch the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-inventory[Inventory Topology View, window=_blank] until the app is re-deployed.
+You should get `BUILD SUCCESS` and then the application should be re-deployed. Watch the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-inventory[Inventory Topology View^] until the app is re-deployed.
 
 Once it's done you should be able to see the raw metrics exposed by the app with this command in a Terminal:
 
@@ -371,7 +371,7 @@ This is what Prometheus will use to access and index the metrics from our app wh
 
 To instruct Prometheus to scrape metrics from our app, we need to create a Kubernetes _ConfigMap_.
 
-On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View, window=_blank], click `+Add` on the left, and this time choose *YAML*:
+On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], click `+Add` on the left, and this time choose *YAML*:
 
 image::add-yaml.png[prometheus, 700]
 
@@ -436,7 +436,7 @@ We have 3 ways to view the metrics:
 
 ==== Using Prometheus
 
-Open the http://prometheus-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN }}[Prometheus UI, target=_blank] and input `performedChecks` and select the auto-completed value:
+Open the http://prometheus-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN }}[Prometheus UI^] and input `performedChecks` and select the auto-completed value:
 
 image::prometheus-metrics-console.png[metrics_prometheus, 900]
 
@@ -444,11 +444,11 @@ Switch to *Graph* tab:
 
 image::prometheus-metrics-graph.png[metrics_prometheus, 900]
 
-You can play with the values for time and see different data across different time ranges for this metric. There are many other metrics you can query for, and perform quite complex queries using https://prometheus.io/docs/prometheus/latest/querying/basics/[Prom QL, window=_blank] (Prometheus Query Language).
+You can play with the values for time and see different data across different time ranges for this metric. There are many other metrics you can query for, and perform quite complex queries using https://prometheus.io/docs/prometheus/latest/querying/basics/[Prom QL^] (Prometheus Query Language).
 
 ==== Using Grafana
 
-Open the http://grafana-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN }}[Grafana UI, target=_blank].
+Open the http://grafana-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN }}[Grafana UI^].
 
 Select *New Dashboard* to create a new _Dashboard_ to review the metrics.
 
@@ -474,7 +474,7 @@ This is optional, but you can add more Panels if you like, for example: The JVM 
 
 image::grafana-add-query-detail4.png[metrics_grafana, 700]
 
-You can see more examples of more complex dashboard, and even import them into your own dashboards from the https://grafana.com/grafana/dashboards[Grafana Labs Dashboard community, window=_blank].
+You can see more examples of more complex dashboard, and even import them into your own dashboards from the https://grafana.com/grafana/dashboards[Grafana Labs Dashboard community^].
 
 === Extra Credit: Spring Boot
 

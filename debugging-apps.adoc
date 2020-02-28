@@ -9,7 +9,7 @@ code runs on Quarkus.
 Remote debugging is a useful debugging technique for application development which allows looking into the code that is being
 executed somewhere else on a different machine and execute the code line-by-line to help investigate bugs and issues. Remote
 debugging is part of Java SE standard debugging architecture which you can learn more about it in
-https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/architecture.html[Java SE docs]\{:target="_blank"}.
+https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/architecture.html[Java SE docs^].
 
 Quarkus in development mode enables "Live Coding" with background compilation, which means that when you modify your Java files
 and/or your resource files and refresh your browser, these changes will automatically take effect. This works too for resource
