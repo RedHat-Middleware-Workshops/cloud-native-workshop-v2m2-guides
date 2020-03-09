@@ -1,22 +1,15 @@
 = Lab2 - Debugging Applications
 :experimental:
 
-In this lab, you will debug the coolstore microservice application using Java remote debugging and look into line-by-line code execution as the
-code runs on Quarkus.
+In this lab, you will debug the coolstore microservice application using Java remote debugging and look into line-by-line code execution as the code runs on Quarkus.
 
 ==== 1. Enable Remote Debugging
 
-Remote debugging is a useful debugging technique for application development which allows looking into the code that is being
-executed somewhere else on a different machine and execute the code line-by-line to help investigate bugs and issues. Remote
-debugging is part of Java SE standard debugging architecture which you can learn more about it in
-https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/architecture.html[Java SE docs^].
+Remote debugging is a useful debugging technique for application development which allows looking into the code that is being executed somewhere else on a different machine and execute the code line-by-line to help investigate bugs and issues. Remote debugging is part of Java SE standard debugging architecture which you can learn more about it in https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/architecture.html[Java SE docs^].
 
-Quarkus in development mode enables "Live Coding" with background compilation, which means that when you modify your Java files
-and/or your resource files and refresh your browser, these changes will automatically take effect. This works too for resource
-files like the configuration properties files and even `pom.xml` changes.
+Quarkus in development mode enables "Live Coding" with background compilation, which means that when you modify your Java files and/or your resource files and refresh your browser, these changes will automatically take effect. This works too for resource files like the configuration properties files and even `pom.xml` changes.
 
-When run in Developer Mode (i.e. `mvn quarkus:dev`), Quarkus will also listen for debugging sessions on port `5005` (by default). If your want to wait for the debugger to attach before running you can pass
-`-Ddebug` on the command line. If you don’t want the debugger at all you can use `-Ddebug=false`.
+When run in Developer Mode (i.e. `mvn quarkus:dev`), Quarkus will also listen for debugging sessions on port `5005` (by default). If your want to wait for the debugger to attach before running you can pass `-Ddebug` on the command line. If you don’t want the debugger at all you can use `-Ddebug=false`.
 
 Start up the Inventory microservice locally, in development mode, using this command in a CodeReady Terminal:
 Enable remote debugging on Inventory by running the following command in the CodeReady Workspaces Terminal window:

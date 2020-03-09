@@ -1,35 +1,26 @@
 = Advanced Cloud-Native Services
 :experimental:
 
-If you completed the *Cloud Native Workshop - Module 1*, you learned how to take an existing application to the cloud with JBoss
-EAP and OpenShift, and you got a glimpse into the power of OpenShift for modernizing existing applications with microservices. If you did not, or you started but didn't finish, there are scripts below you can run to catch up.
+If you completed the *Cloud Native Workshop - Module 1*, you learned how to take an existing application to the cloud with JBoss EAP and OpenShift, and you got a glimpse into the power of OpenShift for modernizing existing applications with microservices. If you did not, or you started but didn't finish, there are scripts below you can run to catch up.
 
-In this lab, you will go deeper into how to use the OpenShift Container Platform as a developer to build and deploy applications.
-We’ll focus on the core features of OpenShift as it relates to developers, and you’ll learn typical workflows for a developer
-(develop, build, test, deploy, and repeat).
+In this lab, you will go deeper into how to use the OpenShift Container Platform as a developer to build and deploy applications. We’ll focus on the core features of OpenShift as it relates to developers, and you’ll learn typical workflows for a developer (develop, build, test, deploy, and repeat).
 
 === Getting Ready for the labs
 
 [WARNING]
 ====
-If you’ve already completed the *Optimizing Existing Applications* module then you will simply need to import the code for this
-module. Skip down to the *Import Projects* section.
+If you’ve already completed the *Optimizing Existing Applications* module then you will simply need to import the code for this module. Skip down to the *Import Projects* section.
 ====
 
 ==== If this is the first module you are doing today
 
-You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipse
-Che^]. *Changes to files are auto-saved every few seconds*, so you don’t need to explicitly save changes.
+You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipse Che^]. *Changes to files are auto-saved every few seconds*, so you don’t need to explicitly save changes.
 
-To get started, {{ ECLIPSE_CHE_URL }}[access the Che instance^] and log in using the username
-and password you’ve been assigned (e.g. `{{ USER_ID }}/{{ CHE_USER_PASSWORD }}`):
+To get started, {{ ECLIPSE_CHE_URL }}[access the Che instance^] and log in using the username and password you’ve been assigned (e.g. `{{ USER_ID }}/{{ CHE_USER_PASSWORD }}`):
 
 image::che-login.png[cdw, 700]
 
-Once you log in, you’ll be placed on your personal dashboard. Click on the name of
-the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number). You can also
-click on the name of the workspace in the center, and then click on the green button that says _Open_ on the top right hand side
-of the screen.
+Once you log in, you’ll be placed on your personal dashboard. Click on the name of the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number). You can also click on the name of the workspace in the center, and then click on the green button that says _Open_ on the top right hand side of the screen.
 
 After a minute or two, you’ll be placed in the workspace:
 
@@ -79,17 +70,14 @@ image::crw-clone-explorer.png[crw,900]
 
 [NOTE]
 ====
-The Terminal window in CodeReady Workspaces. You can open a terminal window for any of the containers running in your Developer workspace. For the rest of these labs, anytime you need to run a command in a
-terminal, you can use the **>_ New Terminal** command on the right:
+The Terminal window in CodeReady Workspaces. You can open a terminal window for any of the containers running in your Developer workspace. For the rest of these labs, anytime you need to run a command in a terminal, you can use the **>_ New Terminal** command on the right:
 ====
 
 image::codeready-workspace-terminal.png[codeready-workspace-terminal, 700]
 
 === Login to OpenShift CLI
 
-Although your Eclipse Che workspace is running on the Kubernetes cluster, it’s running with a default restricted _Service Account_
-that prevents you from creating most resource types. If you’ve completed other modules, you’re probably already logged in, but
-let’s login again: open a Terminal and issue the following command:
+Although your Eclipse Che workspace is running on the Kubernetes cluster, it’s running with a default restricted _Service Account_ that prevents you from creating most resource types. If you’ve completed other modules, you’re probably already logged in, but let’s login again: open a Terminal and issue the following command:
 
 [source,sh,role="copypaste"]
 ----
@@ -131,8 +119,8 @@ These commands reset and re-play all the steps from module 1 and should take 4-5
 
 [source, sh, role="copypaste"]
 ----
-sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-inventory.sh {{ USER_ID }}
-sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-catalog.sh {{ USER_ID }}
+sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-inventory.sh {{ USER_ID }} && \
+sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-catalog.sh {{ USER_ID }} && \
 sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-coolstore.sh {{ USER_ID }}
 ----
 
@@ -148,20 +136,14 @@ project in which you deployed the CoolStore monolith.
 Let’s take a moment and review the OpenShift resources that are created for the Monolith:
 
 * Build Config: *coolstore* build config is the configuration for building the Monolith image from the source code or WAR file.
-* Image Stream: *coolstore* image stream is the virtual view of all coolstore container images built and pushed to the OpenShift
-integrated registry.
-* Deployment Config: *coolstore* deployment config deploys and redeploys the Coolstore container image whenever a new coolstore
-container image becomes available. Similarly, the *coolstore-postgresql* does the same for the database.
-* Service: *coolstore* and *coolstore-postgresql* service is an internal load balancer which identifies a set of pods (containers)
-in order to proxy the connections it receives to them. Anything that depends on the service can to refer to it at a consistent address
-(service name or IP).
-* Route: *www* route registers the service on the built-in external load-balancer and assigns a public DNS name to it so that it
-can be reached from outside OpenShift cluster.
+* Image Stream: *coolstore* image stream is the virtual view of all coolstore container images built and pushed to the OpenShift integrated registry.
+* Deployment Config: *coolstore* deployment config deploys and redeploys the Coolstore container image whenever a new coolstore container image becomes available. Similarly, the *coolstore-postgresql* does the same for the database.
+* Service: *coolstore* and *coolstore-postgresql* service is an internal load balancer which identifies a set of pods (containers) in order to proxy the connections it receives to them. Anything that depends on the service can to refer to it at a consistent address (service name or IP).
+* Route: *www* route registers the service on the built-in external load-balancer and assigns a public DNS name to it so that it can be reached from outside OpenShift cluster.
 
 [NOTE]
 ====
-When referring to Kubernetes or OpenShift object types in `oc` commands, you can use short synonyms for long words, like *bc* instead of *buildconfig*, *is* for *imagestream*, *dc* for
-*deploymentconfig*, *svc* for *service*, etc.
+When referring to Kubernetes or OpenShift object types in `oc` commands, you can use short synonyms for long words, like *bc* instead of *buildconfig*, *is* for *imagestream*, *dc* for *deploymentconfig*, *svc* for *service*, etc.
 
 Don’t worry about reading and understanding the output of oc describe. Just make sure the command doesn’t report errors!
 ====
@@ -175,13 +157,12 @@ oc get bc coolstore
 oc get is coolstore
 oc get dc coolstore
 oc get svc coolstore
-oc describe route www
+oc describe route www 
 ----
 
 You should get a valid value for each, and no errors!
 
-Visit the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-dev[Topology View^] to see the coolstore app (and its database). The *Topology* view in the _Developer_ perspective of the OpenShift web console provides a visual representation of all the applications
-within a project, their build status, and the components and services associated with them. You'll visit this often:
+Visit the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-dev[Topology View^] to see the coolstore app (and its database). The *Topology* view in the _Developer_ perspective of the OpenShift web console provides a visual representation of all the applications within a project, their build status, and the components and services associated with them. You'll visit this often:
 
 image::coolstore-dev-topology.png[crw,700]
 
@@ -229,5 +210,4 @@ You should see the following:
 
 This shows the content of the monolith's database.
 
-With our running project on OpenShift, in the next step we’ll explore how you as a developer can work with the running app to make
-changes and debug the application!
+With our running project on OpenShift, in the next step we’ll explore how you as a developer can work with the running app to make changes and debug the application!
