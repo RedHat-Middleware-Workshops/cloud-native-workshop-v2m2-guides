@@ -63,7 +63,7 @@ You can see the _postgres_ database running (with a dark blue circle), and the c
 
 We will use a *Jenkins Server* in our project and  use a _Jenkins Pipeline_ build strategy.
 
-Click *+Add*, type in `jenkins` in the search box, and choose the FIRST *Jenkins (ephemeral)* item:
+Click *Add* then click *From Catalog*, type in `jenkins` in the search box, and choose the FIRST *Jenkins (ephemeral)* item:
 
 image::from_catalog_jenkins.png[create_new, 700]
 
@@ -153,9 +153,9 @@ Ordinarily your pipeline definition would be checked into a source code manageme
 Back on the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs/monolith-pipeline[Pipeline Details Page^] click on the *YAML* tab. Add _a new stage_ to the pipeline, just before the _Deploy to PROD_ stage:
 
 [NOTE]
-----
+====
 You will need to copy and paste the below code into the right place as shown in the below image.
-----
+====
 
 [source,groovy, role="copypaste"]
 ----
@@ -206,7 +206,7 @@ Next, re-build the app once more via CodeReady Workspaces Terminal:
 mvn clean package -Popenshift -DskipTests -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/monolith
 ----
 
-And re-deploy it to the dev environment using a binary build just as we did before via CodeReady Workspaces Terminal:
+And re-deploy it to the *dev* environment using a binary build just as we did before via CodeReady Workspaces Terminal:
 
 [source,sh,role="copypaste"]
 ----
@@ -219,7 +219,7 @@ Wait for it to complete the deployment via CodeReady Workspaces Terminal:
 oc -n {{USER_ID}}-coolstore-dev rollout status -w dc/coolstore
 ----
 
-And verify that the blue header is visible in the dev application by navigating to the http://www-{{USER_ID}}-coolstore-dev.{{ ROUTE_SUBDOMAIN}}[Coolstore Dev Web frontend^]. It should look like the following:
+And verify that the blue header is visible in the *dev* application by navigating to the http://www-{{USER_ID}}-coolstore-dev.{{ ROUTE_SUBDOMAIN}}[Coolstore Dev Web frontend^]. It should look like the following:
 
 [WARNING]
 ====
@@ -232,7 +232,7 @@ Confirm the http://www-{{USER_ID}}-coolstore-prod.{{ ROUTE_SUBDOMAIN}}[Coolstore
 
 image::pipe-orig.png[Prod, 700]
 
-We’re happy with this change in dev, so let’s promote the new change to prod, using the new approval step!
+We’re happy with this change in *dev*, so let’s promote the new change to *prod*, using the new approval step!
 
 ==== 7. Run the pipeline again
 
@@ -267,7 +267,9 @@ image::nav-blue.png[Prod, 700]
 
 [WARNING]
 ====
-If it doesn’t, you may need to do a hard browser refresh. Try holding the shift key while clicking the browser refresh button.
+It may take a few seconds for the new app to be available, since we've not configured a proper health check and are not using _Rolling Updates_ when deploying new apps. Real production environments would use this to ensure no downtime.
+
+If you don't see a blue header, or you get _Application Not Available_ errors, wait a few moments and reload. If you are still getting a black header, try holding the shift key while clicking the browser refresh button to force a hard refresh.
 ====
 
 Congratulations! You have added a human approval step for all future developer changes. You now have two projects that can be

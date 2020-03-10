@@ -75,6 +75,12 @@ The Terminal window in CodeReady Workspaces. You can open a terminal window for 
 
 image::codeready-workspace-terminal.png[codeready-workspace-terminal, 700]
 
+=== Remove other projects
+
+If you've completed other modules today (such as `cloud-native-workshop-v2m1-labs`), remove them from your workspace by right-clicking on the project name in the explorer and choose *Remove from Workspace* and accept the warning.
+
+image::remove-workspace.png[remove, 700]
+
 === Login to OpenShift CLI
 
 Although your Eclipse Che workspace is running on the Kubernetes cluster, it’s running with a default restricted _Service Account_ that prevents you from creating most resource types. If you’ve completed other modules, you’re probably already logged in, but let’s login again: open a Terminal and issue the following command:
@@ -117,6 +123,11 @@ If you’ve already completed Module 1 (Optimizing Existing Applications), then 
 
 These commands reset and re-play all the steps from module 1 and should take 4-5 minutes to finish.
 
+[WARNING]
+====
+*You do not need to run these if you already completed the Optimizing Existing Applications lab and have created `catalog` and `inventory` and the CoolStore `monolith` projects!*
+====
+
 [source, sh, role="copypaste"]
 ----
 sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-inventory.sh {{ USER_ID }} && \
@@ -157,7 +168,7 @@ oc get bc coolstore
 oc get is coolstore
 oc get dc coolstore
 oc get svc coolstore
-oc describe route www 
+oc describe route www
 ----
 
 You should get a valid value for each, and no errors!

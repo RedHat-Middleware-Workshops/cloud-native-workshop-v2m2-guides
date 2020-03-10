@@ -88,7 +88,7 @@ image::debug-che-breakpoint-hit.png[Add Breakpoint, 700]
 
 Click on the _Step Over_ icon to execute one line and retrieve the inventory object for the given product id from the database and see the yellow cursor advance one line.
 
-Expand the _Local Variables_ in the lower left, to see the variables for `itemId` passed to the method and `item` element retrieved from the database.
+Expand the _Local Variables_ in the lower left, to see the variables for `itemId` passed to the method and `item` element retrieved from the database. If you don't see them, click on the small arrow next to _Locals_ to expand the list.
 
 image::debug-che-step-over.png[Step Over, 900]
 

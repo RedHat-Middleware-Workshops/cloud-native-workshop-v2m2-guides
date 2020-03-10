@@ -59,7 +59,7 @@ image::jaeger_top.png[create_dialog, 700]
 
 ==== 4. Observe Jaeger UI
 
-Open the http://jaeger-query-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN}}[Jaeger UI^].
+Once the deployment completes (dark blue circles!), open the http://jaeger-query-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN}}[Jaeger UI^].
 
 This is the UI for Jaeger, but currently we have no apps being monitored so it’s rather useless. Don’t worry! We will utilize tracing data in the next step.
 
@@ -373,6 +373,8 @@ data:
         static_configs:
         - targets: ['inventory-quarkus.{{USER_ID}}-inventory.svc.cluster.local:8080']
 ----
+
+And click *Create*.
 
 Config maps hold key-value pairs and in the above command a *prometheus-config* config map is created with *prometheus.yml* as the key and the above content as the value. Whenever a config map is injected into a container, it would appear as a file with the same name as the key, at specified path on the filesystem.
 
