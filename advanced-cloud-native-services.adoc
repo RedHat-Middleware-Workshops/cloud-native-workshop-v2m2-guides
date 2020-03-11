@@ -47,7 +47,7 @@ Let's import the project source code for this lab. Click on **Git Clone..** (or 
 
 image::che-workspace-gitclone.png[cdw, 900]
 
-When prompted at the top, enter the following value for **Repository URL**:
+Step through the prompts, using the following value for **Repository URL**. If you use *FireFox*, press backspace after pasting one-liners:
 
 [source,none,role="copypaste"]
 ----
