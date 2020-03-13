@@ -172,11 +172,11 @@ Run these commands to inspect the elements via CodeReady Workspaces Terminal win
 
 [source,sh,role="copypaste"]
 ----
-oc project {{ USER_ID }}-coolstore-dev
-oc get bc coolstore
-oc get is coolstore
-oc get dc coolstore
-oc get svc coolstore
+oc project {{ USER_ID }}-coolstore-dev && \
+oc get bc coolstore && \
+oc get is coolstore && \
+oc get dc coolstore && \
+oc get svc coolstore && \
 oc describe route www
 ----
 
