@@ -176,7 +176,8 @@ image::add-to-project.png[Prometheus, 800]
 
 Fill out the following fields:
 
-* *Image Name*: `prom/prometheus`
+* *Image Name*: `prom/prometheus:latest`
+* *Application Name*: `prometheus-app`
 * *Name*: `prometheus`
 
 Click the "Magnifying Glass" search icon next to the image name to confirm the image exists.
@@ -197,8 +198,8 @@ image::prometheus-webui.png[Prometheus, 700]
 
 Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], click on `+Add`, and choose "Container Image", and fill in the fields:
 
-* *Image Name*: `grafana/grafana`
-* *Application*: `Unassigned`
+* *Image Name*: `grafana/grafana:latest`
+* *Application*: `grafana-app`
 * *Name*: `grafana`
 
 Click the "Magnifying Glass" search icon next to the image name to confirm the image exists.
