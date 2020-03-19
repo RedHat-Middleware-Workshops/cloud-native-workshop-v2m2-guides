@@ -132,8 +132,7 @@ Our pipeline is somewhat simplified for the purposes of this Workshop. Inspect t
 
 image::prod_bc.png[create_new, 700]
 
-Then, you will
-see the details of _Jenkinsfile_ on the right side:
+Then, you will see the details of _Jenkinsfile_ on the right side:
 
 image::coolstore-prod-monolith-bc.png[monolith-pipeline, 700]
 
