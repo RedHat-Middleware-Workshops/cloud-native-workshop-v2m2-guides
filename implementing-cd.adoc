@@ -63,7 +63,12 @@ Label the components so that they get proper icons by running this command in th
 ----
 oc project {{USER_ID}}-coolstore-prod && \
 oc label dc/coolstore-prod-postgresql app.openshift.io/runtime=postgresql --overwrite && \
-oc label dc/coolstore-prod app.openshift.io/runtime=jboss --overwrite
+oc label dc/coolstore-prod app.openshift.io/runtime=jboss --overwrite && \
+oc label dc/coolstore-prod-postgresql app.kubernetes.io/part-of=coolstore-prod --overwrite && \
+oc label dc/coolstore-prod app.kubernetes.io/part-of=coolstore-prod --overwrite && \
+oc annotate dc/coolstore-prod app.openshift.io/connects-to=coolstore-prod-postgresql --overwrite && \
+oc annotate dc/coolstore-prod app.openshift.io/vcs-uri=https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs.git --overwrite && \
+oc annotate dc/coolstore-prod app.openshift.io/vcs-ref=ocp-4.3 --overwrite
 ----
 
 image::coolstore_topology.png[create_new, 700]
@@ -118,7 +123,7 @@ As part of the production environment template you used in the last step, a Pipe
 
 ==== 3. Inspect the Pipeline Definition
 
-[INFO]
+[NOTE]
 ====
 You may notice a _Pipelines_ menu item on the left menu of the OpenShift Console. This menu item is for exploring _Tekton Pipelines_, which is a newer pipeline technology based on the Tekton project. There are other modules as part of this workshop that explore Tekton. For now we'll concentrate on Jenkins.
 ====
