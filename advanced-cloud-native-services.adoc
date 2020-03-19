@@ -12,8 +12,6 @@ In this lab, you will go deeper into how to use the OpenShift Container Platform
 If you’ve already completed the *Optimizing Existing Applications* module then you will simply need to import the code for this module. Skip down to the *Import Projects* section.
 ====
 
-==== If this is the first module you are doing today
-
 You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipse Che^]. *Changes to files are auto-saved every few seconds*, so you don’t need to explicitly save changes.
 
 To get started, {{ ECLIPSE_CHE_URL }}[access the Che instance^] and log in using the username and password you’ve been assigned (e.g. `{{ USER_ID }}/{{ CHE_USER_PASSWORD }}`):
@@ -124,7 +122,7 @@ Using project "istio-system".
 Welcome! See 'oc help' to get started.
 ----
 
-==== Do this if this is the first module you're doing today, otherwise continue to the next module!
+==== Do this if this is the first module you're doing today, otherwise continue to the Verifying the Dev Environment!
 
 These commands reset and re-play all the steps from module 1 and should take 4-5 minutes to finish.
 
