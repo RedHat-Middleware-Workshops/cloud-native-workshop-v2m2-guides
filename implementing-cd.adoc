@@ -40,7 +40,7 @@ We've pre-installed an application _template_ for use. Click the *+Add* and then
 
 image::from_catalog.png[create_new, 700]
 
-In the search box, type in `coolstore` and choose _Coolstore Monolith using binary build_ and then click *Instantiate Template*.
+In the search box, type in `coolstore` and choose _Coolstore Monolith using pipelines_ and then click *Instantiate Template*.
 
 image::from_catalog_prod.png[create_new, 700]
 
