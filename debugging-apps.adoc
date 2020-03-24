@@ -34,7 +34,7 @@ image::debug-che-quarkus.png[Quarkus Debug, 700]
 
 Let's add a new endpoint that has a bug we will fix using the debugger.
 
-Go back to the _Explorer_ view, and under the `cloud-native-workshop-v2m2-labs` project, open the `inventory/com/red/coolstore/InventoryResource.java` class. Add a new method which has an off-by-one error:
+Go back to the _Explorer_ view, and under the `cloud-native-workshop-v2m2-labs` project, open the `inventory/src/main/java/com/redhat/coolstore/InventoryResource.java` file. Add a new method which has an off-by-one error:
 
 [source,java,role="copypaste"]
 ----

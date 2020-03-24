@@ -179,7 +179,7 @@ Back on the {{ CONSOLE_URL }}/k8s/ns/{{USER_ID}}-coolstore-prod/buildconfigs/mon
 
 [NOTE]
 ====
-You will need to copy and paste the below code into the right place as shown in the below image.
+You will need to copy and paste the below code into the right place of *BuildConfig* as shown in the below image.
 ====
 
 [source,groovy, role="copypaste"]
