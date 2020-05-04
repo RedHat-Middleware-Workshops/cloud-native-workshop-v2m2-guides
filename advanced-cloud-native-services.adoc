@@ -80,19 +80,14 @@ If you've completed other modules today (such as `cloud-native-workshop-v2m1-lab
 
 image::remove-workspace.png[remove, 700]
 
-=== Login to OpenShift CLI
+=== Login to OpenShift
 
-Although your Eclipse Che workspace is running on the Kubernetes cluster, it’s running with a default restricted _Service Account_ that prevents you from creating most resource types. If you’ve completed other modules, you’re probably already logged in, but let’s login again: open a Terminal and issue the following command:
-
-[source,sh,role="copypaste"]
-----
-oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true
-----
-
-Enter your username and password assigned to you:
+Although your Eclipse Che workspace is running on the Kubernetes cluster, it’s running with a default restricted _Service Account_ that prevents you from creating most resource types. If you’ve completed other modules, you’re probably already logged in, but let’s login again: click on *Login to OpenShift*, and enter your given credentials:
 
 * Username: `{{ USER_ID }}`
 * Password: `{{ OPENSHIFT_USER_PASSWORD }}`
+
+image::cmd-login.png[login,700]
 
 You should see something like this (the project names may be different):
 
@@ -102,15 +97,14 @@ Login successful.
 
 You have access to the following projects and can switch between them with 'oc project <projectname>':
 
-  * istio-system
-    knative-serving
-    user6-bookinfo
-    user6-catalog
-    user6-cloudnative-pipeline
-    user6-cloudnativeapps
-    user6-inventory
+  * {{ USER_ID }}-bookinfo
+    {{ USER_ID }}-catalog
+    {{ USER_ID }}-cloudnative-pipeline
+    {{ USER_ID }}-cloudnativeapps
+    {{ USER_ID }}-inventory
+    {{ USER_ID }}-istio-system
 
-Using project "istio-system".
+Using project "{{ USER_ID }}-bookinfo".
 Welcome! See 'oc help' to get started.
 ----
 

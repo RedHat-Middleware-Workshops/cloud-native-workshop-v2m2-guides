@@ -47,15 +47,26 @@ In the new project, click `+Add`, select _From Catalog_:
 
 image::add_catalog.png[create_dialog, 700]
 
-Type in `jaeger` in the search box, and choose *Jaeger (all-in-one)*. We will use this template for our lab, but in production you'd probably want to use the other option which uses the https://operatorhub.io/operator/jaeger[Jaeger Operator for OpenShift^].
+Type in `jaeger` in the search box to create *Jaeger (all-in-one)* template. We will use this template for our lab, but in production you'd probably want to use the other option which uses the https://operatorhub.io/operator/jaeger[Jaeger Operator for OpenShift^].
 
-image::add_catalog_jaeger.png[create_dialog, 700]
+To deploy a jaeger server, click on `+` icon on the right top corner:
 
-Click *Instantiate Template*, leave the values unchanged, and click *Create*.
+image::plus-icon.png[serverless, 500]
+
+Copy the following _Service_ in `YAML` editor then click on *Create*:
+
+[source,yaml,role="copypaste"]
+----
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: jaeger-all-in-one-inmemory
+  namespace: {{ USER_ID }}-monitoring
+----
 
 In the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Topology View^] you can see Jaeger deploying:
 
-image::jaeger_top.png[create_dialog, 700]
+image::jaeger_top.png[create_dialog, 500]
 
 ==== 4. Observe Jaeger UI
 
@@ -73,7 +84,7 @@ In this step, we will add the Quarkus extensions to the Inventory application fo
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="opentracing" -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
+mvn quarkus:add-extension -Dextensions="smallrye-opentracing" -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
 ----
 
 You should see:
@@ -96,7 +107,7 @@ Before getting started with this step, confirm the *jaeger-collector* service by
 
 image::jaeger-services.png[create_dialog, 700]
 
-We will configure our app to use the `jaeger-collector-http` service on port `14268` to report traces.
+We will configure our app to use the `http-c-binary-trft` service on port `14268` to report traces.
 
 In the `inventory` project under `cloud-native-workshop-v2m2-labs` workspace, open `src/main/resources/application.properties` file and add the following configuration via CodeReady Workspaces Terminal:
 
@@ -106,7 +117,7 @@ In the `inventory` project under `cloud-native-workshop-v2m2-labs` workspace, op
 %prod.quarkus.jaeger.service-name=inventory
 %prod.quarkus.jaeger.sampler-type=const
 %prod.quarkus.jaeger.sampler-param=1
-%prod.quarkus.jaeger.endpoint=http://jaeger-collector.{{ USER_ID }}-monitoring:14268/api/traces
+%prod.quarkus.jaeger.endpoint=http://jaeger-all-in-one-inmemory-collector.{{ USER_ID }}-monitoring:14268/api/traces
 ----
 
 You can also specify the configuration using environment variables or JVM properties. See https://www.jaegertracing.io/docs/1.12/client-features/[Jaeger Features^].
@@ -127,8 +138,8 @@ Repackage and re-deploy the inventory application via the Terminal:
 
 [source,sh,role="copypaste"]
 ----
-mvn package -DskipTests -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory && \
-oc start-build -n {{USER_ID}}-inventory inventory-quarkus --from-file $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory/target/*-runner.jar --follow
+oc project {{ USER_ID }}-inventory && \
+mvn package -DskipTests -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
 ----
 In the console and on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-inventory[Inventory Topology View^], wait for the re-build and re-deployment to complete.
 
@@ -140,7 +151,7 @@ To generate traces, call the inventory 10 times:
 
 [source,sh,role="copypaste"]
 ----
-URL="http://$(oc get route -n {{ USER_ID }}-inventory inventory-quarkus -o jsonpath={% raw %}"{.spec.host}"{% endraw %})"
+URL="http://$(oc get route -n {{ USER_ID }}-inventory inventory -o jsonpath={% raw %}"{.spec.host}"{% endraw %})"
 
 for i in $(seq 1 10) ; do
   curl -s $URL/services/inventory/165613
@@ -180,7 +191,7 @@ Fill out the following fields:
 * *Application Name*: `prometheus-app`
 * *Name*: `prometheus`
 
-Click the "Magnifying Glass" search icon next to the image name to confirm the image exists.
+Press *Enter* then you will see *green checked* icon and *Validated* in 30 seconds.
 
 Leave the rest as-is and click *Create*:
 
@@ -203,6 +214,8 @@ Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_
 * *Name*: `grafana`
 
 Click the "Magnifying Glass" search icon next to the image name to confirm the image exists.
+
+Press *Enter* then you will see *green checked* icon and *Validated* in 30 seconds.
 
 Leave the rest as-is and click *Create*:
 
@@ -310,8 +323,8 @@ Repackage and redeploy the inventory application:
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory && \
-oc start-build -n {{ USER_ID }}-inventory inventory-quarkus --from-file $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory/target/*-runner.jar --follow
+oc project {{ USER_ID }}-inventory && \
+mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
 ----
 
 You should get `BUILD SUCCESS` and then the application should be re-deployed. Watch the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-inventory[Inventory Topology View^] until the app is re-deployed.
@@ -320,7 +333,7 @@ Once it's done you should be able to see the raw metrics exposed by the app with
 
 [source,sh,role="copypaste"]
 ----
-curl http://inventory-quarkus-{{USER_ID}}-inventory.{{ ROUTE_SUBDOMAIN }}/metrics
+curl http://inventory-{{USER_ID}}-inventory.{{ ROUTE_SUBDOMAIN }}/metrics
 ----
 
 You will see a bunch of metrics in the OpenMetrics format:
@@ -372,7 +385,7 @@ data:
         scrape_interval: 10s
         scrape_timeout: 5s
         static_configs:
-        - targets: ['inventory-quarkus.{{USER_ID}}-inventory.svc.cluster.local:8080']
+        - targets: ['inventory.{{USER_ID}}-inventory.svc.cluster.local:8080']
 ----
 
 And click *Create*.
@@ -394,7 +407,7 @@ Now that Prometheus is scraping values from our app, let’s write a loop to cal
 
 [source,sh,role="copypaste"]
 ----
-URL=http://$(oc get route -n {{ USER_ID }}-inventory inventory-quarkus -o jsonpath={% raw %}"{.spec.host}"{% endraw %})
+URL=http://$(oc get route -n {{ USER_ID }}-inventory inventory -o jsonpath={% raw %}"{.spec.host}"{% endraw %})
 
 for i in $(seq 1 600) ; do
   curl -s $URL/services/inventory/165613
