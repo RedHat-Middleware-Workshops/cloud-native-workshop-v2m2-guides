@@ -45,10 +45,6 @@ image::create_monitoring_dialog.png[create_dialog, 700]
 
 In the new project, click `+Add`, select _From Catalog_:
 
-image::add_catalog.png[create_dialog, 700]
-
-Type in `jaeger` in the search box to create *Jaeger (all-in-one)* template. We will use this template for our lab, but in production you'd probably want to use the other option which uses the https://operatorhub.io/operator/jaeger[Jaeger Operator for OpenShift^].
-
 To deploy a jaeger server, click on `+` icon on the right top corner:
 
 image::plus-icon.png[serverless, 500]
@@ -70,7 +66,7 @@ image::jaeger_top.png[create_dialog, 500]
 
 ==== 4. Observe Jaeger UI
 
-Once the deployment completes (dark blue circles!), open the http://jaeger-query-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN}}[Jaeger UI^].
+Once the deployment completes (dark blue circles!), open the http://jaeger-all-in-one-inmemory-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN}}[Jaeger UI^].
 
 This is the UI for Jaeger, but currently we have no apps being monitored so it’s rather useless. Don’t worry! We will utilize tracing data in the next step.
 
@@ -117,7 +113,7 @@ In the `inventory` project under `cloud-native-workshop-v2m2-labs` workspace, op
 %prod.quarkus.jaeger.service-name=inventory
 %prod.quarkus.jaeger.sampler-type=const
 %prod.quarkus.jaeger.sampler-param=1
-%prod.quarkus.jaeger.endpoint=http://jaeger-all-in-one-inmemory-collector.{{ USER_ID }}-monitoring:14268/api/traces
+%prod.quarkus.jaeger.endpoint=http://jaeger-all-in-one-inmemory-collector.{{ USER_ID }}-monitoring.svc.cluster.local:14268/api/traces
 ----
 
 You can also specify the configuration using environment variables or JVM properties. See https://www.jaegertracing.io/docs/1.12/client-features/[Jaeger Features^].
@@ -472,7 +468,7 @@ If you feel up to it, Spring Boot can also expose Metrics which can be collected
 . Add dependencies for Spring Boot Actuator and Prometheus
 . Configure `application-openshift.properties` with config values
 . Re-build and Re-deploy the app to OpenShift (in the {{USER_ID}}-catalog project) using commands from previous modules
-. Edit the Prometheus _ConfigMap_ to add another scrape job pointing at `catalog-springboot.{{USER_ID}}-catalog:8080`
+. Edit the Prometheus _ConfigMap_ to add another scrape job pointing at `catalog-springboot.{{USER_ID}}-catalog.svc.cluster.local:8080`
 . Re-deploy Prometheus to pick up the new config
 . Attempt to query Prometheus for the Spring Boot metrics
 
