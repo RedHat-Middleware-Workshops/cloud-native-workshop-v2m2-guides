@@ -66,7 +66,7 @@ image::jaeger_top.png[create_dialog, 500]
 
 ==== 4. Observe Jaeger UI
 
-Once the deployment completes (dark blue circles!), open the http://jaeger-all-in-one-inmemory-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN}}[Jaeger UI^].
+Once the deployment completes (dark blue circles!), open the https://jaeger-all-in-one-inmemory-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN}}[Jaeger UI^].
 
 This is the UI for Jaeger, but currently we have no apps being monitored so it’s rather useless. Don’t worry! We will utilize tracing data in the next step.
 
@@ -125,7 +125,7 @@ If the `quarkus.jaeger.service-name` property (or `JAEGER_SERVICE_NAME` environm
 
 [NOTE]
 ====
-NOTE: there is no tracing specific code included in the application. By default, RESTful requests sent to the app will be traced without *any* code changes being required thanks to MicroProfile Tracing. It is also possible to enhance the tracing information and manually trace other methods and classes. For more information on this, please see the https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[MicroProfile OpenTracing specification^].
+There is no tracing specific code included in the application. By default, RESTful requests sent to the app will be traced without *any* code changes being required thanks to MicroProfile Tracing. It is also possible to enhance the tracing information and manually trace other methods and classes. For more information on this, please see the https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[MicroProfile OpenTracing specification^].
 ====
 
 ==== 7. Re-Deploy to OpenShift
