@@ -125,9 +125,9 @@ sh /projects/cloud-native-workshop-v2m2-labs/monolith/scripts/deploy-coolstore.s
 ----
 
 [NOTE]
-----
+====
 It sometimes takes time to create a new build image in OpenShift that depends on network latency. So if you got failed to deploy catalog-service with an error, *Error from server (NotFound): services "catalog-springboot" not found*, please try again with delay via the following command:
-----
+====
 
 [source, sh, role="copypaste"]
 ----
