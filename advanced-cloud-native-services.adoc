@@ -108,6 +108,11 @@ Using project "{{ USER_ID }}-bookinfo".
 Welcome! See 'oc help' to get started.
 ----
 
+[NOTE]
+====
+After you log in using *Login to OpenShift*, the terminal is no longer usable as a regular terminal. You can close the terminal window. You will still be logged in when you open more terminals later!
+====
+
 ==== Do this if this is the first module you're doing today, otherwise continue to the Verifying the Dev Environment!
 
 These commands reset and re-play all the steps from module 1 and should take 4-5 minutes to finish.
