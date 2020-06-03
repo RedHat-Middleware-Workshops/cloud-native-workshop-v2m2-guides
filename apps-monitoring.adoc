@@ -470,7 +470,7 @@ If you feel up to it, Spring Boot can also expose Metrics which can be collected
 . Re-build and Re-deploy the app to OpenShift (in the {{USER_ID}}-catalog project) using commands from previous modules
 . Edit the Prometheus _ConfigMap_ to add another scrape job pointing at `catalog-springboot.{{USER_ID}}-catalog.svc.cluster.local:8080`
 . Re-deploy Prometheus to pick up the new config
-. Attempt to query Prometheus for the Spring Boot metrics
+. Attempt to query Prometheus for the Spring Boot metrics(i.e. scrape_duration_seconds)
 
 It is beyond the scope of this lab, but if you're interested, give it a go if you have extra time!
 
