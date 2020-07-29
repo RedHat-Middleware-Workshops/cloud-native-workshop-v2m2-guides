@@ -155,7 +155,7 @@ for i in $(seq 1 10) ; do
 done
 ----
 
-Now, reload the http://jaeger-query-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN}}[Jaeger UI^] and you will find that a new `inventory` service appears alongside the service for Jaeger itself:
+Now, reload the https://jaeger-all-in-one-inmemory-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN}}[Jaeger UI^] and you will find that a new `inventory` service appears alongside the service for Jaeger itself:
 
 image::jaeger-2-services.png[jaeger_ui, 700]
 
