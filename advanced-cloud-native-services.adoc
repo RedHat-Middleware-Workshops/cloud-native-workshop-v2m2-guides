@@ -211,17 +211,17 @@ psql -U $POSTGRESQL_USER $POSTGRESQL_DATABASE -c 'select name,price from PRODUCT
 You should see the following:
 
 ----
-          name          | price
-------------------------+-------
- Red Fedora             | 34.99
- Forge Laptop Sticker   |   8.5
- Solid Performance Polo |  17.8
- Ogio Caliber Polo      | 28.75
- 16 oz. Vortex Tumbler  |     6
- Pebble Smart Watch     |    24
- Oculus Rift            |   106
- Lytro Camera           |  44.3
- Atari 2600 Joystick    |   240
+              name               | price 
+---------------------------------+-------
+ Quarkus T-shirt                 |    10
+ Pronounced Kubernetes           |     9
+ Knit socks                      |  4.15
+ Quarkus H2Go water bottle       | 14.45
+ Patagonia Refugio pack 28L      |     6
+ Red Hat Impact T-shirt          |     9
+ Quarkus twill cap               |    13
+ Women RHEL 8 t-shirt            |    10
+ Nanobloc Universal Webcam Cover |  2.75
 (9 rows)
 ----
 
