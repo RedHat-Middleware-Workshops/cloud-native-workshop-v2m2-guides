@@ -87,7 +87,7 @@ You should see:
 
 [source,console]
 ----
-✅ Adding extension io.quarkus:quarkus-smallrye-opentracing
+✅ Extension io.quarkus:quarkus-smallrye-opentracing has been installed
 ----
 
 and `BUILD SUCCESS`. This ensures that the extension's dependencies are added to `pom.xml` for the inventory microservice.
@@ -269,7 +269,7 @@ You should see in the output:
 
 [source,console]
 ----
-✅ Adding extension io.quarkus:quarkus-smallrye-metrics
+✅ Extension io.quarkus:quarkus-smallrye-metrics has been installed
 ----
 
 Let’s add a few annotations to make sure that our desired metrics are calculated over time and can be exported for processing by _Prometheus_ and _Grafana_.
