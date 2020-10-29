@@ -68,7 +68,7 @@ oc label dc/coolstore-prod-postgresql app.kubernetes.io/part-of=coolstore-prod -
 oc label dc/coolstore-prod app.kubernetes.io/part-of=coolstore-prod --overwrite && \
 oc annotate dc/coolstore-prod app.openshift.io/connects-to=coolstore-prod-postgresql --overwrite && \
 oc annotate dc/coolstore-prod app.openshift.io/vcs-uri=https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs.git --overwrite && \
-oc annotate dc/coolstore-prod app.openshift.io/vcs-ref=ocp-4.5 --overwrite
+oc annotate dc/coolstore-prod app.openshift.io/vcs-ref=ocp-4.6 --overwrite
 ----
 
 image::coolstore_topology.png[create_new, 700]
