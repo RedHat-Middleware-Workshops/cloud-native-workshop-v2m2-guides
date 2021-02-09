@@ -77,7 +77,7 @@ This is the UI for Jaeger, but currently we have no apps being monitored so itâ€
 
 image::jaeger-ui.png[jaeger_ui, 700]
 
-==== 5. Utilizing Opentracing with Inventory (Quarkus)
+==== 4. Utilizing Opentracing with Inventory (Quarkus)
 
 We have a catalog service written with Spring Boot that calls the inventory service written with Quarkus as part of our cloud-native application. These applications are easy to trace using Jaeger.
 
@@ -102,7 +102,7 @@ This ensures that the extension's dependencies are added to `pom.xml` for the in
 NOTE: There are many https://quarkus.io/extensions/[more extensions^] for Quarkus for popular frameworks like https://vertx.io/[Vert.x^], http://camel.apache.org/[Apache Camel^], http://infinispan.org/[Infinispan^], Spring DI compatibility (e.g.Â `@Autowired`), and more.
 ====
 
-==== 6. Create the configuration
+==== 5. Create the configuration
 
 Before getting started with this step, confirm the *jaeger-collector* service by visiting the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Topology View^], and click on the _jaeger_ deployment and select the _Resources_ tab to view the services exposed by Jaeger:
 
@@ -133,7 +133,7 @@ If the `quarkus.jaeger.service-name` property (or `JAEGER_SERVICE_NAME` environm
 There is no tracing specific code included in the application. By default, RESTful requests sent to the app will be traced without *any* code changes being required thanks to MicroProfile Tracing. It is also possible to enhance the tracing information and manually trace other methods and classes. For more information on this, please see the https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[MicroProfile OpenTracing specification^].
 ====
 
-==== 7. Re-Deploy to OpenShift
+==== 6. Re-Deploy to OpenShift
 
 Repackage and re-deploy the inventory application via the Terminal:
 
@@ -144,7 +144,7 @@ mvn package -DskipTests -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/in
 ----
 In the console and on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-inventory[Inventory Topology View^], wait for the re-build and re-deployment to complete.
 
-==== 8. Observing Jaeger Tracing
+==== 7. Observing Jaeger Tracing
 
 In order to trace networking and data transaction, we will call the Inventory service using *curl* commands via CodeReady Workspaces Terminal.
 
@@ -174,7 +174,7 @@ image::jaeger-span.png[jaeger_ui, 700]
 
 As applications get more complex and many microservices are calling each other, these spans and traces will become more complex but also reveal issues with the app.
 
-==== 9. Deploy Prometheus and Grafana to OpenShift
+==== 8. Deploy Prometheus and Grafana to OpenShift
 
 OpenShift Container Platform ships with a pre-configured and self-updating monitoring stack that is based on the https://prometheus.io[Prometheus] open source project and its wider eco-system. It provides monitoring of cluster components and ships with a set of alerts to immediately notify the cluster administrator about any occurring problems and a set of https://grafana.com/[Grafana] dashboards.
 
@@ -206,7 +206,7 @@ Which should load the Prometheus Web UI (we'll use this later):
 
 image::prometheus-webui.png[Prometheus, 700]
 
-==== Deploy Grafana
+==== 9. Deploy Grafana
 
 Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], click on `+Add`, and choose "Container Image", and fill in the fields:
 
