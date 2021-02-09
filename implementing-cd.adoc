@@ -217,6 +217,11 @@ Add the following CSS to turn the header bar background to Blue (*Copy* to add i
 
 Now we need to update the catalog endpoint in the monolith application. Run the following commands in a Terminal to update the baseUrl to the proper value with your username:
 
+[WARNING]
+====
+*You do not need to run these if you already completed the Optimizing Existing Applications lab and have created `catalog` and `inventory` and the CoolStore `monolith` projects or executed the reset scripts(i.e. `deploy-inventory.sh`) at the beginning of the workshop!*
+====
+
 [source,sh,role="copypaste"]
 ----
 JSPATH="$CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/monolith/src/main/webapp/app/services/catalog.js"
