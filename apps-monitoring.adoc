@@ -43,11 +43,9 @@ image::create_monitoring_dialog.png[create_dialog, 700]
 
 ==== 2. Deploy Jaeger to OpenShift
 
-In the new project, click `+Add`, select _From Catalog_:
+To deploy a jaeger server, click on `YAML` component on the page:
 
-To deploy a jaeger server, click on `+` icon on the right top corner:
-
-image::plus-icon.png[serverless, 500]
+image::yaml-editor.png[serverless, 800]
 
 Copy the following _Service_ in `YAML` editor then click on *Create*:
 
@@ -64,9 +62,16 @@ In the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Topology View^] yo
 
 image::jaeger_top.png[create_dialog, 500]
 
-==== 4. Observe Jaeger UI
+==== 3. Observe Jaeger UI
 
 Once the deployment completes (dark blue circles!), open the https://jaeger-all-in-one-inmemory-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN}}[Jaeger UI^].
+
+Click on the link for *Input Required*. This will open a new tab and direct you to Jaeger itself, where you can login with the same credentials as OpenShift:
+
+* Username: `{{USER_ID}}`
+* Password: `{{OPENSHIFT_USER_PASSWORD}}`
+
+Accept the browser certificate warning and the Jaeger/OpenShift permissions, and then you’ll find yourself at the approval prompt.
 
 This is the UI for Jaeger, but currently we have no apps being monitored so it’s rather useless. Don’t worry! We will utilize tracing data in the next step.
 
@@ -90,7 +95,7 @@ You should see:
 ✅ Extension io.quarkus:quarkus-smallrye-opentracing has been installed
 ----
 
-and `BUILD SUCCESS`. This ensures that the extension's dependencies are added to `pom.xml` for the inventory microservice.
+This ensures that the extension's dependencies are added to `pom.xml` for the inventory microservice.
 
 [NOTE]
 ====
@@ -151,7 +156,7 @@ URL="http://$(oc get route -n {{ USER_ID }}-inventory inventory -o jsonpath={% r
 
 for i in $(seq 1 10) ; do
   curl -s $URL/services/inventory/165613
-  sleep .2
+  sleep 2
 done
 ----
 
