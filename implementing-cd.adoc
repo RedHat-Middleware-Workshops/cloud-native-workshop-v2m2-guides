@@ -219,7 +219,7 @@ Now we need to update the catalog endpoint in the monolith application. Run the 
 
 [WARNING]
 ====
-*You do not need to run these if you already completed the Optimizing Existing Applications lab and have created `catalog` and `inventory` and the CoolStore `monolith` projects or the catch up scripts(i.e. `deploy-inventory.sh`) at the beginning of the workshop!*
+*You do not need to run these if you already completed the Optimizing Existing Applications lab and have created `catalog` and `inventory` and the CoolStore `monolith` projects or executed the reset scripts(i.e. `deploy-inventory.sh`) at the beginning of the workshop!*
 ====
 
 [source,sh,role="copypaste"]
