@@ -75,7 +75,7 @@ You should see a list of Threads in the debug console.
 
 [WARNING]
 ====
-**If you get errors or strange messages about Java Language Server or other failures**, you may need to restart the Java Language Server. To do this, press kbd:[F1] to open the command window, or the more traditional kbd:[Control+SHIFT+P] (or kbd:[Command+SHIFT+P] on Mac OS X). You can also use the *View > Find Command...*. Type `java` and click on the command named *Java: Clean the Java language server workspace* as shown:
+**If you get errors or strange messages about Java Language Server or other failures**, you may need to restart the Java Language Server. To do this, press kbd:[F1] to open the command window, or the more traditional kbd:[Control+SHIFT+P]. You can also use the *View > Find Command...*. Type `java` and click on the command named *Java: Clean the Java language server workspace* as shown:
 
 image::clean-jls.png[JLS, 900]
 
