@@ -189,11 +189,11 @@ image::coolstore-dev-topology.png[crw,700]
 
 Verify that you can access the monolith by clicking on the route link (the arrow) to access the running monolith:
 
-image::route_link.png[route_link]
+image::route_link.png[route_link, 500]
 
 The coolstore web interface should look like:
 
-image::coolstore_web.png[route_link, 600]
+image::coolstore_web.png[route_link, 800]
 
 
 === Verify Database

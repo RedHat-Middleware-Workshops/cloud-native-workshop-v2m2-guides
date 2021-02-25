@@ -43,10 +43,10 @@ image::create_monitoring_dialog.png[create_dialog, 700]
 
 ==== 2. Deploy Jaeger to OpenShift
 
-To deploy a jaeger server, click on `+` icon on the right top corner:
+To deploy a jaeger server, click on `YAML` in the Topology view:
 
 image::yaml-editor.png[serverless, 800]
-
+f
 Copy the following _Service_ in `YAML` editor then click on *Create*:
 
 [source,yaml,role="copypaste"]
@@ -182,7 +182,7 @@ image::monitoring-diagram.png[Prometheus, 700]
 
 However, we will deploy custom *Prometheus* to scrape services metrics of Inventory and Catalog applications. Then we will visualize the metrics data via custom *Grafana* dashboards deployment.
 
-On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], click on `+Add`, and choose "Container Image"
+On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], click on `+Add`, and choose *Container Image*:
 
 image::add-to-project.png[Prometheus, 800]
 
@@ -427,6 +427,11 @@ We have 3 ways to view the metrics:
 ==== Using Prometheus
 
 Open the http://prometheus-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN }}[Prometheus UI^] and input `performedChecks` and select the auto-completed value:
+
+[NOTE]
+====
+You might see this "Warning: Error fetching server time: Detected 54.50800013542175 seconds time difference between your browser and the server. Prometheus relies on accurate time and time drift might cause unexpected query results". Then, you can ignore it.
+====
 
 image::prometheus-metrics-console.png[metrics_prometheus, 900]
 
