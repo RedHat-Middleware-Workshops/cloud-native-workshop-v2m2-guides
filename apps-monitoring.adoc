@@ -1,5 +1,6 @@
 = Lab3 - Application Monitoring
 :experimental:
+:tip-caption: :bulb:
 
 In the previous labs, you learned how to debug cloud-native apps to fix errors quickly using CodeReady Workspaces with Quarkus framework, and you got a glimpse into the power of Quarkus for developer joy.
 
@@ -478,6 +479,41 @@ If you feel up to it, Spring Boot can also expose Metrics which can be collected
 . Attempt to query Prometheus for the Spring Boot metrics(i.e. scrape_duration_seconds)
 
 It is beyond the scope of this lab, but if you're interested, give it a go if you have extra time!
+
+[TIP]
+====
+Try adding:
+
+[source,properties,role="copypaste"]
+----
+<dependency>
+	<groupId>io.micrometer</groupId>
+	<artifactId>micrometer-registry-prometheus</artifactId>
+</dependency>
+----
+
+to the pom.xml.
+
+To configure the actuator, the following properties will need to be set:
+
+[source,properties,role="copypaste"]
+----
+management.metrics.export.prometheus.enabled=true
+management.endpoints.web.exposure.include=info,health,metrics,prometheus
+----
+
+This will expose prometheus-formatted metrics at /actuator/prometheus. The following prometheus configuration will allow you to scrape those metrics:
+
+[source,yaml,role="copypaste"]
+----
+    - job_name: 'catalog-springboot'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 10s
+      scrape_timeout: 5s
+      static_configs:
+      - targets: ['catalog-springboot.{{ USER_ID }}-catalog.svc.cluster.local:8080']
+----
+====
 
 === Summary
 
