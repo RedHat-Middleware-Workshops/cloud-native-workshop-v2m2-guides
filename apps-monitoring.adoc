@@ -484,6 +484,41 @@ If you feel up to it, Spring Boot can also expose Metrics which can be collected
 
 It is beyond the scope of this lab, but if you're interested, give it a go if you have extra time!
 
+[TIP]
+====
+
+Try adding the following dependency to `pom.xml`:
+
+[source,xml,role="copypaste"]
+----
+<dependency>
+	<groupId>io.micrometer</groupId>
+	<artifactId>micrometer-registry-prometheus</artifactId>
+</dependency>
+----
+
+To configure the actuator, the following properties will need to be set:
+
+[source,properties,role="copypaste"]
+----
+management.metrics.export.prometheus.enabled=true
+management.endpoints.web.exposure.include=info,health,metrics,prometheus
+----
+
+This will expose prometheus-formatted metrics at `/actuator/prometheus`. The following prometheus configuration will allow you to scrape those metrics:
+
+[source,yaml,role="copypaste"]
+----
+    - job_name: 'catalog-springboot'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 10s
+      scrape_timeout: 5s
+      static_configs:
+      - targets: ['catalog-springboot.{{ USER_ID }}-catalog.svc.cluster.local:8080']
+----
+
+====
+
 === Summary
 
 In this lab, you learned how to monitor cloud-native applications using Jaeger, Prometheus, and Grafana. You also learned how Quarkus makes your observation tasks easier as a developer and operator. You can use these techniques in future projects to observe your distributed cloud-native applications.
