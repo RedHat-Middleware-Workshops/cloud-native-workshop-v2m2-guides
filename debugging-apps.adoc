@@ -1,5 +1,6 @@
 = Lab2 - Debugging Applications
 :experimental:
+:imagesdir: images
 
 In this lab, you will debug the coolstore microservice application using Java remote debugging and look into line-by-line code execution as the code runs on Quarkus.
 

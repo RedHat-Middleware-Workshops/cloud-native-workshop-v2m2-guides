@@ -1,6 +1,7 @@
 = Lab3 - Application Monitoring
 :experimental:
 :tip-caption: :bulb:
+:imagesdir: images
 
 In the previous labs, you learned how to debug cloud-native apps to fix errors quickly using CodeReady Workspaces with Quarkus framework, and you got a glimpse into the power of Quarkus for developer joy.
 
