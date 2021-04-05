@@ -1,7 +1,6 @@
-:imagesdir: images
-
 = Advanced Cloud-Native Services
 :experimental:
+:imagesdir: images
 
 If you completed the *Cloud Native Workshop - Module 1*, you learned how to take an existing application to the cloud with JBoss EAP and OpenShift, and you got a glimpse into the power of OpenShift for modernizing existing applications with microservices. If you did not, or you started but didn't finish, there are scripts below you can run to catch up.
 
