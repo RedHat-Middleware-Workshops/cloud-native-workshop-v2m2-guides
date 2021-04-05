@@ -1,3 +1,5 @@
+:imagesdir: images
+
 = Advanced Cloud-Native Services
 :experimental:
 

@@ -1,3 +1,5 @@
+:imagesdir: images
+
 = Lab1 - Automating Deployments Using Pipelines
 :experimental:
 
