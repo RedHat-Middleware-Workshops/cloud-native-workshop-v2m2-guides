@@ -48,7 +48,7 @@ image::create_monitoring_dialog.png[create_dialog, 700]
 To deploy a jaeger server, click on `YAML` in the Topology view:
 
 image::yaml-editor.png[serverless, 800]
-f
+
 Copy the following _Service_ in `YAML` editor then click on *Create*:
 
 [source,yaml,role="copypaste"]
@@ -101,7 +101,7 @@ This ensures that the extension's dependencies are added to `pom.xml` for the in
 
 [NOTE]
 ====
-NOTE: There are many https://quarkus.io/extensions/[more extensions^] for Quarkus for popular frameworks like https://vertx.io/[Vert.x^], http://camel.apache.org/[Apache Camel^], http://infinispan.org/[Infinispan^], Spring DI compatibility (e.g. `@Autowired`), and more.
+There are many https://quarkus.io/extensions/[more extensions^] for Quarkus for popular frameworks like https://vertx.io/[Vert.x^], http://camel.apache.org/[Apache Camel^], http://infinispan.org/[Infinispan^], Spring DI compatibility (e.g. `@Autowired`), and more.
 ====
 
 ==== 5. Create the configuration
