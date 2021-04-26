@@ -190,7 +190,7 @@ image::add-to-project.png[Prometheus, 800]
 
 Fill out the following fields:
 
-* *Image Name*: `prom/prometheus:latest`
+* *Image Name*: `quay.io/prometheus/prometheus`
 * *Application Name*: `prometheus-app`
 * *Name*: `prometheus`
 
@@ -212,7 +212,7 @@ image::prometheus-webui.png[Prometheus, 700]
 
 Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], click on `+Add`, and choose "Container Image", and fill in the fields:
 
-* *Image Name*: `grafana/grafana:latest`
+* *Image Name*: `registry.redhat.io/openshift4/ose-grafana`
 * *Application*: `grafana-app`
 * *Name*: `grafana`
 
@@ -261,22 +261,24 @@ At this point Granana is set up to pull collected metrics from Prometheus as the
 
 ==== 11. Utilize metrics specification for Inventory Microservice
 
-In this step, we will learn how _Inventory(Quarkus)_ application can utilize the MicroProfile Metrics specification through the *SmallRye Metrics extension*. _MicroProfile Metrics_ allows applications to gather various metrics and statistics that provide insights into what is happening inside the application.
+In this step, we will learn how _Inventory(Quarkus)_ application can utilize https://quarkus.io/guides/micrometer[Micrometer Metrics^] specification through the Micrometer Registry Prometheus extension. _MicroProfile Metrics_ allows applications to gather various metrics and statistics that provide insights into what is happening inside the application.
 
-The metrics can be read remotely using JSON format or the *OpenMetrics* format, so that they can be processed by additional tools such as _Prometheus_, and stored for analysis and visualisation.
+https://micrometer.io/[Micrometer^] allows applications to gather various metrics and statistics that provide insights into what is happening inside the application. They serve to pinpoint issues, provide long term trend data for capacity planning and pro-active discovery of issues (e.g. disk usage growing without bounds). Metrics can also help those scheduling systems decide when to scale the application to run on more or fewer machines.
 
-Add the necessary Quarkus extensions to the Inventory application for using _smallrye-metrics_ using the following commands in a CodeReady terminal:
+Micrometer defines a core library and a set of additional libraries that support different monitoring systems. Quarkus Micrometer extensions are structured similarly: _quarkus-micrometer_ provides core micrometer support and runtime integration and other supporting Quarkus and _Quarkiverse_ extensions bring in additional dependencies and requirements to support specific monitoring systems.
+
+Add the necessary Quarkus _micrometer-registry-prometheus_ extensions to the Inventory application using the following commands in a CodeReady terminal:
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="smallrye-metrics" -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
+mvn -q quarkus:add-extension -Dextensions="micrometer-registry-prometheus" -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
 ----
 
 You should see in the output:
 
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-smallrye-metrics has been installed
+✅ Extension io.quarkus:quarkus-micrometer-registry-prometheus has been installed
 ----
 
 Let’s add a few annotations to make sure that our desired metrics are calculated over time and can be exported for processing by _Prometheus_ and _Grafana_.
@@ -288,23 +290,35 @@ The metrics that we will gather are these:
 * *performedChecksAvail*: A counter of how many times _getAvailability()_ is called
 * *checksTimerAvail*: A measure of how long it takes to perform the _getAvailability()_ method
 
-In the _cloud-native-workshop-v2m2-labs/inventory_ project, open `src/main/java/com/redhat/coolstore/InventoryResource.java`. Replace the two methods _getAll()_ and
-_getAvailability()_ with the below code which adds several annotations for custom metrics (*@Counted*, *@Timed*):
+In the _cloud-native-workshop-v2m2-labs/inventory_ project, open `src/main/java/com/redhat/coolstore/InventoryResource.java`. 
+
+Let's add a metric to count the number of times we've retrieved inventories. Add the following `MeterRegistry` specification:
+
+[source,java,role="copypaste"]
+----
+    private final MeterRegistry registry;
+
+    InventoryResource(MeterRegistry registry) {
+        this.registry = registry;
+    }
+----
+
+Replace the two methods _getAll()_ and _getAvailability()_ with the below code for adding the *counter* and *timer* APIs:
 
 [source,java,role="copypaste"]
 ----
     @GET
-    @Counted(name = "performedChecksAll", description = "How many getAll() have been performed.")
-    @Timed(name = "checksTimerAll", description = "A measure of how long it takes to perform the getAll().", unit = MetricUnits.MILLISECONDS)
     public List<Inventory> getAll() {
+        registry.counter("inventory.performedChecksAll.counter").increment();
+        registry.timer("inventory.performedChecksAll.timer").record(3000, TimeUnit.MILLISECONDS);
         return Inventory.listAll();
     }
 
     @GET
-    @Counted(name = "performedChecksAvail", description = "How many getAvailability() have been performed.")
-    @Timed(name = "checksTimerAvail", description = "A measure of how long it takes to perform the getAvailability().", unit = MetricUnits.MILLISECONDS)
     @Path("{itemId}")
     public List<Inventory> getAvailability(@PathParam String itemId) {
+        registry.counter("inventory.performedChecksAvail.counter").increment();
+        registry.timer("inventory.checksTimerAvail.timer").record(3000, TimeUnit.MILLISECONDS);
         return Inventory.<Inventory>streamAll()
         .filter(p -> p.itemId.equals(itemId))
         .collect(Collectors.toList());
@@ -315,9 +329,8 @@ Add the necessary imports at the top:
 
 [source,java,role="copypaste"]
 ----
-import org.eclipse.microprofile.metrics.MetricUnits;
-import org.eclipse.microprofile.metrics.annotation.Counted;
-import org.eclipse.microprofile.metrics.annotation.Timed;
+import java.util.concurrent.TimeUnit;
+import io.micrometer.core.instrument.MeterRegistry;
 ----
 
 ==== 12. Redeploy to OpenShift
@@ -385,8 +398,7 @@ data:
         - targets: ['localhost:9090']
 
       - job_name: 'inventory-quarkus'
-        scrape_interval: 10s
-        scrape_timeout: 5s
+        metrics_path: '/q/metrics'
         static_configs:
         - targets: ['inventory.{{USER_ID}}-inventory.svc.cluster.local:8080']
 ----

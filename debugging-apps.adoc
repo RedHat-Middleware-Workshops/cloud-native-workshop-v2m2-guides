@@ -17,7 +17,7 @@ Enable remote debugging on Inventory by running the following command in the Cod
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:dev -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
+mvn quarkus:dev -Dquarkus.http.host=0.0.0.0 -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
 ----
 
 [NOTE]
