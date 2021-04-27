@@ -349,25 +349,19 @@ Once it's done you should be able to see the raw metrics exposed by the app with
 
 [source,sh,role="copypaste"]
 ----
-curl http://inventory-{{USER_ID}}-inventory.{{ ROUTE_SUBDOMAIN }}/metrics
+curl http://inventory-{{USER_ID}}-inventory.{{ ROUTE_SUBDOMAIN }}/q/metrics
 ----
 
 You will see a bunch of metrics in the OpenMetrics format:
 
 [source,console]
 ----
-# HELP vendor_memoryPool_usage_bytes Current usage of the memory pool denoted by the 'name' tag
-# TYPE vendor_memoryPool_usage_bytes gauge
-vendor_memoryPool_usage_bytes{name="PS Survivor Space"} 916920.0
-# HELP vendor_memoryPool_usage_bytes Current usage of the memory pool denoted by the 'name' tag
-# TYPE vendor_memoryPool_usage_bytes gauge
-vendor_memoryPool_usage_bytes{name="PS Old Gen"} 1.489556E7
-# HELP vendor_memory_maxNonHeap_bytes Displays the maximum amount of used non-heap memory in bytes.
-# TYPE vendor_memory_maxNonHeap_bytes gauge
-vendor_memory_maxNonHeap_bytes 4.52984832E8
-# HELP vendor_memory_usedNonHeap_bytes Displays the amount of used non-heap memory in bytes.
-# TYPE vendor_memory_usedNonHeap_bytes gauge
-vendor_memory_usedNonHeap_bytes 5.4685184E7
+# TYPE http_server_bytes_read summary
+http_server_bytes_read_count 1.0
+http_server_bytes_read_sum 0.0
+# HELP http_server_bytes_read_max
+# TYPE http_server_bytes_read_max gauge
+http_server_bytes_read_max 0.0
 ... and more
 ----
 
