@@ -184,7 +184,7 @@ image::monitoring-diagram.png[Prometheus, 700]
 
 However, we will deploy custom *Prometheus* to scrape services metrics of Inventory and Catalog applications. Then we will visualize the metrics data via custom *Grafana* dashboards deployment.
 
-On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], click on `+Add`, and choose *Container Image*:
+*Right-Click* on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], click on _Container Image_ in the *Add to Project* popup menu:
 
 image::add-to-project.png[Prometheus, 800]
 
@@ -204,13 +204,13 @@ On the Topology view, you'll see prometheus spinning up. Once it completes, clic
 
 image::prometheus-route.png[Prometheus, 700]
 
-Which should load the Prometheus Web UI (we'll use this later):
+Which should load the Prometheus Web UI (we'll use this later). You can change the UI themes (e.g., light, dark):
 
 image::prometheus-webui.png[Prometheus, 700]
 
 ==== 9. Deploy Grafana
 
-Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], click on `+Add`, and choose "Container Image", and fill in the fields:
+Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], *Right-Click* on _Container Image_ in the *Add to Project* popup menu:
 
 * *Image Name*: `registry.redhat.io/openshift4/ose-grafana`
 * *Application*: `grafana-app`
@@ -373,7 +373,7 @@ To instruct Prometheus to scrape metrics from our app, we need to create a Kuber
 
 On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], click `+Add` on the left, and this time choose *YAML*:
 
-image::add-yaml.png[prometheus, 700]
+image::yaml-editor.png[prometheus, 700]
 
 In the empty box, paste in the following YAML code:
 

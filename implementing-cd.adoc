@@ -37,11 +37,11 @@ This will create a new OpenShift project called *{{USER_ID}}-coolstore-prod* fro
 
 In this case we’ll use the production template to create the objects.
 
-We've pre-installed an application _template_ for use. Click the *+Add* and then *From Catalog* item:
+Click the *Start building your application* in the _Topology_ view:
 
-image::from_catalog.png[create_new, 700]
+image::start_build_app.png[create_new, 700]
 
-In the search box, type in `coolstore` and choose _Coolstore Monolith using pipelines_ and then click *Instantiate Template*.
+In the search box, type in `pipeline` and choose _Coolstore Monolith using pipelines_ and then click *Instantiate Template*.
 
 image::from_catalog_prod.png[create_new, 700]
 
@@ -69,33 +69,26 @@ oc label dc/coolstore-prod-postgresql app.kubernetes.io/part-of=coolstore-prod -
 oc label dc/coolstore-prod app.kubernetes.io/part-of=coolstore-prod --overwrite && \
 oc annotate dc/coolstore-prod app.openshift.io/connects-to=coolstore-prod-postgresql --overwrite && \
 oc annotate dc/coolstore-prod app.openshift.io/vcs-uri=https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs.git --overwrite && \
-oc annotate dc/coolstore-prod app.openshift.io/vcs-ref=ocp-4.7 --overwrite
+oc annotate dc/coolstore-prod app.openshift.io/vcs-ref=ocp-4.8 --overwrite
 ----
 
 image::coolstore_topology.png[create_new, 700]
 
 You can see the _postgres_ database running (with a dark blue circle), and the coolstore monolith, which has not yet been deployed or started. In previous labs we deployed manually from a binary build of our app in our developer project. In this lab we will use a _CI/CD pipeline_ to build and deploy automatically go our production environment.
 
-We will use a *Jenkins Server* in our project and  use a _Jenkins Pipeline_ build strategy.
+We will use a *Jenkins Helm Chart* in our project and  use a _Jenkins Pipeline_ build strategy, one of the most popular continuous integration and continuous delivery tool.
 
-Click *Add* then click *From Catalog*, type in `jenkins` in the search box, and choose the FIRST *Jenkins (ephemeral)* item:
+*Right-Click* on the _Topology_ view. Then, click on _Helm Charts_ in the *Add to Project* popup menu:
 
 image::from_catalog_jenkins.png[create_new, 700]
 
-Click *Instantiate Template* and change the following fields, leaving other fields alone:
+Type in `jenkins` in the search box, and click on *Jenkins* Helm chart:
 
-* *Namespace*: `{{ USER_ID }}-coolstore-prod` (this should already be selected)
-* *Memory Limit*: `2Gi`
-* *Disable memory intensive administrative monitors*: `true`
+image::from_catalog_jenkins_search.png[create_new, 700]
 
-Click *Create*.
+Leave all fields and click *Install*:
 
-Let's label the new Jenkins server:
-
-[source,sh,role="copypaste"]
-----
-oc label dc/jenkins app.openshift.io/runtime=jenkins --overwrite
-----
+image::jenkins_helm_chart_detail.png[create_new, 700]
 
 Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Topology View^] you can see the production database, and an application called Jenkins which OpenShift uses to manage CI/CD pipeline deployments.
 
