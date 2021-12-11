@@ -394,7 +394,7 @@ data:
       - job_name: 'inventory-quarkus'
         metrics_path: '/q/metrics'
         static_configs:
-        - targets: ['inventory.{{USER_ID}}-inventory.svc.cluster.local:8080']
+        - targets: ['inventory.{{USER_ID}}-inventory.svc.cluster.local']
 ----
 
 And click *Create*.
@@ -522,7 +522,7 @@ This will expose prometheus-formatted metrics at `/actuator/prometheus`. The fol
       scrape_interval: 10s
       scrape_timeout: 5s
       static_configs:
-      - targets: ['catalog-springboot.{{ USER_ID }}-catalog.svc.cluster.local:8080']
+      - targets: ['catalog-springboot.{{ USER_ID }}-catalog.svc.cluster.local']
 ----
 
 ====
