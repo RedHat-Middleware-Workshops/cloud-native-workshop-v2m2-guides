@@ -87,14 +87,14 @@ In this step, we will add the Quarkus extensions to the Inventory application fo
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="smallrye-opentracing" -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
+mvn quarkus:add-extension -Dextensions="smallrye-opentracing" -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
 ----
 
 You should see:
 
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-smallrye-opentracing has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-smallrye-opentracing has been installed
 ----
 
 This ensures that the extension's dependencies are added to `pom.xml` for the inventory microservice.
@@ -271,14 +271,14 @@ Add the necessary Quarkus _micrometer-registry-prometheus_ extensions to the Inv
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="micrometer-registry-prometheus" -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
+mvn quarkus:add-extension -Dextensions="micrometer-registry-prometheus" -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
 ----
 
 You should see in the output:
 
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-micrometer-registry-prometheus has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-micrometer-registry-prometheus has been installed
 ----
 
 Let’s add a few annotations to make sure that our desired metrics are calculated over time and can be exported for processing by _Prometheus_ and _Grafana_.
