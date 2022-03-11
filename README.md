@@ -1,4 +1,4 @@
-The CCN Roadshow(Dev Track) Module 2 Guide 2021
+The CCN Roadshow(Dev Track) Module 2 Guide 2022
 ===
 
 This module enables developers to create CI/CD pipeline with cloud-native apps on Red Hat Application Rumties(i.e. Quarkus, Spring Boot) with OpenShift.
