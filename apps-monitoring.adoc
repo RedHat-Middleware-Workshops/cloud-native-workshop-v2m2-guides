@@ -87,7 +87,7 @@ In this step, we will add the Quarkus extensions to the Inventory application fo
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="smallrye-opentracing" -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
+mvn quarkus:add-extension -Dextensions="smallrye-opentracing" -f $PROJECT_SOURCE/cloud-native-workshop-v2m2-labs/inventory
 ----
 
 You should see:
@@ -142,7 +142,7 @@ Repackage and re-deploy the inventory application via the Terminal:
 [source,sh,role="copypaste"]
 ----
 oc project {{ USER_ID }}-inventory && \
-mvn package -DskipTests -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
+mvn package -DskipTests -f $PROJECT_SOURCE/cloud-native-workshop-v2m2-labs/inventory
 ----
 In the console and on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-inventory[Inventory Topology View^], wait for the re-build and re-deployment to complete.
 
@@ -271,7 +271,7 @@ Add the necessary Quarkus _micrometer-registry-prometheus_ extensions to the Inv
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="micrometer-registry-prometheus" -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
+mvn quarkus:add-extension -Dextensions="micrometer-registry-prometheus" -f $PROJECT_SOURCE/cloud-native-workshop-v2m2-labs/inventory
 ----
 
 You should see in the output:
@@ -340,7 +340,7 @@ Repackage and redeploy the inventory application:
 [source,sh,role="copypaste"]
 ----
 oc project {{ USER_ID }}-inventory && \
-mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/cloud-native-workshop-v2m2-labs/inventory
+mvn clean package -DskipTests -f $PROJECT_SOURCE/cloud-native-workshop-v2m2-labs/inventory
 ----
 
 You should get `BUILD SUCCESS` and then the application should be re-deployed. Watch the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-inventory[Inventory Topology View^] until the app is re-deployed.
