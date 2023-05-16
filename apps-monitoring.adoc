@@ -3,7 +3,7 @@
 :tip-caption: :bulb:
 :imagesdir: images
 
-In the previous labs, you learned how to debug cloud-native apps to fix errors quickly using CodeReady Workspaces with Quarkus framework, and you got a glimpse into the power of Quarkus for developer joy.
+In the previous labs, you learned how to debug cloud-native apps to fix errors quickly using VS Code with Quarkus framework, and you got a glimpse into the power of Quarkus for developer joy.
 
 You will now begin observing applications in term of a distributed transaction, performance and latency because as cloud-native applications are developed quickly, a distributed architecture in production gets ultimately complex in two areas: networking and observability. Later on we’ll explore how you can better manage and monitor the application using service mesh.
 
@@ -83,7 +83,7 @@ image::jaeger-ui.png[jaeger_ui, 700]
 
 We have a catalog service written with Spring Boot that calls the inventory service written with Quarkus as part of our cloud-native application. These applications are easy to trace using Jaeger.
 
-In this step, we will add the Quarkus extensions to the Inventory application for using *smallrye-opentracing*. Run the following commands to add the tracing extension via CodeReady Workspaces Terminal:
+In this step, we will add the Quarkus extensions to the Inventory application for using *smallrye-opentracing*. Run the following commands to add the tracing extension via VS Code Terminal:
 
 [source,sh,role="copypaste"]
 ----
@@ -112,7 +112,7 @@ image::jaeger-services.png[create_dialog, 700]
 
 We will configure our app to use the `http-c-binary-trft` service on port `14268` to report traces.
 
-In the `inventory` project under `cloud-native-workshop-v2m2-labs` workspace, open `src/main/resources/application.properties` file and add the following configuration via CodeReady Workspaces Terminal:
+In the `inventory` project under `cloud-native-workshop-v2m2-labs` workspace, open `src/main/resources/application.properties` file and add the following configuration via VS Code Terminal:
 
 [source,properties,role="copypaste"]
 ----
@@ -148,7 +148,7 @@ In the console and on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-inventory[
 
 ==== 7. Observing Jaeger Tracing
 
-In order to trace networking and data transaction, we will call the Inventory service using *curl* commands via CodeReady Workspaces Terminal.
+In order to trace networking and data transaction, we will call the Inventory service using *curl* commands via VS Code Terminal.
 
 To generate traces, call the inventory 10 times:
 
@@ -267,7 +267,7 @@ https://micrometer.io/[Micrometer^] allows applications to gather various metric
 
 Micrometer defines a core library and a set of additional libraries that support different monitoring systems. Quarkus Micrometer extensions are structured similarly: _quarkus-micrometer_ provides core micrometer support and runtime integration and other supporting Quarkus and _Quarkiverse_ extensions bring in additional dependencies and requirements to support specific monitoring systems.
 
-Add the necessary Quarkus _micrometer-registry-prometheus_ extensions to the Inventory application using the following commands in a CodeReady terminal:
+Add the necessary Quarkus _micrometer-registry-prometheus_ extensions to the Inventory application using the following commands in a VS Code terminal:
 
 [source,sh,role="copypaste"]
 ----

@@ -58,7 +58,7 @@ Go to the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-coolstore-prod[Topology Vi
 
 The *Topology* view in the _Developer_ perspective of the web console provides a visual representation of all the applications within a project, their build status, and the components and services associated with them.
 
-Label the components so that they get proper icons by running this command in the CodeReady Terminal:
+Label the components so that they get proper icons by running this command in the VS Code Terminal:
 
 [source,sh,role="copypaste"]
 ----
@@ -130,7 +130,7 @@ Then, you will see the details of _Jenkinsfile_ on the right side:
 
 image::coolstore-prod-monolith-bc.png[monolith-pipeline, 700]
 
-You can also inspect this via the following command via CodeReady Workspaces Terminal window:
+You can also inspect this via the following command via VS Code Terminal window:
 
 [source,sh,role="copypaste"]
 ----
@@ -197,7 +197,7 @@ Click *Save*.
 
 With the approval step in place, let’s simulate a new change from a developer who wants to change the color of the header in the coolstore to a blue background color.
 
-First, in CodeReady, in the `cloud-native-workshop-v2m2-labs` project, open `monolith/src/main/webapp/app/css/coolstore.css`, which contains the CSS stylesheet for the
+First, in VS Code, in the `cloud-native-workshop-v2m2-labs` project, open `monolith/src/main/webapp/app/css/coolstore.css`, which contains the CSS stylesheet for the
 CoolStore app.
 
 Add the following CSS to turn the header bar background to Blue (*Copy* to add it at the bottom):
@@ -223,20 +223,20 @@ CATALOGHOST=$(oc get route -n {{ USER_ID}}-catalog catalog-springboot -o jsonpat
 sed -i 's/REPLACEURL/'$CATALOGHOST'/' "$JSPATH"
 ----
 
-Next, re-build the app once more via CodeReady Workspaces Terminal:
+Next, re-build the app once more via VS Code Terminal:
 
 [source,sh,role="copypaste"]
 ----
 mvn clean package -Popenshift -DskipTests -f $PROJECT_SOURCE/cloud-native-workshop-v2m2-labs/monolith
 ----
 
-And re-deploy it to the *dev* environment using a binary build just as we did before via CodeReady Workspaces Terminal:
+And re-deploy it to the *dev* environment using a binary build just as we did before via VS Code Terminal:
 
 [source,sh,role="copypaste"]
 ----
 oc start-build -n {{USER_ID}}-coolstore-dev coolstore --from-file=$PROJECT_SOURCE/cloud-native-workshop-v2m2-labs/monolith/deployments/ROOT.war --follow
 ----
-Wait for it to complete the deployment via CodeReady Workspaces Terminal:
+Wait for it to complete the deployment via VS Code Terminal:
 
 [source,sh,role="copypaste"]
 ----

@@ -12,8 +12,8 @@ Quarkus in development mode enables "Live Coding" with background compilation, w
 
 When run in Developer Mode (i.e. `mvn quarkus:dev`), Quarkus will also listen for debugging sessions on port `5005` (by default). If your want to wait for the debugger to attach before running you can pass `-Ddebug` on the command line. If you don’t want the debugger at all you can use `-Ddebug=false`.
 
-Start up the Inventory microservice locally, in development mode, using this command in a CodeReady Terminal:
-Enable remote debugging on Inventory by running the following command in the CodeReady Workspaces Terminal window:
+Start up the Inventory microservice locally, in development mode, using this command in a VS Code Terminal:
+Enable remote debugging on Inventory by running the following command in the VS Code Terminal window:
 
 [source,sh,role="copypaste"]
 ----
@@ -120,7 +120,7 @@ image::debug-che-quarkus-lastletter.png[Quarkus Debug, 700]
 
 There's no `l`! You can probably spot the error, but let's walk through the debugger.
 
-==== 2. Debug with CodeReady Workspaces
+==== 2. Debug with VS Code
 
 Click on the Debug icon on the left, select _Attach to App_ in the drop-down, and click the green _Start Debugging_ Icon:
 
@@ -199,4 +199,4 @@ Click on the _Stop Debugger_ (red box) to disconnect the debugger, then stop the
 
 ==== Congratulations!
 
-Quarkus apps are just like any other Java app, so debugging is straightforward and supported by many IDEs and CLIs out there. Combined with Live Reload and CodeReady Workspaces, it makes development quick and (relatively) painless!
+Quarkus apps are just like any other Java app, so debugging is straightforward and supported by many IDEs and CLIs out there. Combined with Live Reload and VS Code, it makes development quick and (relatively) painless!
