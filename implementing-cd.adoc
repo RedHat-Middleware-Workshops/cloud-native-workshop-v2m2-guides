@@ -218,7 +218,7 @@ Now we need to update the catalog endpoint in the monolith application. Run the 
 
 [source,sh,role="copypaste"]
 ----
-JSPATH="$PROJECT_SOURCE/cloud-native-workshop-v2m2-labs/monolith/src/main/webapp/app/services/catalog.js"
+JSPATH="$PROJECT_SOURCE/monolith/src/main/webapp/app/services/catalog.js"
 CATALOGHOST=$(oc get route -n {{ USER_ID}}-catalog catalog-springboot -o jsonpath={% raw %}"{.spec.host}"{% endraw %})
 sed -i 's/REPLACEURL/'$CATALOGHOST'/' "$JSPATH"
 ----
@@ -227,14 +227,14 @@ Next, re-build the app once more via VS Code Terminal:
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package -Popenshift -DskipTests -f $PROJECT_SOURCE/cloud-native-workshop-v2m2-labs/monolith
+mvn clean package -Popenshift -DskipTests -f $PROJECT_SOURCE/monolith
 ----
 
 And re-deploy it to the *dev* environment using a binary build just as we did before via VS Code Terminal:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build -n {{USER_ID}}-coolstore-dev coolstore --from-file=$PROJECT_SOURCE/cloud-native-workshop-v2m2-labs/monolith/deployments/ROOT.war --follow
+oc start-build -n {{USER_ID}}-coolstore-dev coolstore --from-file=$PROJECT_SOURCE/monolith/deployments/ROOT.war --follow
 ----
 Wait for it to complete the deployment via VS Code Terminal:
 
