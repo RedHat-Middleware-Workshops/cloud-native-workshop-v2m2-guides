@@ -33,6 +33,10 @@ In case you see the *Authorize Access* page as below, select *Allow selected per
 image::auth-access.png[auth-access, 800]
 ====
 
+In case you've already created a workspace (*ccn-workshop*) for another module, make sure to delete it first.
+
+image::delete-ws.png[ds, 800]
+
 Once you log in, you’ll be placed on the *Create Workspace* dashboard. Copy the following `Git Repo URL` and select `Create & Open`.
 
 * *Git Repo URL*: `https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs/tree/ocp-4.13`
@@ -80,15 +84,16 @@ Login successful.
 
 You have access to the following projects and can switch between them with 'oc project <projectname>':
 
-  * {{ USER_ID }}-bookinfo
+    {{ USER_ID }}-bookinfo
     {{ USER_ID }}-catalog
     {{ USER_ID }}-cloudnative-pipeline
     {{ USER_ID }}-cloudnativeapps
+    {{ USER_ID }}-coolstore-dev
+  * {{ USER_ID }}-devspaces
     {{ USER_ID }}-inventory
     {{ USER_ID }}-istio-system
 
-Using project "{{ USER_ID }}-bookinfo".
-Welcome! See 'oc help' to get started.
+Using project "{{ USER_ID }}-devspaces".
 ----
 
 ==== Do this if this is the first module you're doing today, otherwise continue to the Verifying the Dev Environment!
