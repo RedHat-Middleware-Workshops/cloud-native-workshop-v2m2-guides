@@ -28,14 +28,15 @@ __  ____  __  _____   ___  __ ____  ______
  --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
  -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
 --\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
-Powered by Quarkus 2.2.3.Final-redhat-00013
-INFO  [io.quarkus] (Quarkus Main Thread) inventory 1.0-SNAPSHOT on JVM (powered by Quarkus 2.2.3.Final-redhat-00013) started in 14.001s. Listening on: http://0.0.0.0:8080
+INFO  [io.agr.pool] (Quarkus Main Thread) Datasource '<default>': Initial size smaller than min. Connections will be created when necessary
+
+INFO  [io.quarkus] (Quarkus Main Thread) inventory 1.0-SNAPSHOT on JVM (powered by Quarkus 2.13.7.Final-redhat-00003) started in 6.421s. Listening on: http://0.0.0.0:8080
 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-h2, jdbc-postgresql, kubernetes, narayana-jta, resteasy, resteasy-jsonb, smallrye-context-propagation, smallrye-health]
+INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-h2, jdbc-postgresql, kubernetes, narayana-jta, resteasy, resteasy-jackson, smallrye-context-propagation, smallrye-health, vertx]
 
 --
 Tests paused
-Press [r] to resume testing, [o] Toggle test output, [h] for more options>
+Press [r] to resume testing, [o] Toggle test output, [:] for the terminal, [h] for more options>
 ----
 
 You can see *Tests paused* by default when a Quarkus application gets started.
@@ -56,6 +57,15 @@ There are various hotkeys you can use to control continuous testing. Pressing `h
 [r] - Resume testing
 [o] - Toggle test output (disabled)
 
+== Dev Services
+
+[c] - Show dev services containers
+[g] - Follow dev services logs to the console (disabled)
+
+== Exceptions
+
+[x] - Opens last exception in IDE (None)
+
 == HTTP
 
 [w] - Open the application in a browser
@@ -68,12 +78,13 @@ There are various hotkeys you can use to control continuous testing. Pressing `h
 [l] - Toggle live reload (enabled)
 [j] - Toggle log levels (INFO)
 [h] - Shows this help
+[:] - Enters terminal mode
 [q] - Quits the application
 ----
 
 Quarkus also provides a new experimental Dev UI, which is available in dev mode (when you start quarkus with mvn quarkus:dev) at `/q/dev` by default. It allows you to quickly visualize all the extensions currently loaded, see their status and go directly to their documentation.
 
-Click on `quarkus-devui` endpoint:
+To show up the public endpoints, select `Show plug-in endpoints`. Then, unfold the `ENDPOINTS > Public` and select the clipboard icon to copy the *Dev UI* URL.
 
 image::devui-endpoint.png[devui-endpoint, 700]
 
@@ -107,7 +118,11 @@ Go back to the _Explorer_ view, and under the `cloud-native-workshop-v2m2-labs` 
     }
 ----
 
-This method retrieves the location of inventory, and outputs the last letter in the name of the location. After adding this method, try it out with item `165613`, which has inventory in `Seoul` and we'd expect the last letter `l` to be output. Open another Terminal and run the command:
+This method retrieves the location of inventory, and outputs the last letter in the name of the location. After adding this method, try it out with item `165613`, which has inventory in `Seoul` and we'd expect the last letter `l` to be output. 
+
+Open a *new* terminal by selecting `+` icon:
+
+image::cmd-terminal.png[livecoding, 900]
 
 [source,sh,role="copypaste"]
 ----
@@ -116,30 +131,21 @@ curl http://localhost:8080/services/inventory/lastletter/165613
 
 You don't see the letter `l` do you? You should see:
 
-image::debug-che-quarkus-lastletter.png[Quarkus Debug, 700]
+image::debug-che-quarkus-lastletter.png[Quarkus Debug, 900]
 
 There's no `l`! You can probably spot the error, but let's walk through the debugger.
 
 ==== 2. Debug with VS Code
 
-Click on the Debug icon on the left, select _Attach to App_ in the drop-down, and click the green _Start Debugging_ Icon:
+Click on the Debug icon on the left, select _Attach to Remote Quarkus App_ in the drop-down, and click the green _Start Debugging_ Icon:
 
 image::debug-che-quarkus-attach.png[Quarkus Debug, 700]
 
-You may see `[Warn] The debugger and the debuggee are running in different versions of JVMs. You could see wrong source mapping results.` You can ignore this warning, as long as the JVM versions are in the same major version family it won't be a problem.
+You should see a list of Threads in the *CALL STACK*.
 
-You should see a list of Threads in the debug console.
+image::debug-che-callstack.png[callstack, 700]
 
-[WARNING]
-====
-**If you get errors or strange messages about Java Language Server or other failures**, you may need to restart the Java Language Server. To do this, press kbd:[F1] to open the command window, or the more traditional kbd:[Control+SHIFT+P] (or kbd:[Command+SHIFT+P] on Mac OS X). You can also use the *View > Find Command...*. Type `java` and click on the command named *Java: Clean the Java language server workspace* as shown:
-
-image::clean-jls.png[JLS, 900]
-
-This will restart the Java language server. Once it's restarted and you're back in your workspace, click the _Attach to App_ green icon once again to attach the debugger and proceed below.
-====
-
-Go back to the _Explorer_ view. In the new method you added, add a breakpoint by clicking to the left of the first line in that method to cause a red dot to appear, as shown:
+In the new method you added, add a breakpoint by clicking to the left of the first line in that method to cause a red dot to appear, as shown:
 
 image::debug-che-breakpoint.png[Add Breakpoint, 700]
 
