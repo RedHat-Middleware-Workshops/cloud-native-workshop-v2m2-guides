@@ -99,7 +99,7 @@ You are all set now to start debugging using the tools of you choice.
 
 Do not wait for the command to return! The Quarkus maven plugin keeps the forwarded port open so that you can start debugging remotely.
 
-image::debug-che-quarkus.png[Quarkus Debug, 700]
+image::debug-che-quarkus.png[Quarkus Debug, 900]
 
 ==== 2. Add a bug
 
