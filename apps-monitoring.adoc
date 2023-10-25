@@ -7,9 +7,18 @@ In the previous labs, you learned how to debug cloud-native apps to fix errors q
 
 You will now begin observing applications in term of a distributed transaction, performance and latency because as cloud-native applications are developed quickly, a distributed architecture in production gets ultimately complex in two areas: networking and observability. Later on we’ll explore how you can better manage and monitor the application using service mesh.
 
-In this lab, you will monitor coolstore applications using https://www.jaegertracing.io/[Jaeger^] and https://prometheus.io/[Prometheus^].
+In this lab, you will monitor coolstore applications using https://opentelemetry.io/[OpenTelemetry (OTel)^], https://www.jaegertracing.io/[Jaeger^], and https://prometheus.io/[Prometheus^].
 
 image::quarkus-jaeger-prometheus.png[logo, 700]
+
+*OpenTelemetry* is an observability framework designed to collect traces and metrics from applications. It is part of the larger Cloud Native Computing Foundation (CNCF) ecosystem and aims to provide a unified standard for observability in modern, distributed systems. OpenTelemetry provides instrumentation libraries, agents, and instrumentation specifications to facilitate the collection of data about the performance and behavior of software systems including:
+
+* Tracing: OpenTelemetry allows developers to trace the flow of requests across different components of a distributed system.
+* Metrics: OpenTelemetry provides a standardized way to collect and expose application-level metrics
+* Context Propagation: OpenTelemetry supports the propagation of context information across different services and components.
+* Instrumentation Libraries: OpenTelemetry offers instrumentation libraries for various programming languages, making it easier for developers to integrate observability features into their applications.
+* Agent and Collector: OpenTelemetry includes components like agents and collectors to collect, process, and export observability data. 
+* Compatibility and Integration: OpenTelemetry is designed to be vendor-agnostic and compatible with various observability tools and platforms. 
 
 *Jaeger* is an open source distributed tracing tool for monitoring and troubleshooting microservices-based distributed systems including:
 
@@ -79,63 +88,79 @@ This is the UI for Jaeger, but currently we have no apps being monitored so it�
 
 image::jaeger-ui.png[jaeger_ui, 700]
 
-==== 4. Utilizing Opentracing with Inventory (Quarkus)
+==== 4. Install OpenTelemetry Collector
 
-We have a catalog service written with Spring Boot that calls the inventory service written with Quarkus as part of our cloud-native application. These applications are easy to trace using Jaeger.
+OpenTelemetry Collector enables you to offload data quickly alongside your application services in terms of retries, batching, encryption or even sensitive data filtering. You will create an OpenTelemetry Collector to send the telemetry data to the Jaeger server.
 
-In this step, we will add the Quarkus extensions to the Inventory application for using *smallrye-opentracing*. Run the following commands to add the tracing extension via VS Code Terminal:
+Open `otel.yml` in the *src/main/kubernetes* directory. Copy the following YAML to the file. 
+
+[source,yaml,role="copypaste"]
+----
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: otel
+  namespace: {{ USER_ID }}-monitoring
+spec:
+  mode: deployment
+  config: |
+    receivers:
+      zipkin:
+    processors:
+    exporters:
+      jaeger:
+        endpoint: jaeger-all-in-one-inmemory-collector-headless.{{ USER_ID }}-monitoring.svc:14250
+        tls:
+          ca_file: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
+      logging:
+    service:
+      pipelines:
+        traces:
+          receivers: [zipkin]
+          processors: []
+          exporters: [jaeger, logging]
+----
+
+Then, run the following `oc` command in VS Code terminal.
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="smallrye-opentracing" -f $PROJECT_SOURCE/inventory
+oc apply -f monitoring/otel.yml -n {{ USER_ID }}-monitoring
 ----
 
-You should see:
+Go back to the Topology view, you will see the otel-collector deployed.
+
+image::devconsole-otel.png[devconsole-otel,800]
+
+==== 5. Add OpenTelemetry to Inventory (Quarkus)
+
+With Jaeger installed, let's turn back to our Quarkus app. Like other exercises, we'll need the following extensions to enable OpenTelemetry in our app. Install it with:
+
+[source,sh,role="copypaste"]
+----
+mvn quarkus:add-extension -Dextensions="quarkus-opentelemetry" -f $PROJECT_SOURCE/inventory
+----
+
+You will see:
 
 [source,console]
 ----
-[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-smallrye-opentracing has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-quarkus-opentelemetry has been installed
 ----
 
-This ensures that the extension's dependencies are added to `pom.xml` for the inventory microservice.
+This will add the necessary entries in your `pom.xml` to bring in the OpenTracing capability.
 
-[NOTE]
-====
-There are many https://quarkus.io/extensions/[more extensions^] for Quarkus for popular frameworks like https://vertx.io/[Vert.x^], http://camel.apache.org/[Apache Camel^], http://infinispan.org/[Infinispan^], Spring DI compatibility (e.g. `@Autowired`), and more.
-====
+==== 6. Configure Quarkus in Inventory service
 
-==== 5. Create the configuration
+Next, open the `application.properties` file (in the `src/main/resources` directory). Add the following lines to it to configure the OTLP gRPC Exporter in Quarkus:
 
-Before getting started with this step, confirm the *jaeger-collector* service by visiting the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Topology View^], and click on the _jaeger_ deployment and select the _Resources_ tab to view the services exposed by Jaeger:
-
-image::jaeger-services.png[create_dialog, 700]
-
-We will configure our app to use the `http-c-binary-trft` service on port `14268` to report traces.
-
-In the `inventory` project under `cloud-native-workshop-v2m2-labs` workspace, open `src/main/resources/application.properties` file and add the following configuration via VS Code Terminal:
-
-[source,properties,role="copypaste"]
+[source,none,role="copypaste"]
 ----
-# Jaeger configuration
-%prod.quarkus.jaeger.service-name=inventory
-%prod.quarkus.jaeger.sampler-type=const
-%prod.quarkus.jaeger.sampler-param=1
-%prod.quarkus.jaeger.endpoint=http://jaeger-all-in-one-inmemory-collector.{{ USER_ID }}-monitoring.svc.cluster.local:14268/api/traces
+%prod.quarkus.otel.exporter.otlp.traces.endpoint=http://jaeger-all-in-one-inmemory-collector-headless.{{ USER_ID }}-monitoring.svc.cluster.local:4317 <1>
 ----
+<1> gRPC endpoint (Jaeger collector service) to send spans.
 
-You can also specify the configuration using environment variables or JVM properties. See https://www.jaegertracing.io/docs/1.12/client-features/[Jaeger Features^].
-
-[NOTE]
-====
-If the `quarkus.jaeger.service-name` property (or `JAEGER_SERVICE_NAME` environment variable) is not provided then a ``no-op'' tracer will be configured, resulting in no tracing data being reported to the backend.
-====
-
-[NOTE]
-====
-There is no tracing specific code included in the application. By default, RESTful requests sent to the app will be traced without *any* code changes being required thanks to MicroProfile Tracing. It is also possible to enhance the tracing information and manually trace other methods and classes. For more information on this, please see the https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[MicroProfile OpenTracing specification^].
-====
-
-==== 6. Re-Deploy to OpenShift
+==== 7. Re-Deploy to OpenShift
 
 Repackage and re-deploy the inventory application via the Terminal:
 
@@ -146,7 +171,7 @@ mvn package -DskipTests -f $PROJECT_SOURCE/inventory
 ----
 In the console and on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-inventory[Inventory Topology View^], wait for the re-build and re-deployment to complete.
 
-==== 7. Observing Jaeger Tracing
+==== 8. Observing Jaeger Tracing
 
 In order to trace networking and data transaction, we will call the Inventory service using *curl* commands via VS Code Terminal.
 
@@ -168,15 +193,15 @@ image::jaeger-2-services.png[jaeger_ui, 700]
 
 Select the `inventory` service and then click on *Find Traces* and observe the first trace in the graph:
 
-image::jaeger-reload.png[jaeger_ui, 700]
+image::jaeger-reload.png[jaeger_ui, 900]
 
 If you click on the single *Span* and you will see a logical unit of work in Jaeger that has an operation name, the start time of the operation, and the duration. Spans may be nested and ordered to model causal relationships:
 
-image::jaeger-span.png[jaeger_ui, 700]
+image::jaeger-span.png[jaeger_ui, 900]
 
 As applications get more complex and many microservices are calling each other, these spans and traces will become more complex but also reveal issues with the app.
 
-==== 8. Deploy Prometheus and Grafana to OpenShift
+==== 9. Deploy Prometheus and Grafana to OpenShift
 
 OpenShift Container Platform ships with a pre-configured and self-updating monitoring stack that is based on the https://prometheus.io[Prometheus] open source project and its wider eco-system. It provides monitoring of cluster components and ships with a set of alerts to immediately notify the cluster administrator about any occurring problems and a set of https://grafana.com/[Grafana] dashboards.
 
@@ -209,7 +234,7 @@ Which should load the Prometheus Web UI (we'll use this later). You can change t
 
 image::prometheus-webui.png[Prometheus, 700]
 
-==== 9. Deploy Grafana
+==== 10. Deploy Grafana
 
 Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-monitoring[Monitoring Topology View^], *Right-Click* on _Container Image_ in the *Add to Project* popup menu:
 
@@ -243,7 +268,7 @@ You will see the landing page of Grafana as shown:
 
 image::grafana-webui.png[Grafana, 700]
 
-==== 10. Add a data source to Grafana
+==== 11. Add a data source to Grafana
 
 Click Add data source and select *Prometheus* as data source type.
 
@@ -259,7 +284,7 @@ image::grafana-ds-success.png[Grafana, 300]
 
 At this point Granana is set up to pull collected metrics from Prometheus as they are collected from the application(s) you are monitoring.
 
-==== 11. Utilize metrics specification for Inventory Microservice
+==== 12. Utilize metrics specification for Inventory Microservice
 
 In this step, we will learn how _Inventory(Quarkus)_ application can utilize https://quarkus.io/guides/micrometer[Micrometer Metrics^] specification through the Micrometer Registry Prometheus extension. _MicroProfile Metrics_ allows applications to gather various metrics and statistics that provide insights into what is happening inside the application.
 
@@ -316,7 +341,7 @@ Replace the two methods _getAll()_ and _getAvailability()_ with the below code f
 
     @GET
     @Path("{itemId}")
-    public List<Inventory> getAvailability(@PathParam String itemId) {
+    public List<Inventory> getAvailability(@PathParam("itemId") String itemId) {
         registry.counter("inventory.performedChecksAvail.counter").increment();
         registry.timer("inventory.checksTimerAvail.timer").record(3000, TimeUnit.MILLISECONDS);
         return Inventory.<Inventory>streamAll()
@@ -333,7 +358,7 @@ import java.util.concurrent.TimeUnit;
 import io.micrometer.core.instrument.MeterRegistry;
 ----
 
-==== 12. Redeploy to OpenShift
+==== 13. Redeploy to OpenShift
 
 Repackage and redeploy the inventory application:
 
@@ -367,7 +392,7 @@ http_server_bytes_read_max 0.0
 
 This is what Prometheus will use to access and index the metrics from our app when we deploy it to the cluster. But first you must tell Prometheus about it!
 
-==== Configure Prometheus ConfigMap
+==== 14. Configure Prometheus ConfigMap
 
 To instruct Prometheus to scrape metrics from our app, we need to create a Kubernetes _ConfigMap_.
 
@@ -410,7 +435,7 @@ oc rollout status -n {{USER_ID}}-monitoring -w deployment/prometheus
 ----
 This will trigger a new deployment of prometheus. Wait for it to finish!
 
-==== 13. Generate some values for the metrics
+==== 15. Generate some values for the metrics
 
 Now that Prometheus is scraping values from our app, let’s write a loop to call our inventory service multiple times so we can observe the metrics. Do this with the following commands:
 
@@ -432,7 +457,7 @@ We have 3 ways to view the metrics:
 . Prometheus Queries
 . Grafana Dashboards
 
-==== Using Prometheus
+==== 16. Using Prometheus
 
 Open the http://prometheus-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN }}[Prometheus UI^] and input `performedChecks` and select the auto-completed value:
 
@@ -449,7 +474,7 @@ image::prometheus-metrics-graph.png[metrics_prometheus, 900]
 
 You can play with the values for time and see different data across different time ranges for this metric. There are many other metrics you can query for, and perform quite complex queries using https://prometheus.io/docs/prometheus/latest/querying/basics/[Prom QL^] (Prometheus Query Language).
 
-==== Using Grafana
+==== 17. Using Grafana
 
 Open the http://grafana-{{USER_ID}}-monitoring.{{ ROUTE_SUBDOMAIN }}[Grafana UI^].
 
