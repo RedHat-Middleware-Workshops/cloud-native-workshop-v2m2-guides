@@ -92,7 +92,7 @@ image::jaeger-ui.png[jaeger_ui, 700]
 
 OpenTelemetry Collector enables you to offload data quickly alongside your application services in terms of retries, batching, encryption or even sensitive data filtering. You will create an OpenTelemetry Collector to send the telemetry data to the Jaeger server.
 
-Open `otel.yml` in the *src/main/kubernetes* directory. Copy the following YAML to the file. 
+Open `otel.yml` in the *monitoring* directory. Copy the following YAML to the file. 
 
 [source,yaml,role="copypaste"]
 ----

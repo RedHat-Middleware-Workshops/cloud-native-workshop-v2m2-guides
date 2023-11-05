@@ -25,16 +25,20 @@ You should see a bunch of log output that ends with:
 [source,console]
 ----
 Listening for transport dt_socket at address: 5005
-INFO  [io.qua.dat.dep.dev.DevServicesDatasourceProcessor] (build-39) Dev Services for the default datasource (h2) started
+INFO  [io.qua.dat.dep.dev.DevServicesDatasourceProcessor] (build-8) Dev Services for the default datasource (postgresql) started - container ID is cf9633ddef8d
+INFO  [io.qua.hib.orm.dep.dev.HibernateOrmDevServicesProcessor] (build-27) Setting quarkus.hibernate-orm.database.generation=drop-and-create to initialize Dev Services managed database
 __  ____  __  _____   ___  __ ____  ______ 
  --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
  -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
 --\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
-INFO  [io.agr.pool] (Quarkus Main Thread) Datasource '<default>': Initial size smaller than min. Connections will be created when necessary
+WARN  [org.hib.eng.jdb.spi.SqlExceptionHelper] (JPA Startup Thread) SQL Warning Code: 0, SQLState: 00000
 
-INFO  [io.quarkus] (Quarkus Main Thread) inventory 1.0-SNAPSHOT on JVM (powered by Quarkus 3.2.6.Final-redhat-00002) started in 5.124s. Listening on: http://0.0.0.0:8080
+WARN  [org.hib.eng.jdb.spi.SqlExceptionHelper] (JPA Startup Thread) table "inventory" does not exist, skipping
+WARN  [org.hib.eng.jdb.spi.SqlExceptionHelper] (JPA Startup Thread) SQL Warning Code: 0, SQLState: 00000
+WARN  [org.hib.eng.jdb.spi.SqlExceptionHelper] (JPA Startup Thread) sequence "inventory_seq" does not exist, skipping
+INFO  [io.quarkus] (Quarkus Main Thread) inventory 1.0-SNAPSHOT on JVM (powered by Quarkus 3.2.6.Final-redhat-00002) started in 10.983s. Listening on: http://0.0.0.0:8080
 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-h2, jdbc-postgresql, kubernetes, narayana-jta, resteasy-reactive, resteasy-reactive-jackson, smallrye-context-propagation, smallrye-health, vertx]
+INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, kubernetes, narayana-jta, resteasy-reactive, resteasy-reactive-jackson, smallrye-context-propagation, smallrye-health, vertx]
 
 --
 Tests paused
@@ -47,6 +51,22 @@ You can see *Tests paused* by default when a Quarkus application gets started.
 ====
 Close any popups about port 5005 or 8080 when the app starts up
 ====
+
+You probably noticed that there was magic and we didn't specify the JDBC URL, this is because of https://quarkus.io/guides/databases-dev-services[Quarkus Dev Services^] and it works for all DBs, but here we can't have containers so we've done in-memory H2.
+
+When you take a look at the Quarkus Dev Mode terminal, you should see the following logs:
+
+[source,sh]
+----
+Dev Services for the default datasource (postgresql) started
+----
+
+Then, execute `podman ps` again in another terminal. You will see that a *PostgreSQL* container is running automatically.
+
+[source,sh]
+----
+cf9633ddef8d  docker.io/postgres:14              8 seconds ago  Healthy (Up)              cf9633ddef8d23a4e8e421f1a8ecef03f92b5aa188f2cee55134e8524208c148   7a35fc3bd27961dc343093d5410e48c70ffc27d489bb205bdce62c5f3ba0714b
+----
 
 ===== Controlling Continuous Testing
 
@@ -144,7 +164,11 @@ Click on the Debug icon on the left, select _Attach to Remote Quarkus App_ in th
 
 image::debug-che-quarkus-attach.png[Quarkus Debug, 700]
 
-You should see a list of Threads in the *CALL STACK*.
+In case you see the popup, click on `Yes`.
+
+image::debug-che-popup.png[debug-che-popup, 700]
+
+Then, you should see a list of Threads in the *CALL STACK*.
 
 image::debug-che-callstack.png[callstack, 700]
 
@@ -203,7 +227,7 @@ image::debug-che-final2.png[Step Over, 1000]
 
 [NOTE]
 ====
-Click on the _Stop Debugger_ (red box) to disconnect the debugger, then stop the app by typing kbd:[CTRL-C] in the Terminal in which the app runs.
+Click on the _Stop Debugger_ (red box) to disconnect the debugger, then stop the app by typing kbd:[CTRL-C] in the Terminal in which the app runs. When you stop the Quarkus Dev Mode (Live Coding), Quarkus Dev Service stops automatically which means the PostgreSQL container is terminated simultaneously.
 ====
 
 ==== Congratulations!
